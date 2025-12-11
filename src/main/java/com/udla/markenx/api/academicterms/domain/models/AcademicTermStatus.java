@@ -1,4 +1,4 @@
-package com.udla.markenx.api.academicterms.domain.model.aggregates.academicTerm;
+package com.udla.markenx.api.academicterms.domain.models;
 
 import lombok.Getter;
 
