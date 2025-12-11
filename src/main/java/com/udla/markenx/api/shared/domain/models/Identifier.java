@@ -1,4 +1,4 @@
-package com.udla.markenx.api.shared.domain.model;
+package com.udla.markenx.api.shared.domain.models;
 
 import java.util.Objects;
 
