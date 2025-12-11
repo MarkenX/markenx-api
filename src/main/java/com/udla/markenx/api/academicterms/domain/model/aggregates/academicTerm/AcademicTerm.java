@@ -3,6 +3,8 @@ package com.udla.markenx.api.academicterms.domain.model.aggregates.academicTerm;
 import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import lombok.AccessLevel;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 
@@ -35,7 +37,8 @@ public class AcademicTerm {
     /**
      * Crea un término académico que abarca un solo año calendario
      */
-    public static AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
+    @Contract("_, _, _ -> new")
+    public static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateSingleYear(dateInterval);
 
         var id = AcademicTermId.generate();
@@ -45,7 +48,8 @@ public class AcademicTerm {
     /**
      * Crea un término académico que cruza dos años calendario
      */
-    public static AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
+    @Contract("_, _, _ -> new")
+    public static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
         validateCrossYearMonths(dateInterval);
 
@@ -56,7 +60,7 @@ public class AcademicTerm {
     /**
      * Reconstruye un término desde persistencia (para el repositorio)
      */
-    public static AcademicTerm reconstituteFrom(
+    public static @NotNull AcademicTerm reconstituteFrom(
             String id,
             DateInterval dateInterval,
             int year,
@@ -89,25 +93,25 @@ public class AcademicTerm {
         validateMonthLength(dateInterval);
     }
 
-    private static void validateSingleYear(DateInterval interval) {
+    private static void validateSingleYear(@NotNull DateInterval interval) {
         if (interval.spansMultipleYears()) {
             throw new TermMustBeWithinSingleYearException();
         }
     }
 
-    private static void validateCrossYears(DateInterval interval) {
+    private static void validateCrossYears(@NotNull DateInterval interval) {
         if (interval.spansOneYear()) {
             throw new TermMustSpanTwoYearsException();
         }
     }
 
-    private void validateStartDateInFuture(DateInterval interval) {
+    private void validateStartDateInFuture(@NotNull DateInterval interval) {
         if (!LocalDate.now().isBefore(interval.startDate())) {
             throw new TermMustStartInFutureException(interval.startDate());
         }
     }
 
-    private void validateEndDateNotTooFar(DateInterval interval) {
+    private void validateEndDateNotTooFar(@NotNull DateInterval interval) {
         var maxAllowedYear = LocalDate.now().getYear() + 1;
         if (interval.getEndYear() > maxAllowedYear) {
             throw new TermCannotBeCreatedTooFarInFutureException(
@@ -117,7 +121,7 @@ public class AcademicTerm {
         }
     }
 
-    private void validateMonthLength(DateInterval interval) {
+    private void validateMonthLength(@NotNull DateInterval interval) {
         long monthLength = interval.getMonthLength();
 
         if (monthLength < MIN_MONTHS_LENGTH || monthLength > MAX_MONTHS_LENGTH) {
@@ -129,7 +133,7 @@ public class AcademicTerm {
         }
     }
 
-    private static void validateCrossYearMonths(DateInterval interval) {
+    private static void validateCrossYearMonths(@NotNull DateInterval interval) {
         long monthsAtStart = DateUtils.monthsToEndOfYear(interval.startDate());
         long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.endDate());
 
