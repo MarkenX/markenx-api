@@ -1,4 +1,4 @@
-package com.udla.markenx.api.academicterms.domain.repositories;
+package com.udla.markenx.api.academicterms.domain.ports.outgoing;
 
 import com.udla.markenx.api.academicterms.domain.models.AcademicTerm;
 
