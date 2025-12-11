@@ -1,5 +1,7 @@
 package com.udla.markenx.api.shared.domain.models;
 
+import com.udla.markenx.api.shared.domain.exceptions.IdentifierCannotBeNullException;
+
 import java.util.Objects;
 
 public abstract class Identifier {
@@ -7,7 +9,7 @@ public abstract class Identifier {
 
     protected Identifier(String value) {
         if (value == null || value.isBlank()) {
-            throw new IllegalArgumentException("Identifier cannot be null or empty");
+            throw new IdentifierCannotBeNullException();
         }
         this.value = value;
     }
