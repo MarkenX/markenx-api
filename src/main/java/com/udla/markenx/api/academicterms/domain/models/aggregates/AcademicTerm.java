@@ -1,6 +1,9 @@
-package com.udla.markenx.api.academicterms.domain.models;
+package com.udla.markenx.api.academicterms.domain.models.aggregates;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.*;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
+import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;

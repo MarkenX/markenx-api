@@ -1,4 +1,4 @@
-package com.udla.markenx.api.academicterms.domain.models;
+package com.udla.markenx.api.academicterms.domain.models.valueobjects;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.EndDateCannotBeNullException;
 import com.udla.markenx.api.academicterms.domain.exceptions.InvalidDateIntervalException;

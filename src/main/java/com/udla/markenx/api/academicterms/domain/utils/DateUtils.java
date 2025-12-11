@@ -1,7 +1,8 @@
-package com.udla.markenx.api.academicterms.domain.models;
+package com.udla.markenx.api.academicterms.domain.utils;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.InsufficientMonthsAfterYearStartException;
 import com.udla.markenx.api.academicterms.domain.exceptions.InsufficientMonthsBeforeYearEndException;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
