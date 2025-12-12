@@ -6,5 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface AcademicTermRepository {
+    AcademicTerm save(AcademicTerm newAcademicTerm);
     Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable);
 }

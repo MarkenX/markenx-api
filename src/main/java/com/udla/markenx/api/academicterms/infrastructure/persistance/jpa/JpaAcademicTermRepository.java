@@ -23,6 +23,12 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     }
 
     @Override
+    public AcademicTerm save(AcademicTerm newAcademicTerm) {
+        AcademicTermJpaEntity saved = springRepo.save(mapper.toEntity(newAcademicTerm));
+        return mapper.toDomain(saved);
+    }
+
+    @Override
     public Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable) {
         return springRepo.findAll(pageable).map(mapper::toDomain);
     }
