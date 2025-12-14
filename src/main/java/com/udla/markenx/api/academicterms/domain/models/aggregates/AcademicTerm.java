@@ -17,6 +17,7 @@ public class AcademicTerm {
     // region Constants
 
     private static final int YEAR_HISTORICAL_THRESHOLD = 2024;
+    private static final int MAX_YEARS_IN_FUTURE = 1;
     private static final int MIN_MONTHS_LENGTH = 4;
     private static final int MAX_MONTHS_LENGTH = 6;
     private static final int MIN_MONTHS_PER_YEAR = 2;
@@ -163,8 +164,16 @@ public class AcademicTerm {
         }
     }
 
+
+    /**
+     * Validates that the end year of the provided date interval does not exceed the maximum allowable year.
+     * If the end year is beyond the acceptable range, an exception is thrown.
+     *
+     * @param interval the date interval to validate, must not be null
+     * @throws TermCannotBeCreatedTooFarInFutureException if the end year of the interval exceeds the maximum allowable year
+     */
     private void validateEndDateNotTooFar(@NotNull DateInterval interval) {
-        var maxAllowedYear = LocalDate.now().getYear() + 1;
+        var maxAllowedYear = LocalDate.now().getYear() + MAX_YEARS_IN_FUTURE;
         if (interval.getEndYear() > maxAllowedYear) {
             throw new TermCannotBeCreatedTooFarInFutureException(
                     interval.getEndYear(),
