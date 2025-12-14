@@ -3,19 +3,17 @@ package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
+@NoArgsConstructor
 @Table(name = "academic_terms")
 public class AcademicTermJpaEntity extends JpaEntity {
-
-    @Id
-    @Column(length = 36)
-    private String id;
 
     @Column(name = "start_date")
     private LocalDate startDate;
@@ -29,15 +27,13 @@ public class AcademicTermJpaEntity extends JpaEntity {
     @Column(name = "status")
     private String status;
 
-    public AcademicTermJpaEntity() {
-    }
-
-    public AcademicTermJpaEntity(String id,
-                                 LocalDate startDate,
-                                 LocalDate endDate,
-                                 int year,
-                                 String status) {
-        this.id = id;
+    public AcademicTermJpaEntity(
+            String id,
+            LocalDate startDate,
+            LocalDate endDate,
+            int year,
+            String status) {
+        super(id);
         this.startDate = startDate;
         this.endDate = endDate;
         this.year = year;
