@@ -42,13 +42,26 @@ public class AcademicTerm {
      * @param sequence the sequence number of the term within the academic year
      * @param status the current status of the academic term
      */
-    public AcademicTerm(
+    private AcademicTerm(
             AcademicTermId id,
             DateInterval dateInterval,
             int year,
             int sequence,
             AcademicTermStatus status) {
         this.id = id;
+        this.year = validateYear(year);
+        this.sequence = validateSequence(sequence);
+        this.dateInterval = dateInterval;
+        this.status = status;
+    }
+
+    public AcademicTerm(
+            String id,
+            DateInterval dateInterval,
+            int year,
+            int sequence,
+            AcademicTermStatus status) {
+        this.id = new AcademicTermId(id);
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
         this.dateInterval = dateInterval;

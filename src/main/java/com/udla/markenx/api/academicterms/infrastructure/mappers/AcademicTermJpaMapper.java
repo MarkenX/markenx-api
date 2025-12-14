@@ -1,6 +1,7 @@
 package com.udla.markenx.api.academicterms.infrastructure.mappers;
 
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTermId;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.infrastructure.persistance.jpa.AcademicTermJpaEntity;
@@ -14,8 +15,8 @@ public class AcademicTermJpaMapper {
         // Recreate domain aggregate using the existing factory/reconstitute pattern
         DateInterval interval = new DateInterval(e.getStartDate(), e.getEndDate());
         // use reconstituteFrom if you want to override status
-        return AcademicTerm.reconstituteFrom(
-                e.getId(), // String id
+        return new AcademicTerm(
+                e.getId(),
                 interval,
                 e.getYear(),
                 e.getSequence(),
