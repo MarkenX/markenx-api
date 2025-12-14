@@ -43,6 +43,8 @@ public class AcademicTerm {
         this.status = calculateStatus();
     }
 
+    // region Factories
+
     /**
      * Crea un término académico que abarca un solo año calendario
      */
@@ -80,6 +82,8 @@ public class AcademicTerm {
         term.status = status; // Override del estado calculado
         return term;
     }
+
+    // endregion
 
     // region Getters
 
