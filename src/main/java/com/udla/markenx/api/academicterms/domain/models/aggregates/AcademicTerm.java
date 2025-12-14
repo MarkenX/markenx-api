@@ -14,6 +14,7 @@ import java.time.LocalDate;
 @Getter
 public class AcademicTerm {
 
+    private static final int YEAR_HISTORICAL_THRESHOLD = 2024;
     private static final int MIN_MONTHS_LENGTH = 4;
     private static final int MAX_MONTHS_LENGTH = 6;
     private static final int MIN_MONTHS_PER_YEAR = 2;
@@ -77,9 +78,18 @@ public class AcademicTerm {
 
     //region Validations
 
+    /**
+     * Validates whether the provided academic year is within the acceptable range.
+     * The year must be greater than or equal to the historical threshold and not exceed the next calendar year.
+     *
+     * @param year the academic year to validate
+     * @return the validated academic year if it is valid
+     * @throws InvalidAcademicYearException if the year is less than the historical threshold
+     *         or greater than the next calendar year
+     */
     private int validateYear(int year) {
         var nextYear = LocalDate.now().getYear() + 1;
-        if (year < 1 || year > nextYear) {
+        if (year < YEAR_HISTORICAL_THRESHOLD || year > nextYear) {
             throw new InvalidAcademicYearException(year, nextYear);
         }
         return year;
