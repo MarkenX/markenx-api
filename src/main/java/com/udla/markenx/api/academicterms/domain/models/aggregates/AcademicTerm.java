@@ -95,8 +95,20 @@ public class AcademicTerm {
         return year;
     }
 
+    /**
+     * Validates whether the provided term sequence is within the acceptable range.
+     * The sequence must be a positive number greater than the minimum required
+     * and not exceeding the maximum defined value.
+     *
+     * @param sequence the term sequence to validate
+     * @return the validated term sequence if it is valid
+     * @throws InvalidTermSequenceException if the sequence is less than or equal to zero,
+     *         or if it is outside the defined minimum and maximum limits
+     */
     private int validateSequence(int sequence) {
-        if (sequence <= 0) {
+        int minSequence = Math.ceilDiv(12, MIN_MONTHS_LENGTH);
+        int maxSequence = Math.ceilDiv(12, MAX_MONTHS_LENGTH);
+        if (sequence <= 0 || sequence < minSequence || sequence > maxSequence) {
             throw new InvalidTermSequenceException(sequence);
         }
         return sequence;
