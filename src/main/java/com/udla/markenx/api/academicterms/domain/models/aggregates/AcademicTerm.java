@@ -136,6 +136,16 @@ public class AcademicTerm {
         }
     }
 
+
+    /**
+     * Validates whether the given date interval satisfies the minimum required number of months
+     * at the end of the starting year and at the beginning of the ending year. Throws an exception
+     * if either condition is not met.
+     *
+     * @param interval the date interval to validate, must not be null
+     * @throws InsufficientMonthsBeforeYearEndException if the number of months from the start date to the end of the year is less than the minimum required
+     * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
+     */
     private static void validateCrossYearMonths(@NotNull DateInterval interval) {
         long monthsAtStart = DateUtils.monthsToEndOfYear(interval.startDate());
         long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.endDate());
