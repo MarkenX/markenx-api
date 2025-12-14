@@ -33,6 +33,15 @@ public class AcademicTerm {
 
     private AcademicTermStatus status;
 
+    /**
+     * Constructs an AcademicTerm instance with the specified parameters.
+     *
+     * @param id the unique identifier for the academic term
+     * @param dateInterval the date interval representing the start and end dates of the term
+     * @param year the year associated with the academic term
+     * @param sequence the sequence number of the term within the academic year
+     * @param status the current status of the academic term
+     */
     public AcademicTerm(
             AcademicTermId id,
             DateInterval dateInterval,
