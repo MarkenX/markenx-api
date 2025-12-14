@@ -83,10 +83,21 @@ public class AcademicTerm {
 
     // region Getters
 
+    /**
+     * Retrieves the start date of the academic term.
+     *
+     * @return the start date of the academic term as a {@code LocalDate} instance
+     */
     public LocalDate getStartDate() {
         return this.dateInterval.startDate();
     }
 
+
+    /**
+     * Retrieves the end date of the academic term.
+     *
+     * @return the end date of the academic term as a {@code LocalDate} instance
+     */
     public LocalDate getEndDate() {
         return this.dateInterval.endDate();
     }
