@@ -182,6 +182,15 @@ public class AcademicTerm {
         }
     }
 
+    /**
+     * Validates whether the length of the month interval is within the accepted range.
+     * If the month length is less than the defined minimum or greater than the defined maximum,
+     * an exception is thrown.
+     *
+     * @param interval the date interval to validate; must not be null
+     * @throws InvalidTermLengthException if the month length of the interval is less than the minimum allowed
+     *                                    or greater than the maximum allowed
+     */
     private void validateMonthLength(@NotNull DateInterval interval) {
         long monthLength = interval.getMonthLength();
 
