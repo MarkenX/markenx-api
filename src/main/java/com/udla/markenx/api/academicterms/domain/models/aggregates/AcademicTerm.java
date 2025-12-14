@@ -38,8 +38,6 @@ public class AcademicTerm {
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
         this.dateInterval = dateInterval;
-
-        validateCommonInvariants(dateInterval);
         this.status = calculateStatus();
     }
 
@@ -51,6 +49,9 @@ public class AcademicTerm {
     @Contract("_, _, _ -> new")
     public static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateSingleYear(dateInterval);
+        validateStartDateInFuture(dateInterval);
+        validateEndDateNotTooFar(dateInterval);
+        validateMonthLength(dateInterval);
 
         var id = AcademicTermId.generate();
         return new AcademicTerm(id, dateInterval, year, sequence);
@@ -62,6 +63,9 @@ public class AcademicTerm {
     @Contract("_, _, _ -> new")
     public static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
+        validateStartDateInFuture(dateInterval);
+        validateEndDateNotTooFar(dateInterval);
+        validateMonthLength(dateInterval);
         validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
@@ -156,12 +160,6 @@ public class AcademicTerm {
         return sequence;
     }
 
-    private void validateCommonInvariants(DateInterval dateInterval) {
-        validateStartDateInFuture(dateInterval);
-        validateEndDateNotTooFar(dateInterval);
-        validateMonthLength(dateInterval);
-    }
-
     /**
      * Validates whether the provided date interval is confined within a single calendar year.
      * Throws an exception if the interval spans multiple years.
@@ -195,7 +193,7 @@ public class AcademicTerm {
      * @param interval the date interval to validate, must not be null
      * @throws TermMustStartInFutureException if the start date is not in the future
      */
-    private void validateStartDateInFuture(@NotNull DateInterval interval) {
+    private static void validateStartDateInFuture(@NotNull DateInterval interval) {
         if (!LocalDate.now().isBefore(interval.startDate())) {
             throw new TermMustStartInFutureException(interval.startDate());
         }
@@ -209,7 +207,7 @@ public class AcademicTerm {
      * @param interval the date interval to validate, must not be null
      * @throws TermCannotBeCreatedTooFarInFutureException if the end year of the interval exceeds the maximum allowable year
      */
-    private void validateEndDateNotTooFar(@NotNull DateInterval interval) {
+    private static void validateEndDateNotTooFar(@NotNull DateInterval interval) {
         var maxAllowedYear = LocalDate.now().getYear() + MAX_YEARS_IN_FUTURE;
         if (interval.getEndYear() > maxAllowedYear) {
             throw new TermCannotBeCreatedTooFarInFutureException(
@@ -228,7 +226,7 @@ public class AcademicTerm {
      * @throws InvalidTermLengthException if the month length of the interval is less than the minimum allowed
      *                                    or greater than the maximum allowed
      */
-    private void validateMonthLength(@NotNull DateInterval interval) {
+    private static void validateMonthLength(@NotNull DateInterval interval) {
         long monthLength = interval.getMonthLength();
 
         if (monthLength < MIN_MONTHS_LENGTH || monthLength > MAX_MONTHS_LENGTH) {
