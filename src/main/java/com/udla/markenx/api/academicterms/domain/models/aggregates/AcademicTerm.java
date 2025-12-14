@@ -33,18 +33,35 @@ public class AcademicTerm {
 
     private AcademicTermStatus status;
 
-    private AcademicTerm(AcademicTermId id, DateInterval dateInterval, int year, int sequence) {
+    public AcademicTerm(
+            AcademicTermId id,
+            DateInterval dateInterval,
+            int year,
+            int sequence,
+            AcademicTermStatus status) {
         this.id = id;
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
         this.dateInterval = dateInterval;
-        this.status = calculateStatus();
+        this.status = status;
     }
 
     // region Factories
 
+
     /**
-     * Crea un término académico que abarca un solo año calendario
+     * Creates an academic term that fits within a single calendar year.
+     * The method enforces validations to ensure that the provided date interval and other parameters meet specific criteria,
+     * including being within the same year and satisfying conditions for future start dates and acceptable lengths.
+     *
+     * @param year         the academic year to which the term belongs
+     * @param sequence     the sequence number of the term within the academic year
+     * @param dateInterval the date interval representing the start and end dates of the term; must be within a single year
+     * @return a new instance of {@code AcademicTerm} representing the specified single-year term
+     * @throws TermMustBeWithinSingleYearException        if the date interval spans multiple calendar years
+     * @throws TermMustStartInFutureException             if the start date of the interval is not in the future
+     * @throws TermCannotBeCreatedTooFarInFutureException if the end date of the interval exceeds the allowed range
+     * @throws InvalidTermLengthException                 if the length of the term is less than the minimum or greater than the maximum allowed
      */
     @Contract("_, _, _ -> new")
     public static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
@@ -54,11 +71,27 @@ public class AcademicTerm {
         validateMonthLength(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence);
+        return new AcademicTerm(id, dateInterval, year, sequence, AcademicTermStatus.UPCOMING);
     }
 
+
     /**
-     * Crea un término académico que cruza dos años calendario
+     * Creates an academic term that spans across two calendar years.
+     * This method enforces various validation rules to ensure the provided
+     * date interval and other parameters meet specific criteria for cross-year terms.
+     * These criteria include the term spanning two years, starting in the future,
+     * and adhering to restrictions on date length and distribution across years.
+     *
+     * @param year         the academic year in which the term begins
+     * @param sequence     the sequence number of the term within the academic year
+     * @param dateInterval the date interval representing the start and end dates of the term; must span two calendar years
+     * @return a new instance of {@code AcademicTerm} representing the specified cross-year term
+     * @throws TermMustSpanTwoYearsException              if the date interval does not span two calendar years
+     * @throws TermMustStartInFutureException             if the start date of the interval is not in the future
+     * @throws TermCannotBeCreatedTooFarInFutureException if the end date of the interval exceeds the allowed range
+     * @throws InvalidTermLengthException                 if the length of the term is less than the minimum or greater than the maximum allowed
+     * @throws InsufficientMonthsBeforeYearEndException   if there are insufficient months from the start of the interval to the year's end
+     * @throws InsufficientMonthsAfterYearStartException  if there are insufficient months from the year's start to the interval's end
      */
     @Contract("_, _, _ -> new")
     public static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
@@ -69,22 +102,7 @@ public class AcademicTerm {
         validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence);
-    }
-
-    /**
-     * Reconstruye un término desde persistencia (para el repositorio)
-     */
-    public static @NotNull AcademicTerm reconstituteFrom(
-            String id,
-            DateInterval dateInterval,
-            int year,
-            int sequence,
-            AcademicTermStatus status) {
-
-        var term = new AcademicTerm(new AcademicTermId(id), dateInterval, year, sequence);
-        term.status = status; // Override del estado calculado
-        return term;
+        return new AcademicTerm(id, dateInterval, year, sequence, AcademicTermStatus.UPCOMING);
     }
 
     // endregion
