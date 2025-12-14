@@ -75,6 +75,8 @@ public class AcademicTerm {
         return term;
     }
 
+    //region Validations
+
     private int validateYear(int year) {
         var nextYear = LocalDate.now().getYear() + 1;
         if (year < 1 || year > nextYear) {
@@ -177,6 +179,8 @@ public class AcademicTerm {
             );
         }
     }
+
+    //endregion
 
     public LocalDate getStartDate() {
         return this.dateInterval.startDate();
