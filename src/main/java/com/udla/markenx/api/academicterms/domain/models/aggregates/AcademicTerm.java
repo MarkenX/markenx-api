@@ -55,6 +55,15 @@ public class AcademicTerm {
         this.status = status;
     }
 
+    /**
+     * Constructs an AcademicTerm object representing a term in an academic calendar.
+     *
+     * @param id the unique identifier of the academic term
+     * @param dateInterval the start and end dates of the academic term
+     * @param year the academic year associated with the term
+     * @param sequence the sequence number of the term in the academic year
+     * @param status the current status of the academic term
+     */
     public AcademicTerm(
             String id,
             DateInterval dateInterval,
