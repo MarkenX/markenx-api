@@ -1,0 +1,35 @@
+---
+title: Markenx ER Diagram
+---
+erDiagram
+
+ENTITY {
+  UUID public_id PK
+  string state "enabled or disabled"
+}
+
+ACADEMIC-TERM {
+  date startDate
+  date endDate
+  int year
+}
+
+AUDIT-LOG }o--|| USER : related
+AUDIT-LOG {
+  string action "created or updated"
+  dateTime timeStamp
+}
+
+USER {
+  string email "unique"
+  string role "admin or student"
+}
+
+PERSON ||--|| USER : have
+PERSON {
+  string firstName
+  string lastName
+}
+
+ACADEMIC-TERM ||--|| ENTITY : some
+AUDIT-LOG }|--|| ENTITY : some
