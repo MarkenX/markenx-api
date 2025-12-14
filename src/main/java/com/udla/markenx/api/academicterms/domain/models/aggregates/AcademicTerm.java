@@ -96,6 +96,13 @@ public class AcademicTerm {
         validateMonthLength(dateInterval);
     }
 
+    /**
+     * Validates whether the provided date interval is confined within a single calendar year.
+     * Throws an exception if the interval spans multiple years.
+     *
+     * @param interval the date interval to validate, must not be null
+     * @throws TermMustBeWithinSingleYearException if the date interval spans multiple calendar years
+     */
     private static void validateSingleYear(@NotNull DateInterval interval) {
         if (interval.spansMultipleYears()) {
             throw new TermMustBeWithinSingleYearException();
