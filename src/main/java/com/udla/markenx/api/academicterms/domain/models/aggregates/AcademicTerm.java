@@ -33,6 +33,8 @@ public class AcademicTerm {
 
     private AcademicTermStatus status;
 
+    // region Constructors
+
     /**
      * Constructs an AcademicTerm instance with the specified parameters.
      *
@@ -77,8 +79,9 @@ public class AcademicTerm {
         this.status = status;
     }
 
-    // region Factories
+    // endregion
 
+    // region Factories
 
     /**
      * Creates an academic term that fits within a single calendar year.
