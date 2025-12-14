@@ -81,6 +81,18 @@ public class AcademicTerm {
         return term;
     }
 
+    // region Getters
+
+    public LocalDate getStartDate() {
+        return this.dateInterval.startDate();
+    }
+
+    public LocalDate getEndDate() {
+        return this.dateInterval.endDate();
+    }
+
+    // endregion
+
     //region Validations
 
     /**
@@ -232,14 +244,6 @@ public class AcademicTerm {
     }
 
     //endregion
-
-    public LocalDate getStartDate() {
-        return this.dateInterval.startDate();
-    }
-
-    public LocalDate getEndDate() {
-        return this.dateInterval.endDate();
-    }
 
     public boolean overlapsWith(AcademicTerm other) {
         if (other == null) {
