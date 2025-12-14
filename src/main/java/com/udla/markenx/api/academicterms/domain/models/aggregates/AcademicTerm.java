@@ -102,6 +102,13 @@ public class AcademicTerm {
         }
     }
 
+    /**
+     * Validates whether the given date interval spans multiple calendar years.
+     * Throws an exception if the interval is confined to a single calendar year.
+     *
+     * @param interval the date interval to validate, must not be null
+     * @throws TermMustSpanTwoYearsException if the date interval does not span across two calendar years
+     */
     private static void validateCrossYears(@NotNull DateInterval interval) {
         if (interval.spansOneYear()) {
             throw new TermMustSpanTwoYearsException();
@@ -135,7 +142,6 @@ public class AcademicTerm {
             );
         }
     }
-
 
     /**
      * Validates whether the given date interval satisfies the minimum required number of months
