@@ -1,5 +1,6 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
+import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +11,7 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @Table(name = "academic_terms")
-public class AcademicTermJpaEntity {
+public class AcademicTermJpaEntity extends JpaEntity {
 
     @Id
     @Column(length = 36)
