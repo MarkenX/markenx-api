@@ -90,7 +90,7 @@ public class AcademicTerm {
     private int validateYear(int year) {
         var nextYear = LocalDate.now().getYear() + 1;
         if (year < YEAR_HISTORICAL_THRESHOLD || year > nextYear) {
-            throw new InvalidAcademicYearException(year, nextYear);
+            throw new InvalidAcademicYearException(year, YEAR_HISTORICAL_THRESHOLD, nextYear);
         }
         return year;
     }
