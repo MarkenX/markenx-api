@@ -11,15 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AcademicTermJpaMapper {
 
-    public AcademicTerm toDomain(@NotNull AcademicTermJpaEntity e) {
-        // Recreate domain aggregate using the existing factory/reconstitute pattern
+    public AcademicTerm toDomain(@NotNull AcademicTermJpaEntity e, int sequence) {
         DateInterval interval = new DateInterval(e.getStartDate(), e.getEndDate());
-        // use reconstituteFrom if you want to override status
         return new AcademicTerm(
                 e.getId(),
                 interval,
                 e.getYear(),
-                e.getSequence(),
+                sequence,
                 AcademicTermStatus.valueOf(e.getStatus())
         );
     }
@@ -30,7 +28,6 @@ public class AcademicTermJpaMapper {
                 domain.getStartDate(),
                 domain.getEndDate(),
                 domain.getYear(),
-                domain.getSequence(),
                 domain.getStatus().name()
         );
     }

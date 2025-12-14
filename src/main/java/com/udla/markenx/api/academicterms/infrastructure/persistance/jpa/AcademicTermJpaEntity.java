@@ -26,9 +26,6 @@ public class AcademicTermJpaEntity extends JpaEntity {
     @Column(name = "year")
     private int year;
 
-    @Column(name = "sequence")
-    private int sequence;
-
     @Column(name = "status")
     private String status;
 
@@ -39,13 +36,11 @@ public class AcademicTermJpaEntity extends JpaEntity {
                                  LocalDate startDate,
                                  LocalDate endDate,
                                  int year,
-                                 int sequence,
                                  String status) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
         this.year = year;
-        this.sequence = sequence;
         this.status = status;
     }
 }
