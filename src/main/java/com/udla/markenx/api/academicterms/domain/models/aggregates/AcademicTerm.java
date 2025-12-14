@@ -14,10 +14,14 @@ import java.time.LocalDate;
 @Getter
 public class AcademicTerm {
 
+    // region Constants
+
     private static final int YEAR_HISTORICAL_THRESHOLD = 2024;
     private static final int MIN_MONTHS_LENGTH = 4;
     private static final int MAX_MONTHS_LENGTH = 6;
     private static final int MIN_MONTHS_PER_YEAR = 2;
+
+    // endregion
 
     private final AcademicTermId id;
     private final int year;
@@ -85,7 +89,7 @@ public class AcademicTerm {
      * @param year the academic year to validate
      * @return the validated academic year if it is valid
      * @throws InvalidAcademicYearException if the year is less than the historical threshold
-     *         or greater than the next calendar year
+     *                                      or greater than the next calendar year
      */
     private int validateYear(int year) {
         var nextYear = LocalDate.now().getYear() + 1;
@@ -103,7 +107,7 @@ public class AcademicTerm {
      * @param sequence the term sequence to validate
      * @return the validated term sequence if it is valid
      * @throws InvalidTermSequenceException if the sequence is less than or equal to zero,
-     *         or if it is outside the defined minimum and maximum limits
+     *                                      or if it is outside the defined minimum and maximum limits
      */
     private int validateSequence(int sequence) {
         int minSequence = Math.ceilDiv(12, MIN_MONTHS_LENGTH);
@@ -180,7 +184,7 @@ public class AcademicTerm {
      * if either condition is not met.
      *
      * @param interval the date interval to validate, must not be null
-     * @throws InsufficientMonthsBeforeYearEndException if the number of months from the start date to the end of the year is less than the minimum required
+     * @throws InsufficientMonthsBeforeYearEndException  if the number of months from the start date to the end of the year is less than the minimum required
      * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
      */
     private static void validateCrossYearMonths(@NotNull DateInterval interval) {
