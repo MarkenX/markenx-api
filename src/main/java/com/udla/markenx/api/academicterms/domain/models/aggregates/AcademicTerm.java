@@ -150,6 +150,13 @@ public class AcademicTerm {
         }
     }
 
+    /**
+     * Validates that the start date of the provided date interval is in the future.
+     * If the start date is not in the future, an exception is thrown.
+     *
+     * @param interval the date interval to validate, must not be null
+     * @throws TermMustStartInFutureException if the start date is not in the future
+     */
     private void validateStartDateInFuture(@NotNull DateInterval interval) {
         if (!LocalDate.now().isBefore(interval.startDate())) {
             throw new TermMustStartInFutureException(interval.startDate());
