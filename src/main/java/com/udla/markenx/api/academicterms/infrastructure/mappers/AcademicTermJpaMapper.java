@@ -18,7 +18,7 @@ public class AcademicTermJpaMapper {
                 interval,
                 e.getYear(),
                 sequence,
-                AcademicTermStatus.valueOf(e.getStatus())
+                e.getStatus()
         );
     }
 
@@ -28,7 +28,7 @@ public class AcademicTermJpaMapper {
                 domain.getStartDate(),
                 domain.getEndDate(),
                 domain.getYear(),
-                domain.getStatus().name()
+                domain.getStatus()
         );
     }
 }

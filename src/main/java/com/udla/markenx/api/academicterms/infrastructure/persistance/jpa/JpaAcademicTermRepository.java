@@ -1,6 +1,7 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
 import com.udla.markenx.api.academicterms.infrastructure.mappers.AcademicTermJpaMapper;
@@ -47,6 +48,25 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     @Override
     public List<AcademicTerm> findAll() {
         List<AcademicTermJpaEntity> terms = springRepo.findAll();
+
+        terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
+
+        return IntStream.range(0, terms.size())
+                .mapToObj(i -> mapper.toDomain(terms.get(i), i + 1))
+                .toList();
+    }
+
+    /**
+     * Retrieves a list of academic terms with a status different from the specified status.
+     * The returned list is sorted by the start date of each academic term.
+     *
+     * @param status the status to exclude from the results
+     * @return a list of academic terms in their domain representation,
+     *         which do not match the specified status, ordered by start date
+     */
+    @Override
+    public List<AcademicTerm> findByStatusNot(AcademicTermStatus status) {
+        List<AcademicTermJpaEntity> terms = springRepo.findByStatusNot(status);
 
         terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
 

@@ -6,6 +6,7 @@ import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTer
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
@@ -44,6 +45,11 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
     @Override
     public List<AcademicTerm> getAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public List<AcademicTerm> getAllExcludingStatus(AcademicTermStatus status) {
+        return repository.findByStatusNot(status);
     }
 
     @Override

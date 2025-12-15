@@ -1,5 +1,6 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.util.UUID;
 @Entity
 @Getter @Setter
 @NoArgsConstructor
-@Table(name = "academic_terms")
+@Table(name = "academic-terms")
 public class AcademicTermJpaEntity extends JpaEntity {
 
     @Column(name = "start_date")
@@ -25,14 +26,15 @@ public class AcademicTermJpaEntity extends JpaEntity {
     private int year;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private AcademicTermStatus status;
 
     public AcademicTermJpaEntity(
             String id,
             LocalDate startDate,
             LocalDate endDate,
             int year,
-            String status) {
+            AcademicTermStatus status) {
         super(id);
         this.startDate = startDate;
         this.endDate = endDate;
