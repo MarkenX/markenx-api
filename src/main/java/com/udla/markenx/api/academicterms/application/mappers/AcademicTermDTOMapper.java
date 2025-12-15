@@ -10,8 +10,6 @@ public class AcademicTermDTOMapper {
     public ResponseAcademicTermDTO toDTO(AcademicTerm domain) {
         return new ResponseAcademicTermDTO(
                 domain.getId().toString(),
-                domain.getYear(),
-                domain.getSequence(),
                 domain.getStartDate(),
                 domain.getEndDate(),
                 domain.getStatus().name(),
