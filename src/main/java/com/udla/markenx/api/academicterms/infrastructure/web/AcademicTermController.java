@@ -1,15 +1,16 @@
 package com.udla.markenx.api.academicterms.infrastructure.web;
 
-import com.udla.markenx.api.academicterms.application.commands.DisableAcademicTermCommand;
+import com.udla.markenx.api.academicterms.application.commands.ChangeAcademicTermStatusCommand;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
-import com.udla.markenx.api.academicterms.application.dtos.RequestCreateAcademicTermDTO;
+import com.udla.markenx.api.academicterms.application.dtos.ChangeAcademicTermStatusRequestDTO;
+import com.udla.markenx.api.academicterms.application.dtos.CreateAcademicTermRequestDTO;
 import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
 import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.application.ports.incoming.UpdateAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.application.queries.GetAcademicTermByIdQuery;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
-import com.udla.markenx.api.academicterms.application.dtos.ResponseAcademicTermDTO;
+import com.udla.markenx.api.academicterms.application.dtos.AcademicTermResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,7 +37,7 @@ public class AcademicTermController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Academic term created successfully")
     })
-    public ResponseAcademicTermDTO create(@RequestBody RequestCreateAcademicTermDTO dto) {
+    public AcademicTermResponseDTO create(@RequestBody CreateAcademicTermRequestDTO dto) {
         var command = new SaveAcademicTermCommand(dto.startDate(), dto.endDate(), dto.year(), false);
         return mapper.toDTO(saveTermUseCase.handle(command));
     }
@@ -48,20 +49,22 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
-    public ResponseAcademicTermDTO getById(@PathVariable String id) {
+    public AcademicTermResponseDTO getById(@PathVariable String id) {
         var query = new GetAcademicTermByIdQuery(id);
         return mapper.toDTO(termQueryUseCase.getById(query));
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Disable an academic term by id")
+    @Operation(summary = "Change academic term status")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Academic term disabled successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
-    public ResponseAcademicTermDTO disable(@PathVariable String id) {
-        var command = new DisableAcademicTermCommand(id);
+    public AcademicTermResponseDTO changeStatus(
+            @PathVariable String id,
+            @RequestBody ChangeAcademicTermStatusRequestDTO request) {
+        var command = new ChangeAcademicTermStatusCommand(id, request.status());
         return mapper.toDTO(updateTermUseCase.disable(command));
     }
 
@@ -71,12 +74,12 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No academic terms found")
     })
-    public ResponseEntity<@NotNull Page<@NotNull ResponseAcademicTermDTO>> getAll(
+    public ResponseEntity<@NotNull Page<@NotNull AcademicTermResponseDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         var query = new GetAllAcademicTermsPaginatedQuery(page, size);
-        Page<@NotNull ResponseAcademicTermDTO> result =
+        Page<@NotNull AcademicTermResponseDTO> result =
                 termQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
 
         if (result.isEmpty()) {

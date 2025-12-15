@@ -5,6 +5,7 @@ import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.infrastructure.mappers.AcademicTermJpaMapper;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -96,19 +97,21 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
         return springRepo.findAll(pageable).map(mapper::toDomain);
     }
 
+
     /**
-     * Disables an academic term identified by its unique identifier.
-     * This method retrieves the academic term from the data source, validates its existence,
-     * and marks it as disabled.
+     * Changes the lifecycle status of the academic term identified by the provided ID.
      *
-     * @param id the unique identifier of the academic term to be disabled
-     * @return the disabled academic term in its domain representation
-     * @throws AcademicTermNotFoundException if no academic term is found with the provided identifier
+     * @param id the unique identifier of the academic term whose status needs to be updated
+     * @param targetStatus the target lifecycle status to apply to the academic term (e.g., ACTIVE, DISABLED)
+     * @return the updated academic term with its new status applied
      */
     @Override
-    public AcademicTerm disable(String id) {
+    public AcademicTerm changeStatus(String id, LifecycleStatus targetStatus) {
         AcademicTerm term = findById(id);
-        term.disable();
-        return term;
+        switch (targetStatus) {
+            case ACTIVE -> term.enable();
+            case DISABLED -> term.disable();
+        }
+        return save(term);
     }
 }
