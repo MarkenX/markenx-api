@@ -6,6 +6,9 @@ import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMap
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
 import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -14,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/academic-terms")
+@RequestMapping("academic-terms")
 public class AcademicTermController {
 
     private final AcademicTermQueryService service;
@@ -22,6 +25,10 @@ public class AcademicTermController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Create a new academic term")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "201", description = "Academic term created successfully")
+    })
     public AcademicTermDTO create(@RequestBody RequestCreateAcademicTermDTO dto) {
         var command = new SaveAcademicTermCommand(dto.startDate(), dto.endDate(), dto.year(), false);
         return mapper.toDTO(service.save(command));
@@ -29,6 +36,10 @@ public class AcademicTermController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all academic terms")
+    @ApiResponses( value = {
+            @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully")
+    })
     public Page<@NotNull AcademicTermDTO> readAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
