@@ -13,7 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,7 +29,7 @@ public class AcademicTermController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new academic term")
-    @ApiResponses( value = {
+    @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Academic term created successfully")
     })
     public AcademicTermDTO create(@RequestBody RequestCreateAcademicTermDTO dto) {
@@ -35,15 +38,23 @@ public class AcademicTermController {
     }
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all academic terms")
-    @ApiResponses( value = {
-            @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully"),
+            @ApiResponse(responseCode = "204", description = "No academic terms found")
     })
-    public Page<@NotNull AcademicTermDTO> readAll(
+    public ResponseEntity<@NotNull Page<@NotNull AcademicTermDTO>> readAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size
+    ) {
         var query = new GetAllAcademicTermsPaginatedQuery(page, size);
-        return service.getAllPaginated(query).map(mapper::toDTO);
+        Page<@NotNull AcademicTermDTO> result =
+                service.getAllPaginated(query).map(mapper::toDTO);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(result);
     }
 }
