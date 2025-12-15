@@ -1,7 +1,7 @@
 package com.udla.markenx.api.academicterms.infrastructure.seeders;
 
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
-import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
+import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.domain.exceptions.AcademicTermException;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +19,7 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AcademicTermSeeder implements CommandLineRunner {
 
-    private final AcademicTermQueryService service;
+    private final SaveAcademicTermUseCase service;
 
     @Override
     public void run(String @NotNull ... args) {
@@ -31,7 +31,7 @@ public class AcademicTermSeeder implements CommandLineRunner {
 
         var query = new SaveAcademicTermCommand(startDate, endDate, year, true);
         try {
-            AcademicTerm saved = service.save(query);
+            AcademicTerm saved = service.handle(query);
             log.info("The term {} was created", saved.toString());
             log.info("Academic terms seeded successfully.");
         } catch (AcademicTermException e) {

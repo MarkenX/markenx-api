@@ -12,8 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AcademicTermQueryUseCase {
-    AcademicTerm save(SaveAcademicTermCommand command);
-    Optional<AcademicTerm> getById(GetAcademicTermByIdQuery query);
+    AcademicTerm getById(GetAcademicTermByIdQuery query);
     List<AcademicTerm> getAll();
     List<AcademicTerm> getAllExcludingStatus(AcademicTermStatus status);
     Page<@NotNull AcademicTerm> getAllPaginated(GetAllAcademicTermsPaginatedQuery query);

@@ -1,6 +1,8 @@
 package com.udla.markenx.api.academicterms.application.services;
 
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
+import com.udla.markenx.api.academicterms.application.ports.incoming.UpdateAcademicTermUseCase;
+import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.application.queries.GetAcademicTermByIdQuery;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
@@ -20,29 +22,12 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class AcademicTermQueryService implements AcademicTermQueryUseCase {
+public class AcademicTermQueryService implements AcademicTermQueryUseCase{
 
     private final AcademicTermRepository repository;
 
     @Override
-    public AcademicTerm save(@NotNull SaveAcademicTermCommand command) {
-        List<AcademicTerm> terms = repository.findAllByYear(command.year());
-        int sequence = AcademicTermDomainService.calculateSequence(terms, null);
-        var dateInterval = new DateInterval(command.startDate(), command.endDate());
-
-        AcademicTerm newTerm;
-        if (command.isHistorical()) {
-            newTerm = AcademicTerm.createHistoricalTerm(command.year(), sequence, dateInterval);
-        } else {
-            newTerm = AcademicTerm.createTerm(command.year(), sequence, dateInterval);
-        }
-
-        AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
-        return repository.save(newTerm);
-    }
-
-    @Override
-    public Optional<AcademicTerm> getById(GetAcademicTermByIdQuery query) {
+    public AcademicTerm getById(@NotNull GetAcademicTermByIdQuery query) {
         return repository.findById(query.id());
     }
 

@@ -4,7 +4,7 @@ import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
-import com.udla.markenx.api.shared.domain.models.aggregates.AggregateRoot;
+import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 
 @Getter
-public class AcademicTerm extends AggregateRoot {
+public class AcademicTerm extends Entity {
 
     // region Constants
 

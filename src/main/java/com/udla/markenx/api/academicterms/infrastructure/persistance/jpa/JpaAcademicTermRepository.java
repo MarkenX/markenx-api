@@ -1,5 +1,6 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
+import com.udla.markenx.api.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
@@ -10,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class JpaAcademicTermRepository implements AcademicTermRepository {
@@ -38,14 +38,15 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     /**
      * Finds an academic term by its unique identifier.
      *
-     * @param id the unique identifier of the academic term
-     * @return an {@code Optional} containing the academic term in its domain representation
-     *         if found, or an empty {@code Optional} if not found
+     * @param id the unique identifier of the academic term to retrieve
+     * @return the academic term in its domain representation
+     * @throws AcademicTermNotFoundException if no academic term is found with the provided identifier
      */
     @Override
-    public Optional<AcademicTerm> findById(String id) {
-        Optional<AcademicTermJpaEntity> entity = springRepo.findById(id);
-        return entity.map(mapper::toDomain);
+    public AcademicTerm findById(String id) {
+        AcademicTermJpaEntity entity = springRepo.findById(id)
+                .orElseThrow(() -> new AcademicTermNotFoundException(id));
+        return mapper.toDomain(entity);
     }
 
     /**
@@ -93,5 +94,21 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     @Override
     public Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable) {
         return springRepo.findAll(pageable).map(mapper::toDomain);
+    }
+
+    /**
+     * Disables an academic term identified by its unique identifier.
+     * This method retrieves the academic term from the data source, validates its existence,
+     * and marks it as disabled.
+     *
+     * @param id the unique identifier of the academic term to be disabled
+     * @return the disabled academic term in its domain representation
+     * @throws AcademicTermNotFoundException if no academic term is found with the provided identifier
+     */
+    @Override
+    public AcademicTerm disable(String id) {
+        AcademicTerm term = findById(id);
+        term.disable();
+        return term;
     }
 }

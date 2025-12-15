@@ -6,15 +6,15 @@ import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.Getter;
 
 @Getter
-public abstract class AggregateRoot {
+public abstract class Entity {
 
     protected LifecycleStatus lifecycleStatus;
 
-    protected AggregateRoot() {
+    protected Entity() {
         this.lifecycleStatus = LifecycleStatus.ACTIVE;
     }
 
-    protected AggregateRoot(LifecycleStatus lifecycleStatus) {
+    protected Entity(LifecycleStatus lifecycleStatus) {
         this.lifecycleStatus = lifecycleStatus;
     }
 

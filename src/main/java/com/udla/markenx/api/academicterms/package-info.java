@@ -3,6 +3,7 @@
         allowedDependencies = {
                 "shared::aggregates",
                 "shared::valueobjects",
+                "shared::exceptions",
                 "shared::dtos",
                 "shared::infrastructure-jpa",
         })
