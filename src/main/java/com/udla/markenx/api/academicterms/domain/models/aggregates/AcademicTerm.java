@@ -416,4 +416,9 @@ public class AcademicTerm {
     public int hashCode() {
         return id.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return String.format("%d-%d", year, sequence);
+    }
 }

@@ -34,10 +34,15 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
         DateInterval dateInterval = new DateInterval(query.startDate(), query.endDate());
 
+        AcademicTerm newTerm;
         if (query.isHistorical()) {
-            return repository.save(AcademicTerm.createHistoricalTerm(query.year(), sequence, dateInterval));
+            newTerm = AcademicTerm.createHistoricalTerm(query.year(), sequence, dateInterval);
+        } else {
+            newTerm = AcademicTerm.createTerm(query.year(), sequence, dateInterval);
         }
-        return repository.save(AcademicTerm.createTerm(query.year(), sequence, dateInterval));
+
+        AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
+        return repository.save(newTerm);
     }
 
     @Override

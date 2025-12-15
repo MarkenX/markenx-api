@@ -2,6 +2,8 @@ package com.udla.markenx.api.academicterms.infrastructure.seeders;
 
 import com.udla.markenx.api.academicterms.application.queries.SaveAcademicTermQuery;
 import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
+import com.udla.markenx.api.academicterms.domain.exceptions.AcademicTermException;
+import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -27,11 +29,14 @@ public class AcademicTermSeeder implements CommandLineRunner {
         LocalDate startDate = LocalDate.of(year, 1, 1);
         LocalDate endDate = LocalDate.of(year, 5, 30);
 
-        log.info("Creating academic term {}...", year);
-
         SaveAcademicTermQuery query = new SaveAcademicTermQuery(startDate, endDate, year, true);
-        service.save(query);
-        
-        log.info("Academic terms seeded successfully.");
+        try {
+            AcademicTerm saved = service.save(query);
+            log.info("The term {} was created", saved.toString());
+            log.info("Academic terms seeded successfully.");
+        } catch (AcademicTermException e) {
+            log.error(e.getMessage(), e);
+            log.info("Academic terms seeding failed.");
+        }
     }
 }
