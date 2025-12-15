@@ -5,7 +5,7 @@ import com.udla.markenx.api.academicterms.application.dtos.RequestCreateAcademic
 import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
-import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
+import com.udla.markenx.api.academicterms.application.dtos.ResponseAcademicTermDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -30,7 +30,7 @@ public class AcademicTermController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Academic term created successfully")
     })
-    public AcademicTermDTO create(@RequestBody RequestCreateAcademicTermDTO dto) {
+    public ResponseAcademicTermDTO create(@RequestBody RequestCreateAcademicTermDTO dto) {
         var command = new SaveAcademicTermCommand(dto.startDate(), dto.endDate(), dto.year(), false);
         return mapper.toDTO(service.save(command));
     }
@@ -41,12 +41,12 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully"),
             @ApiResponse(responseCode = "204", description = "No academic terms found")
     })
-    public ResponseEntity<@NotNull Page<@NotNull AcademicTermDTO>> readAll(
+    public ResponseEntity<@NotNull Page<@NotNull ResponseAcademicTermDTO>> readAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         var query = new GetAllAcademicTermsPaginatedQuery(page, size);
-        Page<@NotNull AcademicTermDTO> result =
+        Page<@NotNull ResponseAcademicTermDTO> result =
                 service.getAllPaginated(query).map(mapper::toDTO);
 
         if (result.isEmpty()) {
