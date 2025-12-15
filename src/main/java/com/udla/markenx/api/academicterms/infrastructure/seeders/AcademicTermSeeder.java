@@ -22,7 +22,7 @@ public class AcademicTermSeeder implements CommandLineRunner {
     private final AcademicTermQueryService service;
 
     @Override
-    public void run(String @NotNull ... args) throws Exception {
+    public void run(String @NotNull ... args) {
         log.info("Seeding academic terms...");
 
         int year = 2025;
