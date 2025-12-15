@@ -3,7 +3,7 @@ package com.udla.markenx.api.academicterms.infrastructure.web;
 import com.udla.markenx.api.academicterms.application.commands.ChangeAcademicTermStatusCommand;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.application.commands.UpdateAcademicTermCommand;
-import com.udla.markenx.api.academicterms.application.dtos.ChangeAcademicTermStatusRequestDTO;
+import com.udla.markenx.api.academicterms.application.dtos.UpdateAcademicTermStatusRequestDTO;
 import com.udla.markenx.api.academicterms.application.dtos.CreateAcademicTermRequestDTO;
 import com.udla.markenx.api.academicterms.application.dtos.UpdateAcademicTermRequestDTO;
 import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
@@ -65,7 +65,7 @@ public class AcademicTermController {
     })
     public AcademicTermResponseDTO changeStatus(
             @PathVariable String id,
-            @RequestBody ChangeAcademicTermStatusRequestDTO request
+            @RequestBody UpdateAcademicTermStatusRequestDTO request
     ) {
         var command = new ChangeAcademicTermStatusCommand(id, request.status());
         return mapper.toDTO(updateTermUseCase.changeStatus(command));
