@@ -1,6 +1,6 @@
 package com.udla.markenx.api.academicterms.infrastructure.seeders;
 
-import com.udla.markenx.api.academicterms.application.queries.SaveAcademicTermQuery;
+import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
 import com.udla.markenx.api.academicterms.domain.exceptions.AcademicTermException;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
@@ -29,7 +29,7 @@ public class AcademicTermSeeder implements CommandLineRunner {
         var startDate = LocalDate.of(year, 1, 1);
         var endDate = LocalDate.of(year, 5, 30);
 
-        var query = new SaveAcademicTermQuery(startDate, endDate, year, true);
+        var query = new SaveAcademicTermCommand(startDate, endDate, year, true);
         try {
             AcademicTerm saved = service.save(query);
             log.info("The term {} was created", saved.toString());

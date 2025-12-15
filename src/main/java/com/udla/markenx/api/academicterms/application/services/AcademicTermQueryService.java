@@ -4,11 +4,12 @@ import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
 import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
-import com.udla.markenx.api.academicterms.application.queries.SaveAcademicTermQuery;
+import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,28 +18,23 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
 public class AcademicTermQueryService implements AcademicTermQueryUseCase {
 
     private final AcademicTermRepository repository;
     private final AcademicTermDTOMapper mapper;
 
-    public AcademicTermQueryService(AcademicTermRepository repository,
-                                    AcademicTermDTOMapper mapper) {
-        this.repository = repository;
-        this.mapper = mapper;
-    }
-
     @Override
-    public AcademicTerm save(SaveAcademicTermQuery query) {
+    public AcademicTerm save(@NotNull SaveAcademicTermCommand command) {
         List<AcademicTerm> terms = repository.findAll();
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
-        DateInterval dateInterval = new DateInterval(query.startDate(), query.endDate());
+        var dateInterval = new DateInterval(command.startDate(), command.endDate());
 
         AcademicTerm newTerm;
-        if (query.isHistorical()) {
-            newTerm = AcademicTerm.createHistoricalTerm(query.year(), sequence, dateInterval);
+        if (command.isHistorical()) {
+            newTerm = AcademicTerm.createHistoricalTerm(command.year(), sequence, dateInterval);
         } else {
-            newTerm = AcademicTerm.createTerm(query.year(), sequence, dateInterval);
+            newTerm = AcademicTerm.createTerm(command.year(), sequence, dateInterval);
         }
 
         AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
@@ -46,7 +42,12 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
     }
 
     @Override
-    public Page<@NotNull AcademicTermDTO> getAllPaginated(GetAllAcademicTermsPaginatedQuery query) {
+    public List<AcademicTerm> getAll() {
+        return repository.findAll();
+    }
+
+    @Override
+    public Page<@NotNull AcademicTermDTO> getAllPaginated(@NotNull GetAllAcademicTermsPaginatedQuery query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return repository.findAllPaginated(pageable).map(mapper::toDTO);
     }
