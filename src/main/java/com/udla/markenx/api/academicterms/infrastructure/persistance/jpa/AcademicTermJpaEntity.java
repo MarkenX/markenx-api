@@ -25,6 +25,9 @@ public class AcademicTermJpaEntity extends JpaEntity {
     @Column(name = "year")
     private int year;
 
+    @Column(name = "sequence")
+    private int sequence;
+
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AcademicTermStatus status;
@@ -34,11 +37,13 @@ public class AcademicTermJpaEntity extends JpaEntity {
             LocalDate startDate,
             LocalDate endDate,
             int year,
+            int sequence,
             AcademicTermStatus status) {
         super(id);
         this.startDate = startDate;
         this.endDate = endDate;
         this.year = year;
+        this.sequence = sequence;
         this.status = status;
     }
 }

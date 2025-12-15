@@ -11,6 +11,7 @@ import java.util.List;
 public interface AcademicTermRepository {
     AcademicTerm save(AcademicTerm newAcademicTerm);
     List<AcademicTerm> findAll();
+    List<AcademicTerm> findAllByYear(int year);
     List<AcademicTerm> findByStatusNot(AcademicTermStatus status);
     Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable);
 }

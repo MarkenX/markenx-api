@@ -3,18 +3,13 @@ package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
-import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
 import com.udla.markenx.api.academicterms.infrastructure.mappers.AcademicTermJpaMapper;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Repository
 public class JpaAcademicTermRepository implements AcademicTermRepository {
@@ -36,62 +31,53 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     @Override
     public AcademicTerm save(AcademicTerm newAcademicTerm) {
         AcademicTermJpaEntity saved = springRepo.save(mapper.toEntity(newAcademicTerm));
-        return mapper.toDomain(saved, newAcademicTerm.getSequence());
+        return mapper.toDomain(saved);
     }
 
     /**
-     * Retrieves a list of all academic terms, sorted by their start date.
-     * Each term is mapped to its domain representation and assigned a sequence number.
+     * Retrieves all academic terms from the data source, maps them to their domain representations,
+     * and returns them as a list.
      *
-     * @return a list of academic terms in their domain representation, ordered by start date
+     * @return a list of academic terms in their domain representation
      */
     @Override
     public List<AcademicTerm> findAll() {
-        List<AcademicTermJpaEntity> terms = springRepo.findAll();
-
-        terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
-
-        return IntStream.range(0, terms.size())
-                .mapToObj(i -> mapper.toDomain(terms.get(i), i + 1))
-                .toList();
+        return springRepo.findAll().stream().map(mapper::toDomain).toList();
     }
 
     /**
-     * Retrieves a list of academic terms with a status different from the specified status.
-     * The returned list is sorted by the start date of each academic term.
+     * Retrieves a list of academic terms for the specified year, maps them to their domain
+     * representations, and returns them as a list.
      *
-     * @param status the status to exclude from the results
-     * @return a list of academic terms in their domain representation,
-     *         which do not match the specified status, ordered by start date
+     * @param year the year for which academic terms need to be retrieved
+     * @return a list of academic terms in their domain representation for the specified year
+     */
+    @Override
+    public List<AcademicTerm> findAllByYear(int year) {
+        return springRepo.findByYear(year).stream().map(mapper::toDomain).toList();
+    }
+
+    /**
+     * Retrieves a list of academic terms whose status does not match the specified status,
+     * maps them to their domain representations, and returns them as a list.
+     *
+     * @param status the status to be excluded from the search criteria
+     * @return a list of academic terms in their domain representation where the status does not match the specified value
      */
     @Override
     public List<AcademicTerm> findByStatusNot(AcademicTermStatus status) {
-        List<AcademicTermJpaEntity> terms = springRepo.findByStatusNot(status);
-
-        terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
-
-        return IntStream.range(0, terms.size())
-                .mapToObj(i -> mapper.toDomain(terms.get(i), i + 1))
-                .toList();
+        return springRepo.findByStatusNot(status).stream().map(mapper::toDomain).toList();
     }
 
     /**
-     * Retrieves a paginated list of all academic terms, ordered by their start date.
+     * Retrieves a paginated list of academic terms from the data source, maps them to their domain
+     * representations, and returns them as a page of results.
      *
      * @param pageable the pagination and sorting information
-     * @return a page of academic terms, each mapped to the domain model and ordered by start date
+     * @return a page of academic terms in their domain representation
      */
     @Override
     public Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable) {
-        Page<@NotNull AcademicTermJpaEntity> page = springRepo.findAll(pageable);
-        List<AcademicTermJpaEntity> terms = new ArrayList<>(page.getContent());
-
-        terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
-
-        List<AcademicTerm> content = IntStream.range(0, terms.size())
-                .mapToObj(i -> mapper.toDomain(terms.get(i), i + 1))
-                .toList();
-
-        return new PageImpl<>(content, pageable, page.getTotalElements());
+        return springRepo.findAll(pageable).map(mapper::toDomain);
     }
 }

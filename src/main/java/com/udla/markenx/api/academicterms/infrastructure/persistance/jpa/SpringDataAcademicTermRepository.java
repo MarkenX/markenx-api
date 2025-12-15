@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface SpringDataAcademicTermRepository extends JpaRepository<@NotNull AcademicTermJpaEntity, @NotNull String> {
     List<AcademicTermJpaEntity> findByStatusNot(AcademicTermStatus status);
+    List<AcademicTermJpaEntity> findByYear(int year);
 }

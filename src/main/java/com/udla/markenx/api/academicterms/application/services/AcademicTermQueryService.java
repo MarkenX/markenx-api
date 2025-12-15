@@ -24,7 +24,7 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
 
     @Override
     public AcademicTerm save(@NotNull SaveAcademicTermCommand command) {
-        List<AcademicTerm> terms = repository.findAll();
+        List<AcademicTerm> terms = repository.findAllByYear(command.year());
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
 

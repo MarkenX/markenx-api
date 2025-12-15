@@ -11,13 +11,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class AcademicTermJpaMapper {
 
-    public AcademicTerm toDomain(@NotNull AcademicTermJpaEntity e, int sequence) {
+    public AcademicTerm toDomain(@NotNull AcademicTermJpaEntity e) {
         DateInterval interval = new DateInterval(e.getStartDate(), e.getEndDate());
         return new AcademicTerm(
                 e.getId(),
                 interval,
                 e.getYear(),
-                sequence,
+                e.getSequence(),
                 e.getStatus()
         );
     }
@@ -28,6 +28,7 @@ public class AcademicTermJpaMapper {
                 domain.getStartDate(),
                 domain.getEndDate(),
                 domain.getYear(),
+                domain.getSequence(),
                 domain.getStatus()
         );
     }
