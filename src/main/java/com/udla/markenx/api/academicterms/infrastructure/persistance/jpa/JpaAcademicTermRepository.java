@@ -39,6 +39,23 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     }
 
     /**
+     * Retrieves a list of all academic terms, sorted by their start date.
+     * Each term is mapped to its domain representation and assigned a sequence number.
+     *
+     * @return a list of academic terms in their domain representation, ordered by start date
+     */
+    @Override
+    public List<AcademicTerm> findAll() {
+        List<AcademicTermJpaEntity> terms = springRepo.findAll();
+
+        terms.sort(Comparator.comparing(AcademicTermJpaEntity::getStartDate));
+
+        return IntStream.range(0, terms.size())
+                .mapToObj(i -> mapper.toDomain(terms.get(i), i + 1))
+                .toList();
+    }
+
+    /**
      * Retrieves a paginated list of all academic terms, ordered by their start date.
      *
      * @param pageable the pagination and sorting information

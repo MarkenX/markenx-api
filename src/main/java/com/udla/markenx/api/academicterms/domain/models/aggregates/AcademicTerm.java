@@ -84,6 +84,52 @@ public class AcademicTerm {
     // region Factories
 
     /**
+     * Creates an academic term based on the given year, sequence, and date interval.
+     * Determines whether the term spans a single year or crosses multiple years
+     * and creates the appropriate term accordingly.
+     *
+     * @param year the academic year for the term
+     * @param sequence the sequence number of the term within the academic year
+     * @param dateInterval the date range of the term
+     * @return an instance of AcademicTerm representing the created term
+     */
+    public static AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
+        validateStartDateInFuture(dateInterval);
+        validateEndDateNotTooFar(dateInterval);
+
+        return initializeAcademicTerm(year, sequence, dateInterval);
+    }
+
+    /**
+     * Creates a historical academic term based on the specified year, sequence, and date interval.
+     *
+     * @param year the year associated with the historical term
+     * @param sequence the sequence number or order of the term within the year
+     * @param dateInterval the date range during which the term occurs
+     * @return an AcademicTerm object representing the historical term
+     */
+    public static AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
+        return initializeAcademicTerm(year, sequence, dateInterval);
+    }
+
+    /**
+     * Initializes an academic term based on the provided year, sequence,
+     * and date interval. Determines whether the academic term spans a single year
+     * or crosses multiple years and constructs the appropriate term representation.
+     *
+     * @param year the year associated with the academic term
+     * @param sequence the sequence number of the term within the year
+     * @param dateInterval the date interval defining the start and end dates of the term
+     * @return the initialized AcademicTerm object, not null
+     */
+    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, DateInterval dateInterval) {
+        if (dateInterval.spansOneYear()) {
+            return createSingleYearTerm(year, sequence, dateInterval);
+        }
+        return createCrossYearTerm(year, sequence, dateInterval);
+    }
+
+    /**
      * Creates an academic term that fits within a single calendar year.
      * The method enforces validations to ensure that the provided date interval and other parameters meet specific criteria,
      * including being within the same year and satisfying conditions for future start dates and acceptable lengths.
@@ -98,14 +144,12 @@ public class AcademicTerm {
      * @throws InvalidTermLengthException                 if the length of the term is less than the minimum or greater than the maximum allowed
      */
     @Contract("_, _, _ -> new")
-    public static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateSingleYear(dateInterval);
-        validateStartDateInFuture(dateInterval);
-        validateEndDateNotTooFar(dateInterval);
         validateMonthLength(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence, AcademicTermStatus.UPCOMING);
+        return new AcademicTerm(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
 
@@ -128,15 +172,13 @@ public class AcademicTerm {
      * @throws InsufficientMonthsAfterYearStartException  if there are insufficient months from the year's start to the interval's end
      */
     @Contract("_, _, _ -> new")
-    public static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
-        validateStartDateInFuture(dateInterval);
-        validateEndDateNotTooFar(dateInterval);
         validateMonthLength(dateInterval);
         validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence, AcademicTermStatus.UPCOMING);
+        return new AcademicTerm(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
     // endregion
@@ -193,20 +235,19 @@ public class AcademicTerm {
         return year;
     }
 
+
     /**
-     * Validates whether the provided term sequence is within the acceptable range.
-     * The sequence must be a positive number greater than the minimum required
-     * and not exceeding the maximum defined value.
+     * Validates the given sequence number to ensure it is within the acceptable range.
+     * If the sequence is outside the valid range, an exception is thrown.
      *
-     * @param sequence the term sequence to validate
-     * @return the validated term sequence if it is valid
-     * @throws InvalidTermSequenceException if the sequence is less than or equal to zero,
-     *                                      or if it is outside the defined minimum and maximum limits
+     * @param sequence the sequence number to validate
+     * @return the validated sequence number if it is within the valid range
+     * @throws InvalidTermSequenceException if the sequence is less than or equal to 0
+     *                                      or greater than the maximum allowed sequence
      */
     private int validateSequence(int sequence) {
-        int minSequence = Math.ceilDiv(12, MIN_MONTHS_LENGTH);
         int maxSequence = Math.ceilDiv(12, MAX_MONTHS_LENGTH);
-        if (sequence <= 0 || sequence < minSequence || sequence > maxSequence) {
+        if (sequence <= 0 || sequence > maxSequence) {
             throw new InvalidTermSequenceException(sequence);
         }
         return sequence;
@@ -340,13 +381,13 @@ public class AcademicTerm {
     }
 
     public void refreshStatus() {
-        AcademicTermStatus newStatus = calculateStatus();
+        AcademicTermStatus newStatus = calculateStatus(dateInterval);
         if (this.status != newStatus) {
             this.status = newStatus;
         }
     }
 
-    private AcademicTermStatus calculateStatus() {
+    private static AcademicTermStatus calculateStatus(DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
         LocalDate startDate = dateInterval.startDate();
         LocalDate endDate = dateInterval.endDate();
