@@ -2,7 +2,7 @@ package com.udla.markenx.api.academicterms.domain.utils;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.InsufficientMonthsAfterYearStartException;
 import com.udla.markenx.api.academicterms.domain.exceptions.InsufficientMonthsBeforeYearEndException;
-import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
+import com.udla.markenx.api.academicterms.domain.models.aggregates.DateInterval;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -49,8 +49,8 @@ public final class DateUtils {
             throw new IllegalArgumentException("Los meses mínimos por año deben ser un valor positivo");
         }
 
-        long monthsToEnd = monthsToEndOfYear(interval.startDate());
-        long monthsFromStart = monthsFromStartOfYear(interval.endDate());
+        long monthsToEnd = monthsToEndOfYear(interval.getStartDate());
+        long monthsFromStart = monthsFromStartOfYear(interval.getEndDate());
 
         if (monthsToEnd < minMonthsPerYear) {
             throw new InsufficientMonthsBeforeYearEndException(monthsToEnd, minMonthsPerYear);

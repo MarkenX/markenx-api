@@ -2,7 +2,6 @@ package com.udla.markenx.api.academicterms.domain.models.aggregates;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
-import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -25,7 +24,7 @@ public class AcademicTerm {
     // endregion
 
     private final AcademicTermId id;
-    private final int year;
+    private int year;
     private final int sequence;
 
     @Getter(AccessLevel.NONE)
@@ -191,7 +190,7 @@ public class AcademicTerm {
      * @return the start date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getStartDate() {
-        return this.dateInterval.startDate();
+        return this.dateInterval.getStartDate();
     }
 
 
@@ -201,7 +200,23 @@ public class AcademicTerm {
      * @return the end date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getEndDate() {
-        return this.dateInterval.endDate();
+        return this.dateInterval.getEndDate();
+    }
+
+    // endregion
+
+    // region Setters
+
+    public void setYear(int year) {
+        this.year = validateYear(year);
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.dateInterval.setStartDate(startDate);
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.dateInterval.setEndDate(endDate);
     }
 
     // endregion
@@ -277,8 +292,8 @@ public class AcademicTerm {
      * @throws TermMustStartInFutureException if the start date is not in the future
      */
     private static void validateStartDateInFuture(@NotNull DateInterval interval) {
-        if (!LocalDate.now().isBefore(interval.startDate())) {
-            throw new TermMustStartInFutureException(interval.startDate());
+        if (!LocalDate.now().isBefore(interval.getStartDate())) {
+            throw new TermMustStartInFutureException(interval.getStartDate());
         }
     }
 
@@ -331,8 +346,8 @@ public class AcademicTerm {
      * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
      */
     private static void validateCrossYearMonths(@NotNull DateInterval interval) {
-        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.startDate());
-        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.endDate());
+        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.getStartDate());
+        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.getEndDate());
 
         if (monthsAtStart < MIN_MONTHS_PER_YEAR) {
             throw new InsufficientMonthsBeforeYearEndException(
@@ -365,10 +380,10 @@ public class AcademicTerm {
         }
     }
 
-    private static AcademicTermStatus calculateStatus(DateInterval dateInterval) {
+    private static AcademicTermStatus calculateStatus(@NotNull DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
-        LocalDate startDate = dateInterval.startDate();
-        LocalDate endDate = dateInterval.endDate();
+        LocalDate startDate = dateInterval.getStartDate();
+        LocalDate endDate = dateInterval.getEndDate();
 
         if (today.isAfter(startDate) && today.isBefore(endDate)) {
             return AcademicTermStatus.ACTIVE;
