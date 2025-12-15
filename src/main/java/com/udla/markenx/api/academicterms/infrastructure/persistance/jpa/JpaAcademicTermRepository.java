@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class JpaAcademicTermRepository implements AcademicTermRepository {
@@ -32,6 +33,19 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     public AcademicTerm save(AcademicTerm newAcademicTerm) {
         AcademicTermJpaEntity saved = springRepo.save(mapper.toEntity(newAcademicTerm));
         return mapper.toDomain(saved);
+    }
+
+    /**
+     * Finds an academic term by its unique identifier.
+     *
+     * @param id the unique identifier of the academic term
+     * @return an {@code Optional} containing the academic term in its domain representation
+     *         if found, or an empty {@code Optional} if not found
+     */
+    @Override
+    public Optional<AcademicTerm> findById(String id) {
+        Optional<AcademicTermJpaEntity> entity = springRepo.findById(id);
+        return entity.map(mapper::toDomain);
     }
 
     /**

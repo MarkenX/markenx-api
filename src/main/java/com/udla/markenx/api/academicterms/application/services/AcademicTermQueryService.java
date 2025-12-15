@@ -1,6 +1,7 @@
 package com.udla.markenx.api.academicterms.application.services;
 
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
+import com.udla.markenx.api.academicterms.application.queries.GetAcademicTermByIdQuery;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -37,6 +39,11 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
 
         AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
         return repository.save(newTerm);
+    }
+
+    @Override
+    public Optional<AcademicTerm> getById(GetAcademicTermByIdQuery query) {
+        return repository.findById(query.id());
     }
 
     @Override
