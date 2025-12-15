@@ -5,24 +5,21 @@ import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.infrastructure.mappers.AcademicTermJpaMapper;
-import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaAcademicTermRepository implements AcademicTermRepository {
 
     private final SpringDataAcademicTermRepository springRepo;
     private final AcademicTermJpaMapper mapper;
-
-    public JpaAcademicTermRepository(SpringDataAcademicTermRepository springRepo, AcademicTermJpaMapper mapper) {
-        this.springRepo = springRepo;
-        this.mapper = mapper;
-    }
 
     /**
      * Saves the given academic term to the database.
@@ -95,23 +92,5 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     @Override
     public Page<@NotNull AcademicTerm> findAllPaginated(Pageable pageable) {
         return springRepo.findAll(pageable).map(mapper::toDomain);
-    }
-
-
-    /**
-     * Changes the lifecycle status of the academic term identified by the provided ID.
-     *
-     * @param id the unique identifier of the academic term whose status needs to be updated
-     * @param targetStatus the target lifecycle status to apply to the academic term (e.g., ACTIVE, DISABLED)
-     * @return the updated academic term with its new status applied
-     */
-    @Override
-    public AcademicTerm changeStatus(String id, LifecycleStatus targetStatus) {
-        AcademicTerm term = findById(id);
-        switch (targetStatus) {
-            case ACTIVE -> term.enable();
-            case DISABLED -> term.disable();
-        }
-        return save(term);
     }
 }

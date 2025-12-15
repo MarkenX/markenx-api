@@ -27,11 +27,11 @@ public class AcademicTerm extends Entity {
     // endregion
 
     private final AcademicTermId id;
-    private final int year;
+    private int year;
     private final int sequence;
 
     @Getter(AccessLevel.NONE)
-    private final DateInterval dateInterval;
+    private DateInterval dateInterval;
 
     private AcademicTermStatus status;
 
@@ -98,7 +98,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date range of the term
      * @return an instance of AcademicTerm representing the created term
      */
-    public static AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
         validateStartDateInFuture(dateInterval);
         validateEndDateNotTooFar(dateInterval);
 
@@ -113,7 +113,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date range during which the term occurs
      * @return an AcademicTerm object representing the historical term
      */
-    public static AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
         return initializeAcademicTerm(year, sequence, dateInterval);
     }
 
@@ -127,7 +127,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date interval defining the start and end dates of the term
      * @return the initialized AcademicTerm object, not null
      */
-    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, @NotNull DateInterval dateInterval) {
         if (dateInterval.spansOneYear()) {
             return createSingleYearTerm(year, sequence, dateInterval);
         }
@@ -239,7 +239,6 @@ public class AcademicTerm extends Entity {
         }
         return year;
     }
-
 
     /**
      * Validates the given sequence number to ensure it is within the acceptable range.
@@ -392,7 +391,7 @@ public class AcademicTerm extends Entity {
         }
     }
 
-    private static AcademicTermStatus calculateStatus(DateInterval dateInterval) {
+    private static AcademicTermStatus calculateStatus(@NotNull DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
         LocalDate startDate = dateInterval.startDate();
         LocalDate endDate = dateInterval.endDate();
@@ -408,6 +407,33 @@ public class AcademicTerm extends Entity {
 
     public boolean containsDate(LocalDate date) {
         return dateInterval.contains(date);
+    }
+
+    /**
+     * Updates the date interval and year with the specified parameters after performing a series of validations.
+     *
+     * @param startDate the start date of the interval
+     * @param endDate the end date of the interval
+     * @param year the year to associate with the date interval
+     */
+    public void update(LocalDate startDate, LocalDate endDate, int year) {
+        validateYear(year);
+
+        var dateInterval = new DateInterval(startDate, endDate);
+
+        validateStartDateInFuture(dateInterval);
+        validateEndDateNotTooFar(dateInterval);
+        validateMonthLength(dateInterval);
+
+        if (dateInterval.spansOneYear()) {
+            validateSingleYear(dateInterval);
+        } else {
+            validateCrossYears(dateInterval);
+            validateCrossYearMonths(dateInterval);
+        }
+
+        this.dateInterval = dateInterval;
+        this.year = year;
     }
 
     @Override

@@ -2,8 +2,10 @@ package com.udla.markenx.api.academicterms.infrastructure.web;
 
 import com.udla.markenx.api.academicterms.application.commands.ChangeAcademicTermStatusCommand;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
+import com.udla.markenx.api.academicterms.application.commands.UpdateAcademicTermCommand;
 import com.udla.markenx.api.academicterms.application.dtos.ChangeAcademicTermStatusRequestDTO;
 import com.udla.markenx.api.academicterms.application.dtos.CreateAcademicTermRequestDTO;
+import com.udla.markenx.api.academicterms.application.dtos.UpdateAcademicTermRequestDTO;
 import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
 import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
@@ -63,9 +65,25 @@ public class AcademicTermController {
     })
     public AcademicTermResponseDTO changeStatus(
             @PathVariable String id,
-            @RequestBody ChangeAcademicTermStatusRequestDTO request) {
+            @RequestBody ChangeAcademicTermStatusRequestDTO request
+    ) {
         var command = new ChangeAcademicTermStatusCommand(id, request.status());
-        return mapper.toDTO(updateTermUseCase.disable(command));
+        return mapper.toDTO(updateTermUseCase.changeStatus(command));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update academic term")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Academic term updated successfully"),
+            @ApiResponse(responseCode = "404", description = "No academic term found")
+    })
+    public AcademicTermResponseDTO update(
+            @PathVariable String id,
+            @RequestBody UpdateAcademicTermRequestDTO request
+    ) {
+        var command = new UpdateAcademicTermCommand(id, request.startDate(), request.endDate(), request.year());
+        return mapper.toDTO(updateTermUseCase.update(command));
     }
 
     @GetMapping
