@@ -2,7 +2,8 @@
         displayName = "Term Management",
         allowedDependencies = {
                 "shared::models",
-                "shared::infrastructure-jpa"
+                "shared::dtos",
+                "shared::infrastructure-jpa",
         })
 package com.udla.markenx.api.academicterms;
 
