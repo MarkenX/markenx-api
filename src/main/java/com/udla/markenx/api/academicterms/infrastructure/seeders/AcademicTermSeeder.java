@@ -26,10 +26,10 @@ public class AcademicTermSeeder implements CommandLineRunner {
         log.info("Seeding academic terms...");
 
         int year = 2025;
-        LocalDate startDate = LocalDate.of(year, 1, 1);
-        LocalDate endDate = LocalDate.of(year, 5, 30);
+        var startDate = LocalDate.of(year, 1, 1);
+        var endDate = LocalDate.of(year, 5, 30);
 
-        SaveAcademicTermQuery query = new SaveAcademicTermQuery(startDate, endDate, year, true);
+        var query = new SaveAcademicTermQuery(startDate, endDate, year, true);
         try {
             AcademicTerm saved = service.save(query);
             log.info("The term {} was created", saved.toString());
