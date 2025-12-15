@@ -1,4 +1,4 @@
-package com.udla.markenx.api.shared.domain.models;
+package com.udla.markenx.api.shared.domain.models.aggregates;
 
 import com.udla.markenx.api.shared.domain.exceptions.IdentifierCannotBeNullException;
 

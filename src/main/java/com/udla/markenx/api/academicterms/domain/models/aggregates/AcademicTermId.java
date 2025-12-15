@@ -1,6 +1,6 @@
 package com.udla.markenx.api.academicterms.domain.models.aggregates;
 
-import com.udla.markenx.api.shared.domain.models.Identifier;
+import com.udla.markenx.api.shared.domain.models.aggregates.Identifier;
 
 import java.util.UUID;
 

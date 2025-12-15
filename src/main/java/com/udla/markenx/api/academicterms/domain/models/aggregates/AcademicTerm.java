@@ -4,6 +4,8 @@ import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
+import com.udla.markenx.api.shared.domain.models.aggregates.AggregateRoot;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -12,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 
 @Getter
-public class AcademicTerm {
+public class AcademicTerm extends AggregateRoot {
 
     // region Constants
 
@@ -50,6 +52,7 @@ public class AcademicTerm {
             int year,
             int sequence,
             AcademicTermStatus status) {
+        super();
         this.id = id;
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
@@ -68,10 +71,12 @@ public class AcademicTerm {
      */
     public AcademicTerm(
             String id,
+            LifecycleStatus lifecycleStatus,
             DateInterval dateInterval,
             int year,
             int sequence,
             AcademicTermStatus status) {
+        super(lifecycleStatus);
         this.id = new AcademicTermId(id);
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);

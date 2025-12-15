@@ -1,5 +1,6 @@
 package com.udla.markenx.api.shared.infrastructure.persistance.jpa;
 
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +15,12 @@ public class JpaEntity {
     @Id
     private String id;
 
-    public JpaEntity(String id) {
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private LifecycleStatus lifecycleStatus;
+
+    public JpaEntity(String id, LifecycleStatus stlifecycleStatus) {
         this.id = id;
+        this.lifecycleStatus = stlifecycleStatus;
     }
 }

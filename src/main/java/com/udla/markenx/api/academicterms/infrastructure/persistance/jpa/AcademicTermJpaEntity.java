@@ -1,6 +1,7 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,12 +35,13 @@ public class AcademicTermJpaEntity extends JpaEntity {
 
     public AcademicTermJpaEntity(
             String id,
+            LifecycleStatus lifecycleStatus,
             LocalDate startDate,
             LocalDate endDate,
             int year,
             int sequence,
             AcademicTermStatus status) {
-        super(id);
+        super(id, lifecycleStatus);
         this.startDate = startDate;
         this.endDate = endDate;
         this.year = year;
