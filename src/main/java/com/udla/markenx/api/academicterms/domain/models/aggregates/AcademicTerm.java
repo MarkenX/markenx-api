@@ -204,16 +204,6 @@ public class AcademicTerm {
         return this.dateInterval.endDate();
     }
 
-    /**
-     * Retrieves the duration of the academic term in the past months. The duration is
-     * calculated based on the date interval associated with the academic term.
-     *
-     * @return the duration of the academic term as a long value representing the number of months
-     */
-    public long getDurationInMonths() {
-        return dateInterval.getMonthLength();
-    }
-
     // endregion
 
     //region Validations
@@ -368,18 +358,6 @@ public class AcademicTerm {
         return this.dateInterval.overlapsWith(other.dateInterval);
     }
 
-    public boolean isActive() {
-        return this.status == AcademicTermStatus.ACTIVE;
-    }
-
-    public boolean isUpcoming() {
-        return this.status == AcademicTermStatus.UPCOMING;
-    }
-
-    public boolean hasEnded() {
-        return this.status == AcademicTermStatus.ENDED;
-    }
-
     public void refreshStatus() {
         AcademicTermStatus newStatus = calculateStatus(dateInterval);
         if (this.status != newStatus) {
@@ -399,10 +377,6 @@ public class AcademicTerm {
             return AcademicTermStatus.UPCOMING;
         }
         return AcademicTermStatus.ENDED;
-    }
-
-    public boolean containsDate(LocalDate date) {
-        return dateInterval.contains(date);
     }
 
     @Override
