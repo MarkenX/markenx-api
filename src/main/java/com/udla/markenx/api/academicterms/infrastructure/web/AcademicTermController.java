@@ -1,28 +1,37 @@
 package com.udla.markenx.api.academicterms.infrastructure.web;
 
+import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
+import com.udla.markenx.api.academicterms.application.dtos.RequestCreateAcademicTermDTO;
+import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.services.AcademicTermQueryService;
 import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/api/v1/academic-terms")
 public class AcademicTermController {
 
     private final AcademicTermQueryService service;
+    private final AcademicTermDTOMapper mapper;
 
-    public AcademicTermController(AcademicTermQueryService service) {
-        this.service = service;
+    @PostMapping
+    public AcademicTermDTO save(@RequestBody RequestCreateAcademicTermDTO dto) {
+        var command = new SaveAcademicTermCommand(
+                dto.startDate(), dto.endDate(), dto.year(), false);
+        return mapper.toDTO(service.save(command));
     }
+
 
     @GetMapping
     public Page<@NotNull AcademicTermDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
-    ) {
+            @RequestParam(defaultValue = "10") int size) {
         var query = new GetAllAcademicTermsPaginatedQuery(page, size);
-        return service.getAllPaginated(query);
+        return service.getAllPaginated(query).map(mapper::toDTO);
     }
 }

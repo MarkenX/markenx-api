@@ -1,6 +1,5 @@
 package com.udla.markenx.api.academicterms.application.ports.incoming;
 
-import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
@@ -14,5 +13,5 @@ public interface AcademicTermQueryUseCase {
     AcademicTerm save(SaveAcademicTermCommand command);
     List<AcademicTerm> getAll();
     List<AcademicTerm> getAllExcludingStatus(AcademicTermStatus status);
-    Page<@NotNull AcademicTermDTO> getAllPaginated(GetAllAcademicTermsPaginatedQuery query);
+    Page<@NotNull AcademicTerm> getAllPaginated(GetAllAcademicTermsPaginatedQuery query);
 }

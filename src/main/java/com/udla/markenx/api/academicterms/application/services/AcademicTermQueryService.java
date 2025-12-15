@@ -1,7 +1,5 @@
 package com.udla.markenx.api.academicterms.application.services;
 
-import com.udla.markenx.api.academicterms.application.dtos.AcademicTermDTO;
-import com.udla.markenx.api.academicterms.application.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
@@ -23,7 +21,6 @@ import java.util.List;
 public class AcademicTermQueryService implements AcademicTermQueryUseCase {
 
     private final AcademicTermRepository repository;
-    private final AcademicTermDTOMapper mapper;
 
     @Override
     public AcademicTerm save(@NotNull SaveAcademicTermCommand command) {
@@ -53,8 +50,8 @@ public class AcademicTermQueryService implements AcademicTermQueryUseCase {
     }
 
     @Override
-    public Page<@NotNull AcademicTermDTO> getAllPaginated(@NotNull GetAllAcademicTermsPaginatedQuery query) {
+    public Page<@NotNull AcademicTerm> getAllPaginated(@NotNull GetAllAcademicTermsPaginatedQuery query) {
         var pageable = PageRequest.of(query.page(), query.size());
-        return repository.findAllPaginated(pageable).map(mapper::toDTO);
+        return repository.findAllPaginated(pageable);
     }
 }
