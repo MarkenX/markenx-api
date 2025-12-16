@@ -3,7 +3,7 @@ package com.udla.markenx.api.academicterms.application.services;
 import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermCommand;
 import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
-import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
+import com.udla.markenx.api.academicterms.domain.models.aggregates.DateInterval;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
 import lombok.RequiredArgsConstructor;

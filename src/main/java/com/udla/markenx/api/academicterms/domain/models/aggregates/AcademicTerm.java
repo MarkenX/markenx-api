@@ -2,7 +2,6 @@ package com.udla.markenx.api.academicterms.domain.models.aggregates;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
-import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
@@ -196,7 +195,7 @@ public class AcademicTerm extends Entity {
      * @return the start date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getStartDate() {
-        return this.dateInterval.startDate();
+        return this.dateInterval.getStartDate();
     }
 
 
@@ -206,7 +205,7 @@ public class AcademicTerm extends Entity {
      * @return the end date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getEndDate() {
-        return this.dateInterval.endDate();
+        return this.dateInterval.getEndDate();
     }
 
     /**
@@ -291,8 +290,8 @@ public class AcademicTerm extends Entity {
      * @throws TermMustStartInFutureException if the start date is not in the future
      */
     private static void validateStartDateInFuture(@NotNull DateInterval interval) {
-        if (!LocalDate.now().isBefore(interval.startDate())) {
-            throw new TermMustStartInFutureException(interval.startDate());
+        if (!LocalDate.now().isBefore(interval.getStartDate())) {
+            throw new TermMustStartInFutureException(interval.getStartDate());
         }
     }
 
@@ -345,8 +344,8 @@ public class AcademicTerm extends Entity {
      * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
      */
     private static void validateCrossYearMonths(@NotNull DateInterval interval) {
-        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.startDate());
-        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.endDate());
+        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.getStartDate());
+        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.getEndDate());
 
         if (monthsAtStart < MIN_MONTHS_PER_YEAR) {
             throw new InsufficientMonthsBeforeYearEndException(
@@ -393,8 +392,8 @@ public class AcademicTerm extends Entity {
 
     private static AcademicTermStatus calculateStatus(@NotNull DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
-        LocalDate startDate = dateInterval.startDate();
-        LocalDate endDate = dateInterval.endDate();
+        LocalDate startDate = dateInterval.getStartDate();
+        LocalDate endDate = dateInterval.getEndDate();
 
         if (today.isAfter(startDate) && today.isBefore(endDate)) {
             return AcademicTermStatus.ACTIVE;

@@ -4,6 +4,8 @@ import com.udla.markenx.api.academicterms.domain.exceptions.EndDateCannotBeNullE
 import com.udla.markenx.api.academicterms.domain.exceptions.InvalidDateIntervalException;
 import com.udla.markenx.api.academicterms.domain.exceptions.StartDateCannotBeNullException;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -16,36 +18,38 @@ public class DateInterval {
     private LocalDate endDate;
 
     public DateInterval(LocalDate startDate, LocalDate endDate) {
-        setStartDate(startDate);
-        setEndDate(endDate);
+        this.startDate = validateStartDate(startDate);
+        this.endDate = validateEndDate(endDate);
         validateInterval(this.startDate, this.endDate);
     }
 
     public void setStartDate(LocalDate startDate) {
-        validateInterval(this.startDate, this.endDate);
+        validateInterval(startDate, this.endDate);
         this.startDate = validateStartDate(startDate);
     }
 
     public void setEndDate(LocalDate endDate) {
-        validateInterval(this.startDate, this.endDate);
+        validateInterval(this.startDate, endDate);
         this.endDate = validateEndDate(endDate);
     }
 
-    private LocalDate validateStartDate(LocalDate startDate) {
+    @Contract("null -> fail; !null -> param1")
+    private @NotNull LocalDate validateStartDate(LocalDate startDate) {
         if (startDate == null) {
             throw new StartDateCannotBeNullException();
         }
         return startDate;
     }
 
-    private LocalDate validateEndDate(LocalDate endDate) {
+    @Contract("null -> fail; !null -> param1")
+    private @NotNull LocalDate validateEndDate(LocalDate endDate) {
         if (endDate == null) {
             throw new EndDateCannotBeNullException();
         }
         return endDate;
     }
 
-    private void validateInterval(LocalDate startDate, LocalDate endDate) {
+    private void validateInterval(LocalDate startDate, @NotNull LocalDate endDate) {
         if (endDate.isBefore(startDate)) {
             throw new InvalidDateIntervalException(startDate, endDate);
         }
