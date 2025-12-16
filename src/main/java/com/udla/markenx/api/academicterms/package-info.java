@@ -1,7 +1,9 @@
 @ApplicationModule(
         displayName = "Term Management",
         allowedDependencies = {
-                "shared::models",
+                "shared::aggregates",
+                "shared::valueobjects",
+                "shared::exceptions",
                 "shared::dtos",
                 "shared::infrastructure-jpa",
         })

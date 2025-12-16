@@ -2,7 +2,10 @@ package com.udla.markenx.api.academicterms.domain.models.aggregates;
 
 import com.udla.markenx.api.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.academicterms.domain.models.valueobjects.DateInterval;
 import com.udla.markenx.api.academicterms.domain.utils.DateUtils;
+import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
@@ -11,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 
 @Getter
-public class AcademicTerm {
+public class AcademicTerm extends Entity {
 
     // region Constants
 
@@ -28,7 +31,7 @@ public class AcademicTerm {
     private final int sequence;
 
     @Getter(AccessLevel.NONE)
-    private final DateInterval dateInterval;
+    private DateInterval dateInterval;
 
     private AcademicTermStatus status;
 
@@ -49,6 +52,7 @@ public class AcademicTerm {
             int year,
             int sequence,
             AcademicTermStatus status) {
+        super();
         this.id = id;
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
@@ -67,10 +71,12 @@ public class AcademicTerm {
      */
     public AcademicTerm(
             String id,
+            LifecycleStatus lifecycleStatus,
             DateInterval dateInterval,
             int year,
             int sequence,
             AcademicTermStatus status) {
+        super(lifecycleStatus);
         this.id = new AcademicTermId(id);
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
@@ -92,7 +98,7 @@ public class AcademicTerm {
      * @param dateInterval the date range of the term
      * @return an instance of AcademicTerm representing the created term
      */
-    public static AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
         validateStartDateInFuture(dateInterval);
         validateEndDateNotTooFar(dateInterval);
 
@@ -107,7 +113,7 @@ public class AcademicTerm {
      * @param dateInterval the date range during which the term occurs
      * @return an AcademicTerm object representing the historical term
      */
-    public static AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
         return initializeAcademicTerm(year, sequence, dateInterval);
     }
 
@@ -121,7 +127,7 @@ public class AcademicTerm {
      * @param dateInterval the date interval defining the start and end dates of the term
      * @return the initialized AcademicTerm object, not null
      */
-    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, @NotNull DateInterval dateInterval) {
         if (dateInterval.spansOneYear()) {
             return createSingleYearTerm(year, sequence, dateInterval);
         }
@@ -190,7 +196,7 @@ public class AcademicTerm {
      * @return the start date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getStartDate() {
-        return this.dateInterval.getStartDate();
+        return this.dateInterval.startDate();
     }
 
 
@@ -200,23 +206,17 @@ public class AcademicTerm {
      * @return the end date of the academic term as a {@code LocalDate} instance
      */
     public LocalDate getEndDate() {
-        return this.dateInterval.getEndDate();
+        return this.dateInterval.endDate();
     }
 
-    // endregion
-
-    // region Setters
-
-    public void setYear(int year) {
-        this.year = validateYear(year);
-    }
-
-    public void setStartDate(LocalDate startDate) {
-        this.dateInterval.setStartDate(startDate);
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.dateInterval.setEndDate(endDate);
+    /**
+     * Retrieves the duration of the academic term in the past months. The duration is
+     * calculated based on the date interval associated with the academic term.
+     *
+     * @return the duration of the academic term as a long value representing the number of months
+     */
+    public long getDurationInMonths() {
+        return dateInterval.getMonthLength();
     }
 
     // endregion
@@ -239,7 +239,6 @@ public class AcademicTerm {
         }
         return year;
     }
-
 
     /**
      * Validates the given sequence number to ensure it is within the acceptable range.
@@ -292,8 +291,8 @@ public class AcademicTerm {
      * @throws TermMustStartInFutureException if the start date is not in the future
      */
     private static void validateStartDateInFuture(@NotNull DateInterval interval) {
-        if (!LocalDate.now().isBefore(interval.getStartDate())) {
-            throw new TermMustStartInFutureException(interval.getStartDate());
+        if (!LocalDate.now().isBefore(interval.startDate())) {
+            throw new TermMustStartInFutureException(interval.startDate());
         }
     }
 
@@ -346,8 +345,8 @@ public class AcademicTerm {
      * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
      */
     private static void validateCrossYearMonths(@NotNull DateInterval interval) {
-        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.getStartDate());
-        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.getEndDate());
+        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.startDate());
+        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.endDate());
 
         if (monthsAtStart < MIN_MONTHS_PER_YEAR) {
             throw new InsufficientMonthsBeforeYearEndException(
@@ -373,6 +372,18 @@ public class AcademicTerm {
         return this.dateInterval.overlapsWith(other.dateInterval);
     }
 
+    public boolean isActive() {
+        return this.status == AcademicTermStatus.ACTIVE;
+    }
+
+    public boolean isUpcoming() {
+        return this.status == AcademicTermStatus.UPCOMING;
+    }
+
+    public boolean hasEnded() {
+        return this.status == AcademicTermStatus.ENDED;
+    }
+
     public void refreshStatus() {
         AcademicTermStatus newStatus = calculateStatus(dateInterval);
         if (this.status != newStatus) {
@@ -382,8 +393,8 @@ public class AcademicTerm {
 
     private static AcademicTermStatus calculateStatus(@NotNull DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
-        LocalDate startDate = dateInterval.getStartDate();
-        LocalDate endDate = dateInterval.getEndDate();
+        LocalDate startDate = dateInterval.startDate();
+        LocalDate endDate = dateInterval.endDate();
 
         if (today.isAfter(startDate) && today.isBefore(endDate)) {
             return AcademicTermStatus.ACTIVE;
@@ -392,6 +403,37 @@ public class AcademicTerm {
             return AcademicTermStatus.UPCOMING;
         }
         return AcademicTermStatus.ENDED;
+    }
+
+    public boolean containsDate(LocalDate date) {
+        return dateInterval.contains(date);
+    }
+
+    /**
+     * Updates the date interval and year with the specified parameters after performing a series of validations.
+     *
+     * @param startDate the start date of the interval
+     * @param endDate the end date of the interval
+     * @param year the year to associate with the date interval
+     */
+    public void update(LocalDate startDate, LocalDate endDate, int year) {
+        validateYear(year);
+
+        var dateInterval = new DateInterval(startDate, endDate);
+
+        validateStartDateInFuture(dateInterval);
+        validateEndDateNotTooFar(dateInterval);
+        validateMonthLength(dateInterval);
+
+        if (dateInterval.spansOneYear()) {
+            validateSingleYear(dateInterval);
+        } else {
+            validateCrossYears(dateInterval);
+            validateCrossYearMonths(dateInterval);
+        }
+
+        this.dateInterval = dateInterval;
+        this.year = year;
     }
 
     @Override

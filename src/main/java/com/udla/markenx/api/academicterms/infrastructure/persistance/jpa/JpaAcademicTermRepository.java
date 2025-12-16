@@ -1,26 +1,25 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
 
+import com.udla.markenx.api.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.academicterms.infrastructure.mappers.AcademicTermJpaMapper;
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class JpaAcademicTermRepository implements AcademicTermRepository {
 
     private final SpringDataAcademicTermRepository springRepo;
     private final AcademicTermJpaMapper mapper;
-
-    public JpaAcademicTermRepository(SpringDataAcademicTermRepository springRepo, AcademicTermJpaMapper mapper) {
-        this.springRepo = springRepo;
-        this.mapper = mapper;
-    }
 
     /**
      * Saves the given academic term to the database.
@@ -32,6 +31,20 @@ public class JpaAcademicTermRepository implements AcademicTermRepository {
     public AcademicTerm save(AcademicTerm newAcademicTerm) {
         AcademicTermJpaEntity saved = springRepo.save(mapper.toEntity(newAcademicTerm));
         return mapper.toDomain(saved);
+    }
+
+    /**
+     * Finds an academic term by its unique identifier.
+     *
+     * @param id the unique identifier of the academic term to retrieve
+     * @return the academic term in its domain representation
+     * @throws AcademicTermNotFoundException if no academic term is found with the provided identifier
+     */
+    @Override
+    public AcademicTerm findById(String id) {
+        AcademicTermJpaEntity entity = springRepo.findById(id)
+                .orElseThrow(() -> new AcademicTermNotFoundException(id));
+        return mapper.toDomain(entity);
     }
 
     /**

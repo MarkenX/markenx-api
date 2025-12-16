@@ -10,6 +10,7 @@ import java.util.List;
 
 public interface AcademicTermRepository {
     AcademicTerm save(AcademicTerm newAcademicTerm);
+    AcademicTerm findById(String id);
     List<AcademicTerm> findAll();
     List<AcademicTerm> findAllByYear(int year);
     List<AcademicTerm> findByStatusNot(AcademicTermStatus status);
