@@ -77,7 +77,7 @@ public class DateInterval {
                 || contains(other.endDate);
     }
 
-    public boolean contains(LocalDate date) {
+    public boolean contains(@NotNull LocalDate date) {
         return (date.isEqual(startDate) || date.isAfter(startDate))
                 && (date.isEqual(endDate) || date.isBefore(endDate));
     }
