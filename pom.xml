@@ -18,7 +18,28 @@
 		<license/>
 	</licenses>
 	<developers>
-		<developer/>
+        <developer>
+            <id>cjacome</id>
+            <name>Christian Jácome</name>
+            <email>christian.jacome.mora@udla.edu.ec</email>
+            <organization>Universidad de las Américas</organization>
+            <organizationUrl>https://www.udla.edu.ec</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
+        <developer>
+            <id>dnavarrete</id>
+            <name>David Navarrete</name>
+            <email>david.navarrete.baraja@udla.edu.ec</email>
+            <organization>Universidad de las Américas</organization>
+            <organizationUrl>https://www.udla.edu.ec</organizationUrl>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>-5</timezone>
+        </developer>
 	</developers>
 	<scm>
 		<connection/>
