@@ -88,16 +88,16 @@ jobs:
           name: Docker build
           command: |
             docker build \
-              -t markenx/markenx:${CIRCLE_TAG} \
-              -t markenx/markenx:latest .
+              -t markenx/markenx-api:${CIRCLE_TAG} \
+              -t markenx/markenx-api:latest .
       - run:
           name: Docker login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
       - run:
           name: Docker push
           command: |
-            docker push markenx/markenx:${CIRCLE_TAG}
-            docker push markenx/markenx:latest
+            docker push markenx/markenx-api:${CIRCLE_TAG}
+            docker push markenx/markenx-api:latest
 
   github_release: # Publicar .jar en GitHub Releases
     <<: *job_defaults
