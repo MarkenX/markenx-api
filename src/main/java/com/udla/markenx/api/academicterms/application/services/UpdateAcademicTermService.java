@@ -4,7 +4,6 @@ import com.udla.markenx.api.academicterms.application.commands.ChangeAcademicTer
 import com.udla.markenx.api.academicterms.application.commands.UpdateAcademicTermCommand;
 import com.udla.markenx.api.academicterms.application.ports.incoming.UpdateAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
-import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
