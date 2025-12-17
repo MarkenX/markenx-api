@@ -1,0 +1,11 @@
+{
+  "blocks": [
+    {
+      "type": "section",
+      "text": {
+        "type": "mrkdwn",
+        "text": ":rocket: *Pipeline finalizado*\n*Repo:* ${CIRCLE_PROJECT_REPONAME}\n*Ref:* ${CIRCLE_BRANCH} ${CIRCLE_TAG}\n<${CIRCLE_BUILD_URL}|Ver pipeline>"
+      }
+    }
+  ]
+}

@@ -2,83 +2,126 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@6.1.1
+  github-cli: circleci/github-cli@2.4.0
 
 defaults: &job_defaults
   docker:
-    - image: "cimg/openjdk:21.0"
+    - image: cimg/openjdk:21.0
   working_directory: ~/project
 
-jobs:
-  build:
-    <<: *job_defaults
+commands:
+  ensure-full-git-history:
     steps:
-      - checkout
       - run:
-          name: Ensure full Git history for SonarCloud
+          name: Ensure full Git history
           command: git fetch --unshallow || git fetch --all --tags
-      - run:
-          name: Build Application
-          command: mvn clean package -DskipTests
 
-  test:
+  restore-maven-cache:
+    steps:
+      - restore_cache:
+          keys:
+            - maven-cache-{{ checksum "pom.xml" }}
+            - maven-cache-
+
+  save-maven-cache:
+    steps:
+      - save_cache:
+          key: maven-cache-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+
+jobs:
+  build: # Compilar aplicación
     <<: *job_defaults
     steps:
       - checkout
+      - ensure-full-git-history
+      - restore-maven-cache
       - run:
-          name: Ensure full Git history for SonarCloud
-          command: git fetch --unshallow || git fetch --all --tags
+          name: Compile source code
+          command: mvn clean compile
+      - save-maven-cache
+
+  test: # Ejecutar pruebas unitarias
+    <<: *job_defaults
+    steps:
+      - checkout
+      - restore-maven-cache
       - run:
-          name: Run Tests
+          name: Run tests
           command: mvn test
       - store_test_results:
           path: target/surefire-reports
 
-  sonar:
+  sonar: # Analizar código con SonarCloud
     <<: *job_defaults
     steps:
       - checkout
+      - ensure-full-git-history
+      - restore-maven-cache
       - run:
-          name: Ensure full Git history for SonarCloud
-          command: git fetch --unshallow || git fetch --all --tags
-      - run:
-          name: Analyze on SonarCloud
-          command: mvn clean verify sonar:sonar -Dsonar.token=$SONAR_TOKEN
+          name: SonarCloud analysis
+          command: mvn verify sonar:sonar -Dsonar.token=$SONAR_TOKEN
 
-  docker_build_push:
+  package: # Generar .jar
+    <<: *job_defaults
+    steps:
+      - checkout
+      - restore-maven-cache
+      - run:
+          name: Package application
+          command: mvn package -DskipTests
+      - store_artifacts:
+          path: target/*.jar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - target/*.jar
+
+  docker_build_push: # Publicar imagen Docker en DockerHub
     docker:
       - image: cimg/base:current
     steps:
       - checkout
       - setup_remote_docker
       - run:
-          name: Build Docker image
-          command: docker build -t markenx/markenx:latest .
+          name: Docker build
+          command: |
+            docker build \
+              -t markenx/markenx:${CIRCLE_TAG} \
+              -t markenx/markenx:latest .
       - run:
-          name: Login to DockerHub
+          name: Docker login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
       - run:
-          name: Push Docker image
-          command: docker push markenx/markenx:latest
+          name: Docker push
+          command: |
+            docker push markenx/markenx:${CIRCLE_TAG}
+            docker push markenx/markenx:latest
 
-  notify_slack:
+  github_release: # Publicar .jar en GitHub Releases
+    <<: *job_defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: .
+      - github-cli/install
+      - run:
+          name: Create GitHub Release
+          command: |
+            gh release create ${CIRCLE_TAG} \
+              target/*.jar \
+              --title "Release ${CIRCLE_TAG}" \
+              --notes "Release automático generado por CircleCI"
+
+  notify_slack: # Notificar en Slack
     docker:
       - image: cimg/base:stable
     steps:
       - slack/notify:
           channel: $SLACK_DEFAULT_CHANNEL
           event: always
-          custom: |
-            {
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": ":rocket: *Pipeline finalizado*\n*Proyecto:* $CIRCLE_PROJECT_REPONAME\n*Branch:* $CIRCLE_BRANCH\n<${CIRCLE_BUILD_URL}|Ver detalles en CircleCI>"
-                  }
-                }
-              ]
-            }
+          custom: $(envsubst < .circleci/slack/pipeline-finished.json)
 
 workflows:
   main:
@@ -89,34 +132,59 @@ workflows:
               only: main
 
       - test:
-          requires:
-            - build
+          requires: [build]
           filters:
             branches:
               only: main
 
       - sonar:
-          requires:
-            - build
+          requires: [build]
           context: SonarCloud
           filters:
             branches:
               only: main
 
-      - docker_build_push:
-          requires:
-            - build
-            - test
-            - sonar
-          context: DockerHub
+      - package:
+          requires: [test, sonar]
           filters:
             branches:
               only: main
 
-      - notify_slack:
-          requires:
-            - docker_build_push
-          context: Slack
+  release:
+    jobs:
+      - build:
           filters:
+            tags:
+              only: /^v.*/
             branches:
-              only: main
+              ignore: /.*/
+
+      - test:
+          requires: [build]
+          filters:
+            tags:
+              only: /^v.*/
+
+      - package:
+          requires: [test]
+          filters:
+            tags:
+              only: /^v.*/
+
+      - docker_build_push:
+          requires: [package]
+          context: DockerHub
+          filters:
+            tags:
+              only: /^v.*/
+
+      - github_release:
+          requires: [package]
+          context: GitHub
+          filters:
+            tags:
+              only: /^v.*/
+
+      - notify_slack:
+          requires: [docker_build_push]
+          context: Slack
