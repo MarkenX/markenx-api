@@ -371,6 +371,7 @@ public class AcademicTerm extends Entity {
         return this.dateInterval.overlapsWith(other.dateInterval);
     }
 
+    @Override
     public boolean isActive() {
         return this.status == AcademicTermStatus.ACTIVE;
     }
@@ -418,20 +419,20 @@ public class AcademicTerm extends Entity {
     public void update(LocalDate startDate, LocalDate endDate, int year) {
         validateYear(year);
 
-        var dateInterval = new DateInterval(startDate, endDate);
+        var interval = new DateInterval(startDate, endDate);
 
-        validateStartDateInFuture(dateInterval);
-        validateEndDateNotTooFar(dateInterval);
-        validateMonthLength(dateInterval);
+        validateStartDateInFuture(interval);
+        validateEndDateNotTooFar(interval);
+        validateMonthLength(interval);
 
-        if (dateInterval.spansOneYear()) {
-            validateSingleYear(dateInterval);
+        if (interval.spansOneYear()) {
+            validateSingleYear(interval);
         } else {
-            validateCrossYears(dateInterval);
-            validateCrossYearMonths(dateInterval);
+            validateCrossYears(interval);
+            validateCrossYearMonths(interval);
         }
 
-        this.dateInterval = dateInterval;
+        this.dateInterval = interval;
         this.year = year;
     }
 
