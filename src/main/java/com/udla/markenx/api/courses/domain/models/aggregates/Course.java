@@ -7,12 +7,18 @@ import lombok.Getter;
 public class Course extends Entity {
 
     private final CourseId id;
+    private final String name;
+    private final long code;
 
-    public Course(CourseId id) {
+    public Course(CourseId id, String name, long code) {
         this.id = id;
+        this.name = name;
+        this.code = code;
     }
 
-    public Course(String id) {
+    public Course(String id, String name, long code) {
         this.id = new CourseId(id);
+        this.name = name;
+        this.code = code;
     }
 }
