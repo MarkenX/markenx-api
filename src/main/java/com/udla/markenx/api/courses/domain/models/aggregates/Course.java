@@ -16,19 +16,28 @@ public class Course extends Entity {
 
     private final String academicTermId;
 
-    public Course(CourseId id, String name, long code, String academicTermId) {
+    private Course(CourseId id, String name, long code, String academicTermId) {
         this.id = id;
         this.name = validateName(name);
         this.code = validateCode(code);
         this.academicTermId = academicTermId;
     }
 
-    public Course(String id, String name, long code, String academicTermId) {
+    private Course(String id, String name, long code, String academicTermId) {
         this.id = new CourseId(id);
         this.name = validateName(name);
         this.code = validateCode(code);
         this.academicTermId = academicTermId;
     }
+
+    // region Factories
+
+    public static @NonNull Course create(String name, long code, String academicTermId) {
+        var id = CourseId.generate();
+        return new Course(id, name, code, academicTermId);
+    }
+
+    // endregion
 
     // region Validations
 
