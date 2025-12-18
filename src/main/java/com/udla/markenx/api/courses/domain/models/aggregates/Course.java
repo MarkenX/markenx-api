@@ -24,7 +24,7 @@ public class Course extends Entity {
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
-    private Course(String id, String name, long code, String academicTermId) {
+    public Course(String id, String name, long code, String academicTermId) {
         this.id = new CourseId(id);
         this.name = validateName(name);
         this.code = validateCode(code);
