@@ -12,16 +12,20 @@ public class Course extends Entity {
     private final String name;
     private final long code;
 
-    public Course(CourseId id, String name, long code) {
+    private final String academicTermId;
+
+    public Course(CourseId id, String name, long code, String academicTermId) {
         this.id = id;
         this.name = validateName(name);
         this.code = validateCode(code);
+        this.academicTermId = academicTermId;
     }
 
-    public Course(String id, String name, long code) {
+    public Course(String id, String name, long code, String academicTermId) {
         this.id = new CourseId(id);
         this.name = validateName(name);
         this.code = validateCode(code);
+        this.academicTermId = academicTermId;
     }
 
     // region Validations
