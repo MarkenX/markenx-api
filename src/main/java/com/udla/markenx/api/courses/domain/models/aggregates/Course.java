@@ -4,6 +4,8 @@ import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseCodeException
 import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseNameException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 @Getter
 public class Course extends Entity {
@@ -59,4 +61,19 @@ public class Course extends Entity {
     }
 
     // endregion
+
+    /**
+     * Formats the course code as a zero-padded four-digit string.
+     *
+     * @return the formatted course code as a string
+     */
+    @Contract(pure = true)
+    private @NonNull String formatCode() {
+        return String.format("%04d", code);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("%s-%s", name, formatCode());
+    }
 }
