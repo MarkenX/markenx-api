@@ -1,5 +1,6 @@
 package com.udla.markenx.api.courses.domain.models.aggregates;
 
+import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseNameException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import lombok.Getter;
@@ -14,13 +15,13 @@ public class Course extends Entity {
     public Course(CourseId id, String name, long code) {
         this.id = id;
         this.name = validateName(name);
-        this.code = code;
+        this.code = validateCode(code);
     }
 
     public Course(String id, String name, long code) {
         this.id = new CourseId(id);
         this.name = validateName(name);
-        this.code = code;
+        this.code = validateCode(code);
     }
 
     // region Validations
@@ -37,6 +38,20 @@ public class Course extends Entity {
             throw new InvalidCourseNameException();
         }
         return name;
+    }
+
+    /**
+     * Validates the given course code to ensure it is a positive number.
+     *
+     * @param code the course code to validate
+     * @return the validated course code if it passes validation
+     * @throws InvalidCourseCodeException if the course code is zero or negative
+     */
+    public long validateCode(long code) {
+        if (code <= 0) {
+            throw new InvalidCourseCodeException();
+        }
+        return code;
     }
 
     // endregion
