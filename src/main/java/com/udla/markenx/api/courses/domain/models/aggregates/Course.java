@@ -12,20 +12,74 @@ import org.jspecify.annotations.NonNull;
 public class Course extends Entity {
 
     private final CourseId id;
-    private final String name;
-    private final long code;
+    private String name;
+    private long code;
 
-    private final String academicTermId;
+    private String academicTermId;
 
+    /**
+     * Constructs a new {@code Course} instance with the specified identifier, name,
+     * code, and academic term identifier. The provided values are validated and
+     * initialized using the {@code initializeCourse} method.
+     *
+     * @param id the unique identifier for the course
+     * @param name the name of the course
+     * @param code the numeric code of the course
+     * @param academicTermId the identifier of the academic term associated with the course
+     * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
+     * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
+     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     */
     private Course(CourseId id, String name, long code, String academicTermId) {
         this.id = id;
-        this.name = validateName(name);
-        this.code = validateCode(code);
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        initializeCourse(name, code, academicTermId);
     }
 
+    /**
+     * Constructs a new {@code Course} instance with the specified identifier, name, code,
+     * and academic term identifier. The provided values are validated and initialized
+     * using the {@code initializeCourse} method.
+     *
+     * @param id the unique identifier for the course
+     * @param name the name of the course
+     * @param code the numeric code of the course
+     * @param academicTermId the identifier of the academic term associated with the course
+     * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
+     * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
+     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     */
     public Course(String id, String name, long code, String academicTermId) {
         this.id = new CourseId(id);
+        initializeCourse(name, code, academicTermId);
+    }
+
+    /**
+     * Updates the course with the specified name, code, and academic term identifier.
+     * Uses the provided values to reinitialize the course while performing necessary validations.
+     *
+     * @param name the new name of the course
+     * @param code the new numeric code of the course
+     * @param academicTermId the new identifier of the academic term associated with the course
+     * @throws InvalidCourseNameException if the provided name is null or contains only whitespace
+     * @throws InvalidCourseCodeException if the provided code is zero or negative
+     * @throws InvalidAcademicTermIdException if the provided academic term identifier is null or contains only whitespace
+     */
+    public void update(String name, long code, String academicTermId) {
+        initializeCourse(name, code, academicTermId);
+    }
+
+    /**
+     * Initializes the course with the specified name, code, and academic term identifier.
+     * Validates the provided values before assigning them to the corresponding fields.
+     *
+     * @param name the name of the course to initialize
+     * @param code the numeric code of the course to initialize
+     * @param academicTermId the identifier of the academic term associated with the course
+     * @throws InvalidCourseNameException if the provided name is null or contains only whitespace
+     * @throws InvalidCourseCodeException if the provided code is zero or negative
+     * @throws InvalidAcademicTermIdException if the provided academic term identifier is null or contains only whitespace
+     */
+    private void initializeCourse(String name, long code, String academicTermId) {
         this.name = validateName(name);
         this.code = validateCode(code);
         this.academicTermId = validateAcademicTermId(academicTermId);
