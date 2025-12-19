@@ -35,13 +35,6 @@ public class AcademicTermJpaEntity extends JpaEntity {
     @Enumerated(EnumType.STRING)
     private AcademicTermStatus status;
 
-    @OneToMany(
-            mappedBy = "academicTerm",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private List<CourseJpaEntity> courses = new ArrayList<>();
-
     public AcademicTermJpaEntity(
             String id,
             LifecycleStatus lifecycleStatus,

@@ -6,7 +6,6 @@
                 "shared::exceptions",
                 "shared::dtos",
                 "shared::infrastructure-jpa",
-                "courses::persistence-jpa"
         })
 package com.udla.markenx.api.academicterms;
 
