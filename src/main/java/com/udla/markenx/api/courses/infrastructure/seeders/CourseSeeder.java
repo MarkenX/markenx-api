@@ -25,7 +25,7 @@ public class CourseSeeder implements CommandLineRunner {
     private final SaveCourseUseCase service;
 
     @Override
-    public void run(String @NonNull ... args) throws Exception {
+    public void run(String @NonNull ... args) {
         log.info("Seeding courses...");
 
         List<AcademicTerm> academicTerms = academicTermQueryUseCase.getAll();
