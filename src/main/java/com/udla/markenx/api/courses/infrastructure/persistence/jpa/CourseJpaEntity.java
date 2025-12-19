@@ -47,13 +47,9 @@ public class CourseJpaEntity extends JpaEntity {
     public CourseJpaEntity(
         String id,
         LifecycleStatus lifecycleStatus,
-        Long internalCode,
-        String name,
-        AcademicTermJpaEntity academicTerm
+        String name
     ) {
         super(id, lifecycleStatus);
-        this.internalCode = internalCode;
         this.name = name;
-        this.academicTerm = academicTerm;
     }
 }

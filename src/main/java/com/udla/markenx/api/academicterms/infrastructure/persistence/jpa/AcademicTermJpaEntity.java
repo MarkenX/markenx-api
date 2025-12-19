@@ -40,7 +40,7 @@ public class AcademicTermJpaEntity extends JpaEntity {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private List<CourseJpaEntity> lessons = new ArrayList<>();
+    private List<CourseJpaEntity> courses = new ArrayList<>();
 
     public AcademicTermJpaEntity(
             String id,
