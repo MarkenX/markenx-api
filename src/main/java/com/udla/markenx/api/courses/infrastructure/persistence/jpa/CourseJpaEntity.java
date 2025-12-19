@@ -1,5 +1,7 @@
 package com.udla.markenx.api.courses.infrastructure.persistence.jpa;
 
+import com.udla.markenx.api.academicterms.infrastructure.persistence.jpa.AcademicTermJpaEntity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -34,4 +36,24 @@ public class CourseJpaEntity extends JpaEntity {
             allocationSize = 1
     )
     private Long internalCode;
+
+    @Column(name = "name", nullable = false)
+    private String name;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "course_id", nullable = false)
+    private AcademicTermJpaEntity academicTerm;
+
+    public CourseJpaEntity(
+        String id,
+        LifecycleStatus lifecycleStatus,
+        Long internalCode,
+        String name,
+        AcademicTermJpaEntity academicTerm
+    ) {
+        super(id, lifecycleStatus);
+        this.internalCode = internalCode;
+        this.name = name;
+        this.academicTerm = academicTerm;
+    }
 }

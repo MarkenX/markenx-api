@@ -2,6 +2,7 @@
         displayName = "Course Management",
         allowedDependencies = {
                 "shared::aggregates",
+                "shared::valueobjects",
                 "shared::infrastructure-jpa",
                 "academicterms::persistence-jpa"
         }
