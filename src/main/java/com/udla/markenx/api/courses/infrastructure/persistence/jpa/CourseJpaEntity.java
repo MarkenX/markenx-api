@@ -41,7 +41,7 @@ public class CourseJpaEntity extends JpaEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "course_id", nullable = false)
+    @JoinColumn(name = "academic_term_id", nullable = false)
     private AcademicTermJpaEntity academicTerm;
 
     public CourseJpaEntity(

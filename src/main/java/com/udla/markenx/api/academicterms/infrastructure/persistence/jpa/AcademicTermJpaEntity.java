@@ -1,6 +1,7 @@
 package com.udla.markenx.api.academicterms.infrastructure.persistence.jpa;
 
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.courses.infrastructure.persistence.jpa.CourseJpaEntity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.shared.infrastructure.persistance.jpa.JpaEntity;
 import jakarta.persistence.*;
@@ -9,6 +10,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -31,6 +34,13 @@ public class AcademicTermJpaEntity extends JpaEntity {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private AcademicTermStatus status;
+
+    @OneToMany(
+            mappedBy = "academicTerm",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<CourseJpaEntity> lessons = new ArrayList<>();
 
     public AcademicTermJpaEntity(
             String id,
