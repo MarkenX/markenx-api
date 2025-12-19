@@ -16,6 +16,12 @@ public class JpaCourseRepository implements CourseRepository {
     private final CourseJpaMapper mapper;
 
     @Override
+    public Course save(Course course) {
+        CourseJpaEntity saved = springRepo.save(mapper.toEntity(course));
+        return mapper.toDomain(saved);
+    }
+
+    @Override
     public Page<Course> findAllPaginated(Pageable pageable) {
         return springRepo.findAll(pageable).map(mapper::toDomain);
     }
