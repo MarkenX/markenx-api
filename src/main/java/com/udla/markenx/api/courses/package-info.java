@@ -2,6 +2,8 @@
         displayName = "Course Management",
         allowedDependencies = {
                 "shared::aggregates",
+                "shared::infrastructure-jpa",
+                "academicterms::persistence-jpa"
         }
 )
 package com.udla.markenx.api.courses;
