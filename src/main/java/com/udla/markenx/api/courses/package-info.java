@@ -7,7 +7,6 @@
                 "academicterms::aggregates",
                 "academicterms::ports-incoming",
                 "academicterms::queries",
-                "academicterms::persistence-jpa"
         }
 )
 package com.udla.markenx.api.courses;
