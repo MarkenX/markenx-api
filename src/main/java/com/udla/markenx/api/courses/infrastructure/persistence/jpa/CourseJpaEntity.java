@@ -14,42 +14,30 @@ import lombok.Setter;
 @Table(name = "courses")
 public class CourseJpaEntity extends JpaEntity {
 
-    /**
-     * Represents the internal code of a course entity. This value is unique for each course
-     * and is used as an internal identifier within the system.
-     * <p>
-     * Constraints:
-     * - Cannot be null.
-     * - Must be unique across all course records.
-     * - Cannot be updated once assigned.
-     * <p>
-     * Mapping Details:
-     * - Persisted in the database column "internal_code".
-     * - Automatically generated using a sequence generator with the sequence name
-     *   "course_internal_code_seq" and an allocation size of 1.
-     */
     @Column(name = "internal_code", nullable = false, unique = true, updatable = false)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "course_internal_code_seq")
-    @SequenceGenerator(
-            name = "course_internal_code_seq",
-            sequenceName = "course_internal_code_seq",
-            allocationSize = 1
-    )
     private Long internalCode;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name")
     private String name;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "academic_term_id", nullable = false)
-    private AcademicTermJpaEntity academicTerm;
+    @Column(name = "academic_term_id")
+    private String academicTermId;
+
+    @PrePersist
+    void prePersist() {
+        if (internalCode == null) {
+            internalCode = 1L;
+        }
+    }
 
     public CourseJpaEntity(
-        String id,
-        LifecycleStatus lifecycleStatus,
-        String name
+            String id,
+            LifecycleStatus lifecycleStatus,
+            String name,
+            String academicTermId
     ) {
         super(id, lifecycleStatus);
         this.name = name;
+        this.academicTermId = academicTermId;
     }
 }
