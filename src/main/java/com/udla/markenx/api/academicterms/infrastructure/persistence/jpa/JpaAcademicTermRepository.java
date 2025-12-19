@@ -1,4 +1,4 @@
-package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
+package com.udla.markenx.api.academicterms.infrastructure.persistence.jpa;
 
 import com.udla.markenx.api.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;

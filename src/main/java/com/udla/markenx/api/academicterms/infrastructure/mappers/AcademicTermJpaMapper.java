@@ -2,7 +2,7 @@ package com.udla.markenx.api.academicterms.infrastructure.mappers;
 
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.DateInterval;
-import com.udla.markenx.api.academicterms.infrastructure.persistance.jpa.AcademicTermJpaEntity;
+import com.udla.markenx.api.academicterms.infrastructure.persistence.jpa.AcademicTermJpaEntity;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 

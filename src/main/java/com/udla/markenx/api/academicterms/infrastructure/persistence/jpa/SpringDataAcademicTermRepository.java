@@ -1,4 +1,4 @@
-package com.udla.markenx.api.academicterms.infrastructure.persistance.jpa;
+package com.udla.markenx.api.academicterms.infrastructure.persistence.jpa;
 
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import org.jetbrains.annotations.NotNull;
