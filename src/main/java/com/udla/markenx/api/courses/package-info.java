@@ -4,6 +4,9 @@
                 "shared::aggregates",
                 "shared::valueobjects",
                 "shared::infrastructure-jpa",
+                "academicterms::aggregates",
+                "academicterms::ports-incoming",
+                "academicterms::queries",
                 "academicterms::persistence-jpa"
         }
 )

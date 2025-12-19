@@ -5,5 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface CourseRepository {
+    Course save(Course course);
     Page<Course> findAllPaginated(Pageable pageable);
 }

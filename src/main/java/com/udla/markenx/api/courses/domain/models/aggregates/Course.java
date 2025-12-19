@@ -24,15 +24,13 @@ public class Course extends Entity {
      *
      * @param id the unique identifier for the course
      * @param name the name of the course
-     * @param code the numeric code of the course
      * @param academicTermId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
      * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
      */
-    private Course(CourseId id, String name, long code, String academicTermId) {
+    private Course(CourseId id, String name, String academicTermId) {
         this.id = id;
-        initializeCourse(name, code, academicTermId);
+        initializeCourse(name, academicTermId);
     }
 
     /**
@@ -50,7 +48,9 @@ public class Course extends Entity {
      */
     public Course(String id, String name, long code, String academicTermId) {
         this.id = new CourseId(id);
-        initializeCourse(name, code, academicTermId);
+        this.name = validateName(name);
+        this.code = validateCode(code);
+        this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
     /**
@@ -58,14 +58,12 @@ public class Course extends Entity {
      * Uses the provided values to reinitialize the course while performing necessary validations.
      *
      * @param name the new name of the course
-     * @param code the new numeric code of the course
      * @param academicTermId the new identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided name is null or contains only whitespace
-     * @throws InvalidCourseCodeException if the provided code is zero or negative
      * @throws InvalidAcademicTermIdException if the provided academic term identifier is null or contains only whitespace
      */
-    public void update(String name, long code, String academicTermId) {
-        initializeCourse(name, code, academicTermId);
+    public void update(String name, String academicTermId) {
+        initializeCourse(name, academicTermId);
     }
 
     /**
@@ -73,15 +71,12 @@ public class Course extends Entity {
      * Validates the provided values before assigning them to the corresponding fields.
      *
      * @param name the name of the course to initialize
-     * @param code the numeric code of the course to initialize
      * @param academicTermId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided name is null or contains only whitespace
-     * @throws InvalidCourseCodeException if the provided code is zero or negative
      * @throws InvalidAcademicTermIdException if the provided academic term identifier is null or contains only whitespace
      */
-    private void initializeCourse(String name, long code, String academicTermId) {
+    private void initializeCourse(String name, String academicTermId) {
         this.name = validateName(name);
-        this.code = validateCode(code);
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
@@ -91,16 +86,14 @@ public class Course extends Entity {
      * Creates a new instance of the {@code Course} class with a unique identifier.
      *
      * @param name the name of the course
-     * @param code the numeric code of the course
      * @param academicTermId the identifier of the associated academic term
      * @return a new {@code Course} instance
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
      * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
      */
-    public static @NonNull Course create(String name, long code, String academicTermId) {
+    public static @NonNull Course create(String name, String academicTermId) {
         var id = CourseId.generate();
-        return new Course(id, name, code, academicTermId);
+        return new Course(id, name, academicTermId);
     }
 
     // endregion
