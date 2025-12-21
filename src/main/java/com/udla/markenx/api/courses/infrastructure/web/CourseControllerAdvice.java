@@ -1,0 +1,18 @@
+package com.udla.markenx.api.courses.infrastructure.web;
+
+import com.udla.markenx.api.courses.domain.exceptions.CourseException;
+import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ControllerAdvice(basePackages = "com.udla.markenx.api.courses")
+public class CourseControllerAdvice {
+
+    @ExceptionHandler(CourseException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleDomainException(CourseException ex) {
+        return new ErrorResponse(ex.getMessage());
+    }
+}
