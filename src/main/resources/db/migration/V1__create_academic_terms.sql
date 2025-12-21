@@ -5,7 +5,7 @@ CREATE TABLE academic_terms (
     lifecycle_status VARCHAR(20) NOT NULL,
     start_date DATE NOT NULL,
     end_date DATE NOT NULL,
-    year INT NOT NULL,
+    academic_year INT NOT NULL,
     sequence INT NOT NULL,
     status VARCHAR(20) NOT NULL,
 
@@ -13,5 +13,5 @@ CREATE TABLE academic_terms (
         PRIMARY KEY (id),
 
     CONSTRAINT uk_academic_terms_year_sequence
-        UNIQUE (year, sequence)
+        UNIQUE (academic_year, sequence)
 );

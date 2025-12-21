@@ -39,7 +39,7 @@ public class JooqAcademicTermRepository implements AcademicTermQueryRepository {
         return dsl
                 .select()
                 .from(TABLE)
-                .where(field("year").eq(year))
+                .where(field("academic_year").eq(year))
                 .fetch(mapper::toDomain);
     }
 
@@ -58,7 +58,7 @@ public class JooqAcademicTermRepository implements AcademicTermQueryRepository {
         var records = dsl
                 .select()
                 .from(TABLE)
-                .orderBy(field("year").desc(), field("sequence").desc())
+                .orderBy(field("academic_year").desc(), field("sequence").desc())
                 .limit(pageable.getPageSize())
                 .offset((int) pageable.getOffset())
                 .fetch();

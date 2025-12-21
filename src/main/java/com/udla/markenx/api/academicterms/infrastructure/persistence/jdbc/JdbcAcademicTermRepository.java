@@ -19,7 +19,7 @@ public class JdbcAcademicTermRepository implements AcademicTermCommandRepository
     public AcademicTerm save(@NonNull AcademicTerm term) {
         jdbcTemplate.update("""
             INSERT INTO academic_terms
-            (id, lifecycle_status, start_date, end_date, year, sequence, status)
+            (id, lifecycle_status, start_date, end_date, academic_year, sequence, status)
             VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 term.getId().value(),

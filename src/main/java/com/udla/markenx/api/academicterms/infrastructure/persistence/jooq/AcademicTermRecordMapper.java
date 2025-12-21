@@ -16,7 +16,7 @@ public class AcademicTermRecordMapper {
                 LifecycleStatus.valueOf(r.get("lifecycle_status", String.class)),
                 r.get("start_date", LocalDate.class),
                 r.get("end_date", LocalDate.class),
-                r.get("year", Integer.class),
+                r.get("academic_year", Integer.class),
                 r.get("sequence", Integer.class),
                 AcademicTermStatus.valueOf(r.get("status", String.class))
         );

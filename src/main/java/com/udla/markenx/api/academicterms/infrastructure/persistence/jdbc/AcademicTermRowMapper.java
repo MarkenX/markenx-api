@@ -18,7 +18,7 @@ public class AcademicTermRowMapper implements RowMapper<AcademicTerm> {
                 LifecycleStatus.valueOf(rs.getString("lifecycle_status")),
                 rs.getDate("start_date").toLocalDate(),
                 rs.getDate("end_date").toLocalDate(),
-                rs.getInt("year"),
+                rs.getInt("academic_year"),
                 rs.getInt("sequence"),
                 AcademicTermStatus.valueOf(rs.getString("status"))
         );
