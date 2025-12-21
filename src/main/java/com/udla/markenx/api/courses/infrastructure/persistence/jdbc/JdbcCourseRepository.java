@@ -17,13 +17,12 @@ public class JdbcCourseRepository implements CourseCommandRepository {
     public Course save(@NonNull Course course) {
         jdbcTemplate.update("""
         INSERT INTO courses
-        (id, lifecycle_status, name, code, academicTermId)
-        VALUES (?, ?, ?, ?, ?)
+        (id, lifecycle_status, name, academic_term_id)
+        VALUES (?, ?, ?, ?)
         """,
             course.getId().value(),
             course.getLifecycleStatus().name(),
             course.getName(),
-            course.getCode(),
             course.getAcademicTermId()
         );
         return course;
