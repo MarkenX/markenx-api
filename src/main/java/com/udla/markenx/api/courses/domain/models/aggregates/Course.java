@@ -53,17 +53,12 @@ public class Course extends Entity {
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
-    /**
-     * Updates the course with the specified name, code, and academic term identifier.
-     * Uses the provided values to reinitialize the course while performing necessary validations.
-     *
-     * @param name the new name of the course
-     * @param academicTermId the new identifier of the academic term associated with the course
-     * @throws InvalidCourseNameException if the provided name is null or contains only whitespace
-     * @throws InvalidAcademicTermIdException if the provided academic term identifier is null or contains only whitespace
-     */
-    public void update(String name, String academicTermId) {
-        initializeCourse(name, academicTermId);
+    public void update(String name) {
+        this.name = validateName(name);
+    }
+
+    public void changeAcademicTerm(String academicTermId) {
+        this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
     /**
