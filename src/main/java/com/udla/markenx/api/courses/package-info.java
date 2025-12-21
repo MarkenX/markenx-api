@@ -3,7 +3,6 @@
         allowedDependencies = {
                 "shared::aggregates",
                 "shared::valueobjects",
-                "academicterms::ports-incoming",
         }
 )
 package com.udla.markenx.api.courses;
