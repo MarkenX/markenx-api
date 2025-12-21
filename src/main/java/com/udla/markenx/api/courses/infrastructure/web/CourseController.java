@@ -5,6 +5,8 @@ import com.udla.markenx.api.courses.application.dtos.CourseResponseDTO;
 import com.udla.markenx.api.courses.application.dtos.CreateCourseRequestDTO;
 import com.udla.markenx.api.courses.application.mappers.CourseDTOMapper;
 import com.udla.markenx.api.courses.application.ports.incoming.SaveCourseUseCase;
+import com.udla.markenx.api.courses.application.ports.incoming.UpdateCourseUseCase;
+import com.udla.markenx.api.courses.application.queries.GetCourseByIdQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -19,6 +21,7 @@ public class CourseController {
 
     private final CourseDTOMapper mapper;
     private final SaveCourseUseCase saveCourseUseCase;
+    private final UpdateCourseUseCase updateCourseUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -29,5 +32,17 @@ public class CourseController {
     public CourseResponseDTO create(@RequestBody CreateCourseRequestDTO dto) {
         var command = new SaveCourseCommand(dto.name(), dto.academicTermId());
         return mapper.toDTO(saveCourseUseCase.handle(command));
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get a course by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Course retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No course found")
+    })
+    public CourseResponseDTO getById(@PathVariable String id) {
+        var query = new GetCourseByIdQuery(id);
+        return mapper.toDTO(updateCourseUseCase.getById(query));
     }
 }

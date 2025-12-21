@@ -1,9 +1,11 @@
 package com.udla.markenx.api.courses.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.courses.domain.ports.outgoing.CourseCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -35,5 +37,21 @@ public class JdbcCourseRepository implements CourseCommandRepository {
                 rowMapper,
                 course.getId().value()
         );
+    }
+
+    @Override
+    public Course findById(String id) {
+        try {
+            return jdbcTemplate.queryForObject("""
+            SELECT *
+            FROM courses
+            WHERE id = ?
+            """,
+                rowMapper,
+                id
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            throw new CourseNotFoundException(id);
+        }
     }
 }
