@@ -1,10 +1,10 @@
 package com.udla.markenx.api.courses.infrastructure.web;
 
+import com.udla.markenx.api.courses.application.commands.ChangeCourseAcademicTermCommand;
 import com.udla.markenx.api.courses.application.commands.ChangeCourseStatusCommand;
 import com.udla.markenx.api.courses.application.commands.SaveCourseCommand;
-import com.udla.markenx.api.courses.application.dtos.CourseResponseDTO;
-import com.udla.markenx.api.courses.application.dtos.CreateCourseRequestDTO;
-import com.udla.markenx.api.courses.application.dtos.UpdateCourseStatusRequestDTO;
+import com.udla.markenx.api.courses.application.commands.UpdateCourseCommand;
+import com.udla.markenx.api.courses.application.dtos.*;
 import com.udla.markenx.api.courses.application.mappers.CourseDTOMapper;
 import com.udla.markenx.api.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.courses.application.ports.incoming.UpdateCourseUseCase;
@@ -61,5 +61,35 @@ public class CourseController {
     ) {
         var command = new ChangeCourseStatusCommand(id, request.status());
         return mapper.toDTO(updateCourseUseCase.changeStatus(command));
+    }
+
+    @PutMapping("/{id}/change-academic-term")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Change course related academic term")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Academic term changed successfully"),
+            @ApiResponse(responseCode = "404", description = "No course found")
+    })
+    public CourseResponseDTO changeAcademicTerm(
+            @PathVariable String id,
+            @RequestBody UpdateCourseAcademicTermRequestDTO request
+    ) {
+        var command = new ChangeCourseAcademicTermCommand(id, request.academicTermId());
+        return mapper.toDTO(updateCourseUseCase.changeAcademicTerm(command));
+    }
+
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Update course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Course updated successfully"),
+            @ApiResponse(responseCode = "404", description = "No course found")
+    })
+    public CourseResponseDTO update(
+            @PathVariable String id,
+            @RequestBody UpdateCourseRequestDTO request
+    ) {
+        var command = new UpdateCourseCommand(id, request.name());
+        return mapper.toDTO(updateCourseUseCase.update(command));
     }
 }
