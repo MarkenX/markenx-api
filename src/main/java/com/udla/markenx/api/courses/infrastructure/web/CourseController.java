@@ -1,19 +1,20 @@
 package com.udla.markenx.api.courses.infrastructure.web;
 
-import com.udla.markenx.api.courses.application.commands.ChangeCourseAcademicTermCommand;
-import com.udla.markenx.api.courses.application.commands.ChangeCourseStatusCommand;
-import com.udla.markenx.api.courses.application.commands.SaveCourseCommand;
-import com.udla.markenx.api.courses.application.commands.UpdateCourseCommand;
+import com.udla.markenx.api.courses.application.commands.*;
 import com.udla.markenx.api.courses.application.dtos.*;
 import com.udla.markenx.api.courses.application.mappers.CourseDTOMapper;
+import com.udla.markenx.api.courses.application.ports.incoming.CourseQueryUseCase;
 import com.udla.markenx.api.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.courses.application.ports.incoming.UpdateCourseUseCase;
-import com.udla.markenx.api.courses.application.queries.GetCourseByIdQuery;
+import com.udla.markenx.api.courses.application.queries.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,6 +25,7 @@ public class CourseController {
     private final CourseDTOMapper mapper;
     private final SaveCourseUseCase saveCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
+    private final CourseQueryUseCase courseQueryUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -91,5 +93,26 @@ public class CourseController {
     ) {
         var command = new UpdateCourseCommand(id, request.name());
         return mapper.toDTO(updateCourseUseCase.update(command));
+    }
+
+    @GetMapping
+    @Operation(summary = "Get all courses")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No courses found")
+    })
+    public ResponseEntity<@NotNull Page<@NotNull CourseResponseDTO>> getAll(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
+        var query = new GetAllCoursesPaginatedQuery(page, size);
+        Page<@NotNull CourseResponseDTO> result =
+                courseQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
+
+        if (result.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(result);
     }
 }
