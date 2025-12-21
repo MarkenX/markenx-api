@@ -16,15 +16,16 @@ import org.springframework.stereotype.Service;
 public class SaveCourseService implements SaveCourseUseCase {
 
     private final UpdateAcademicTermUseCase updateAcademicTermUseCase;
-    private final CourseRepository repository;
+    private final CourseCommandRepository repository;
 
     @Override
     public Course handle(@NonNull SaveCourseCommand command) {
 
-        GetAcademicTermByIdQuery query = new GetAcademicTermByIdQuery(command.academicTermId());
-        AcademicTerm academicTerm = updateAcademicTermUseCase.getById(query);
-
-        Course newCourse = Course.create(command.name(), academicTerm.getId().toString());
-        return repository.save(newCourse);
+//        GetAcademicTermByIdQuery query = new GetAcademicTermByIdQuery(command.academicTermId());
+//        AcademicTerm academicTerm = updateAcademicTermUseCase.getById(query);
+//
+//        Course newCourse = Course.create(command.name(), academicTerm.getId().toString());
+//        return repository.save(newCourse);
+        return null;
     }
 }
