@@ -1,8 +1,10 @@
 package com.udla.markenx.api.courses.infrastructure.web;
 
+import com.udla.markenx.api.courses.application.commands.ChangeCourseStatusCommand;
 import com.udla.markenx.api.courses.application.commands.SaveCourseCommand;
 import com.udla.markenx.api.courses.application.dtos.CourseResponseDTO;
 import com.udla.markenx.api.courses.application.dtos.CreateCourseRequestDTO;
+import com.udla.markenx.api.courses.application.dtos.UpdateCourseStatusRequestDTO;
 import com.udla.markenx.api.courses.application.mappers.CourseDTOMapper;
 import com.udla.markenx.api.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.courses.application.ports.incoming.UpdateCourseUseCase;
@@ -44,5 +46,20 @@ public class CourseController {
     public CourseResponseDTO getById(@PathVariable String id) {
         var query = new GetCourseByIdQuery(id);
         return mapper.toDTO(updateCourseUseCase.getById(query));
+    }
+
+    @PatchMapping("/{id}/status")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Change course status")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Course disabled successfully"),
+            @ApiResponse(responseCode = "404", description = "No course found")
+    })
+    public CourseResponseDTO changeStatus(
+            @PathVariable String id,
+            @RequestBody UpdateCourseStatusRequestDTO request
+    ) {
+        var command = new ChangeCourseStatusCommand(id, request.status());
+        return mapper.toDTO(updateCourseUseCase.changeStatus(command));
     }
 }
