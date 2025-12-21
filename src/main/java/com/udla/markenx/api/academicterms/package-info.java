@@ -5,7 +5,6 @@
                 "shared::valueobjects",
                 "shared::exceptions",
                 "shared::dtos",
-                "shared::infrastructure-jpa",
         })
 package com.udla.markenx.api.academicterms;
 

@@ -3,7 +3,6 @@
         allowedDependencies = {
                 "shared::aggregates",
                 "shared::valueobjects",
-                "shared::infrastructure-jpa",
                 "academicterms::ports-incoming",
         }
 )
