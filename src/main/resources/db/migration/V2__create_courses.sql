@@ -1,5 +1,3 @@
-USE markenx;
-
 CREATE TABLE courses (
      id CHAR(36) NOT NULL,
      lifecycle_status VARCHAR(20) NOT NULL,
