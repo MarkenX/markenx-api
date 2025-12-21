@@ -2,6 +2,7 @@ package com.udla.markenx.api.courses.application.services;
 
 import com.udla.markenx.api.courses.application.commands.ChangeCourseAcademicTermCommand;
 import com.udla.markenx.api.courses.application.commands.ChangeCourseStatusCommand;
+import com.udla.markenx.api.courses.application.commands.UpdateCourseCommand;
 import com.udla.markenx.api.courses.application.ports.incoming.EnsureAcademicTermExists;
 import com.udla.markenx.api.courses.application.ports.incoming.UpdateCourseUseCase;
 import com.udla.markenx.api.courses.application.queries.GetCourseByIdQuery;
@@ -43,4 +44,10 @@ public class UpdateCourseService implements UpdateCourseUseCase {
         return repository.save(course);
     }
 
+    @Override
+    public Course update(@NonNull UpdateCourseCommand command) {
+        Course course = repository.findById(command.id());
+        course.update(command.name());
+        return repository.save(course);
+    }
 }
