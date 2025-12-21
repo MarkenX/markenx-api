@@ -3,6 +3,7 @@ package com.udla.markenx.api.academicterms.infrastructure.persistence.jooq;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermQueryRepository;
+import com.udla.markenx.api.courses.application.ports.incoming.FindAllAcademicTermIds;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
@@ -17,7 +18,8 @@ import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqAcademicTermRepository implements AcademicTermQueryRepository {
+public class JooqAcademicTermRepository implements
+        AcademicTermQueryRepository, FindAllAcademicTermIds {
 
     private final DSLContext dsl;
 
@@ -75,5 +77,13 @@ public class JooqAcademicTermRepository implements AcademicTermQueryRepository {
                 pageable,
                 safeTotal
         );
+    }
+
+    @Override
+    public List<String> findAllIds() {
+        return dsl
+                .select(field("id", String.class))
+                .from(TABLE)
+                .fetchInto(String.class);
     }
 }
