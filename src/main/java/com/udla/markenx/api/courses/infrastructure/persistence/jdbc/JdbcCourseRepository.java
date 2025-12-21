@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class JdbcCourseRepository implements CourseCommandRepository {
 
+    private final CourseRowMapper rowMapper = new CourseRowMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -25,6 +26,14 @@ public class JdbcCourseRepository implements CourseCommandRepository {
             course.getName(),
             course.getAcademicTermId()
         );
-        return course;
+
+        return jdbcTemplate.queryForObject("""
+            SELECT *
+            FROM courses
+            WHERE id = ?
+            """,
+                rowMapper,
+                course.getId().value()
+        );
     }
 }

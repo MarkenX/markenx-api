@@ -24,7 +24,7 @@ import java.util.List;
 public class CourseSeeder implements CommandLineRunner {
 
     private final FindAllAcademicTermIds findAllAcademicTermIds;
-    private final SaveCourseUseCase service;
+    private final SaveCourseUseCase saveCourseUseCase;
     private final Flyway flyway;
 
     @Override
@@ -36,7 +36,7 @@ public class CourseSeeder implements CommandLineRunner {
         try {
             academicTermsIds.forEach(termId -> {
                 var query = new SaveCourseCommand("Test", termId);
-                Course saved = service.handle(query);
+                Course saved = saveCourseUseCase.handle(query);
                 log.info("The course {} was created", saved.toString());
             });
             log.info("Courses seeded successfully.");
