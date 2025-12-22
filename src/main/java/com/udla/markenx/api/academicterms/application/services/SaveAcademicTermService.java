@@ -4,7 +4,8 @@ import com.udla.markenx.api.academicterms.application.commands.SaveAcademicTermC
 import com.udla.markenx.api.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.DateInterval;
-import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
+import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermCommandRepository;
+import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermQueryRepository;
 import com.udla.markenx.api.academicterms.domain.services.AcademicTermDomainService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -16,11 +17,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SaveAcademicTermService implements SaveAcademicTermUseCase {
 
-    private final AcademicTermRepository repository;
+    private final AcademicTermCommandRepository commandRepository;
+    private final AcademicTermQueryRepository queryRepository;
 
     @Override
     public AcademicTerm handle(@NotNull SaveAcademicTermCommand command) {
-        List<AcademicTerm> terms = repository.findAllByYear(command.year());
+        List<AcademicTerm> terms = queryRepository.findAllByYear(command.year());
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
 
@@ -32,6 +34,6 @@ public class SaveAcademicTermService implements SaveAcademicTermUseCase {
         }
 
         AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
-        return repository.save(newTerm);
+        return commandRepository.save(newTerm);
     }
 }

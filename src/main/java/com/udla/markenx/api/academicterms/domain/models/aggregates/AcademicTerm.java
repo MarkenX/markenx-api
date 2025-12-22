@@ -9,6 +9,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.cglib.core.Local;
 
 import java.time.LocalDate;
 
@@ -59,19 +60,23 @@ public class AcademicTerm extends Entity {
         this.status = status;
     }
 
+
     /**
-     * Constructs an AcademicTerm object representing a term in an academic calendar.
+     * Constructs an AcademicTerm instance with the specified details.
      *
-     * @param id the unique identifier of the academic term
-     * @param dateInterval the start and end dates of the academic term
-     * @param year the academic year associated with the term
-     * @param sequence the sequence number of the term in the academic year
-     * @param status the current status of the academic term
+     * @param id The unique identifier of the academic term.
+     * @param lifecycleStatus The lifecycle status of the academic term.
+     * @param startDate The starting date of the academic term.
+     * @param endDate The ending date of the academic term.
+     * @param year The academic year the term belongs to.
+     * @param sequence The sequence number indicating the term's order within the year.
+     * @param status The status of the academic term (e.g., active, inactive).
      */
     public AcademicTerm(
             String id,
             LifecycleStatus lifecycleStatus,
-            DateInterval dateInterval,
+            LocalDate startDate,
+            LocalDate endDate,
             int year,
             int sequence,
             AcademicTermStatus status) {
@@ -79,7 +84,7 @@ public class AcademicTerm extends Entity {
         this.id = new AcademicTermId(id);
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
-        this.dateInterval = dateInterval;
+        this.dateInterval = new DateInterval(startDate, endDate);
         this.status = status;
     }
 

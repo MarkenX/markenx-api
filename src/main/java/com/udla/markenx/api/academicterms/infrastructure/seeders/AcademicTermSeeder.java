@@ -6,9 +6,12 @@ import com.udla.markenx.api.academicterms.domain.exceptions.AcademicTermExceptio
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
@@ -16,10 +19,12 @@ import java.time.LocalDate;
 @Slf4j
 @Component
 @Profile("dev")
+@Order(1)
 @RequiredArgsConstructor
 public class AcademicTermSeeder implements CommandLineRunner {
 
     private final SaveAcademicTermUseCase service;
+    private final Flyway flyway;
 
     @Override
     public void run(String @NotNull ... args) {

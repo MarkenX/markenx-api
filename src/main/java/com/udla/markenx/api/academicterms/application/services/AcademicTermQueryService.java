@@ -5,7 +5,7 @@ import com.udla.markenx.api.academicterms.application.queries.GetAcademicTermByI
 import com.udla.markenx.api.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
 import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.academicterms.domain.models.valueobjects.AcademicTermStatus;
-import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermRepository;
+import com.udla.markenx.api.academicterms.domain.ports.outgoing.AcademicTermQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -18,12 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AcademicTermQueryService implements AcademicTermQueryUseCase{
 
-    private final AcademicTermRepository repository;
-
-    @Override
-    public AcademicTerm getById(@NotNull GetAcademicTermByIdQuery query) {
-        return repository.findById(query.id());
-    }
+    private final AcademicTermQueryRepository repository;
 
     @Override
     public List<AcademicTerm> getAll() {
