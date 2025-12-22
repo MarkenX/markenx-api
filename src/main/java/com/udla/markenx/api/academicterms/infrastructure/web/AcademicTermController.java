@@ -53,7 +53,7 @@ public class AcademicTermController {
     })
     public AcademicTermResponseDTO getById(@PathVariable String id) {
         var query = new GetAcademicTermByIdQuery(id);
-        return mapper.toDTO(termQueryUseCase.getById(query));
+        return mapper.toDTO(updateTermUseCase.getById(query));
     }
 
     @PatchMapping("/{id}/status")
