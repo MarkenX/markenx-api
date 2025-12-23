@@ -1,6 +1,8 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
+import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
 import com.udla.markenx.api.students.domain.models.valueobjects.Email;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
@@ -13,12 +15,20 @@ public class Student extends Entity {
     private final Long code;
     private final String courseId;
 
-    public Student(StudentId id, Long code, String firstName, String lastName, Email email, String courseId) {
+    public Student(
+            StudentId id,
+            Long code,
+            String firstName,
+            String lastName,
+            Email email,
+            String courseId) {
         this.id = id;
-        this.code = code;
+        this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName, email);
         this.courseId = courseId;
     }
+
+    // region Getters
 
     public String getId() {
         return this.id.toString();
@@ -28,9 +38,33 @@ public class Student extends Entity {
         return this.courseId;
     }
 
+    public String getFullName() {
+        return this.personalInfo.getFullName();
+    }
+
     public Email getEmail() {
         return this.personalInfo.getEmail();
     }
+
+    // endregion
+
+    // region Validations
+
+    /**
+     * Validates the given student code to ensure it is a positive number.
+     *
+     * @param code the student code to validate
+     * @return the validated student code if it passes validation
+     * @throws InvalidStudentCodeException if the student code is zero or negative
+     */
+    public long validateCode(long code) {
+        if (code <= 0) {
+            throw new InvalidStudentCodeException();
+        }
+        return code;
+    }
+
+    // endregion
 
     /**
      * Formats the student code as a zero-padded four-digit string.

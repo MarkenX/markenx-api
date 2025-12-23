@@ -2,6 +2,7 @@
     displayName = "Student Management",
     allowedDependencies = {
         "shared::aggregates",
+        "shared::valueobjects",
         "shared::exceptions",
     }
 )
