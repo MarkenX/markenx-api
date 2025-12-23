@@ -7,8 +7,10 @@ import lombok.Getter;
 public class Student extends Entity {
 
     private final StudentId id;
+    private final String courseId;
 
-    public Student(StudentId id) {
+    public Student(StudentId id, String courseId) {
         this.id = id;
+        this.courseId = courseId;
     }
 }
