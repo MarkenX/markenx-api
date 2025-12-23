@@ -83,21 +83,20 @@ jobs:
       - image: cimg/base:current
     steps:
       - checkout
+      - attach_workspace:
+          at: .
       - setup_remote_docker
       - run:
           name: Docker build
           command: |
             docker build \
-              -t markenx/markenx-api:${CIRCLE_TAG} \
-              -t markenx/markenx-api:latest .
+              -t markenx/markenx-api:${CIRCLE_TAG} .
       - run:
           name: Docker login
           command: echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USER" --password-stdin
       - run:
           name: Docker push
-          command: |
-            docker push markenx/markenx-api:${CIRCLE_TAG}
-            docker push markenx/markenx-api:latest
+          command: docker push markenx/markenx-api:${CIRCLE_TAG}
 
   github_release: # Publicar .jar en GitHub Releases
     <<: *job_defaults
