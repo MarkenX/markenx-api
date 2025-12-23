@@ -1,16 +1,17 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
+import com.udla.markenx.api.students.domain.models.valueobjects.Email;
 import com.udla.markenx.api.students.domain.models.valueobjects.PersonName;
-import lombok.Getter;
 
-@Getter
 public class PersonalInfo {
 
     private PersonName firstName;
     private PersonName lastName;
+    private Email email;
 
-    public PersonalInfo(String firstName, String lastName) {
+    public PersonalInfo(String firstName, String lastName, Email email) {
         updateName(firstName, lastName);
+        updateEmail(email);
     }
 
     public void updateName(String firstName, String lastName) {
@@ -18,7 +19,15 @@ public class PersonalInfo {
         this.lastName = new PersonName(lastName);
     }
 
+    public void updateEmail(Email email) {
+        this.email = email;
+    }
+
     public String getFullName() {
         return String.format("%s %s", firstName, lastName);
+    }
+
+    public String getEmail() {
+        return this.email.toString();
     }
 }
