@@ -81,6 +81,18 @@ public class Student extends Entity {
 
     // endregion
 
+    /**
+     * Updates the student's personal information, including their name and email address.
+     *
+     * @param firstName the new first name of the student
+     * @param lastName the new last name of the student
+     * @param email the new email address of the student
+     */
+    public void update(String firstName, String lastName, Email email) {
+        this.personalInfo.updateName(firstName, lastName);
+        this.personalInfo.updateEmail(email);
+    }
+
     // region Getters
 
     public String getId() {
