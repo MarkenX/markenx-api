@@ -24,6 +24,14 @@ public class PersonalInfo {
         this.email = email;
     }
 
+    public String getFirstName() {
+        return firstName.getValue();
+    }
+
+    public String getLastName() {
+        return lastName.getValue();
+    }
+
     public String getFullName() {
         return String.format("%s %s", firstName, lastName);
     }

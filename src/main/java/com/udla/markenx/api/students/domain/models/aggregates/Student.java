@@ -103,6 +103,14 @@ public class Student extends Entity {
         return this.courseId;
     }
 
+    public String getFirstName() {
+        return this.personalInfo.getFirstName();
+    }
+
+    public String getLastName() {
+        return this.personalInfo.getLastName();
+    }
+
     public String getFullName() {
         return this.personalInfo.getFullName();
     }
