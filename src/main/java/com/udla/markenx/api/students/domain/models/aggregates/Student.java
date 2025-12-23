@@ -7,8 +7,7 @@ import lombok.Getter;
 public class Student extends Entity {
 
     private final StudentId id;
-    private String firstName;
-    private String lastName;
+    private PersonalInfo personalInfo;
     private Long code;
     private final String courseId;
 
