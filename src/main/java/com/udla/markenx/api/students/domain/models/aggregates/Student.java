@@ -1,7 +1,5 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
-import com.udla.markenx.api.courses.domain.exceptions.InvalidAcademicTermIdException;
-import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
@@ -17,6 +15,18 @@ public class Student extends Entity {
     private final Long code;
     private final String courseId;
 
+    /**
+     * Constructs a new {@code Student} instance with the specified details.
+     *
+     * @param id the unique identifier for the student
+     * @param code the student code, which must be a positive number
+     * @param firstName the first name of the student
+     * @param lastName the last name of the student
+     * @param email the email address of the student
+     * @param courseId the identifier of the course associated with the student
+     * @throws InvalidStudentCodeException if the student code is zero or negative
+     * @throws InvalidCourseIdException if the course identifier is null or blank
+     */
     public Student(
             StudentId id,
             Long code,
@@ -24,6 +34,7 @@ public class Student extends Entity {
             String lastName,
             Email email,
             String courseId) {
+        super();
         this.id = id;
         this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName, email);
