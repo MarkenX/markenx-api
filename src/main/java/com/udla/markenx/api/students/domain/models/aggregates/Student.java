@@ -9,6 +9,7 @@ public class Student extends Entity {
     private final StudentId id;
     private String firstName;
     private String lastName;
+    private Long code;
     private final String courseId;
 
     public Student(StudentId id, String courseId) {
