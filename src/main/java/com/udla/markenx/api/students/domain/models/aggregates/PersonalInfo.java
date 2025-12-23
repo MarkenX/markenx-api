@@ -3,6 +3,7 @@ package com.udla.markenx.api.students.domain.models.aggregates;
 import com.udla.markenx.api.students.domain.models.valueobjects.Email;
 import com.udla.markenx.api.students.domain.models.valueobjects.PersonName;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class PersonalInfo {
 
     private PersonName firstName;
@@ -27,7 +28,7 @@ public class PersonalInfo {
         return String.format("%s %s", firstName, lastName);
     }
 
-    public String getEmail() {
-        return this.email.toString();
+    public Email getEmail() {
+        return this.email;
     }
 }
