@@ -1,7 +1,9 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
+import com.udla.markenx.api.courses.domain.exceptions.InvalidAcademicTermIdException;
 import com.udla.markenx.api.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
 import com.udla.markenx.api.students.domain.models.valueobjects.Email;
 import org.jetbrains.annotations.Contract;
@@ -25,7 +27,7 @@ public class Student extends Entity {
         this.id = id;
         this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName, email);
-        this.courseId = courseId;
+        this.courseId = validateCourseId(courseId);
     }
 
     // region Getters
@@ -62,6 +64,21 @@ public class Student extends Entity {
             throw new InvalidStudentCodeException();
         }
         return code;
+    }
+
+
+    /**
+     * Validates the given course identifier to ensure it is not null or blank.
+     *
+     * @param courseId the course identifier to validate
+     * @return the validated course identifier if it passes validation
+     * @throws InvalidCourseIdException if the course identifier is null or blank
+     */
+    public String validateCourseId(String courseId) {
+        if (courseId == null || courseId.isBlank()) {
+            throw new InvalidCourseIdException();
+        }
+        return courseId;
     }
 
     // endregion
