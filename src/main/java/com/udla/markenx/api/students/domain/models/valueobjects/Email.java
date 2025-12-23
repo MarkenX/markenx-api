@@ -28,6 +28,11 @@ public final class Email {
         return new Email(normalize(validate(value, allowedDomains)));
     }
 
+    @Contract("_ -> new")
+    public static @NonNull Email of(String value) {
+        return new Email(normalize(value));
+    }
+
     @Contract("null, _ -> fail")
     private static @NonNull String validate(String value, Set<String> allowedDomains) {
         if (value == null || value.isBlank()) {

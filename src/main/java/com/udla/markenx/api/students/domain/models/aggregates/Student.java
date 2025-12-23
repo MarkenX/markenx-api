@@ -1,6 +1,7 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
 import com.udla.markenx.api.students.domain.models.valueobjects.Email;
@@ -12,14 +13,15 @@ public class Student extends Entity {
 
     private final StudentId id;
     private final PersonalInfo personalInfo;
-    private final Long code;
+    private long code;
     private final String courseId;
+
+    // region Constructors
 
     /**
      * Constructs a new {@code Student} instance with the specified details.
      *
      * @param id the unique identifier for the student
-     * @param code the student code, which must be a positive number
      * @param firstName the first name of the student
      * @param lastName the last name of the student
      * @param email the email address of the student
@@ -27,9 +29,8 @@ public class Student extends Entity {
      * @throws InvalidStudentCodeException if the student code is zero or negative
      * @throws InvalidCourseIdException if the course identifier is null or blank
      */
-    public Student(
+    private Student(
             StudentId id,
-            Long code,
             String firstName,
             String lastName,
             Email email,
@@ -40,6 +41,45 @@ public class Student extends Entity {
         this.personalInfo = new PersonalInfo(firstName, lastName, email);
         this.courseId = validateCourseId(courseId);
     }
+
+    /**
+     * Constructs a new {@code Student} instance with the specified details.
+     *
+     * @param id the unique identifier for the student
+     * @param lifecycleStatus the lifecycle status of the student, indicating if they are active or disabled
+     * @param code the student code, representing a unique numerical identifier for the student
+     * @param firstName the first name of the student
+     * @param lastName the last name of the student
+     * @param email the email address of the student
+     * @param courseId the identifier of the course associated with the student
+     * @throws InvalidStudentCodeException if the student code is zero or negative
+     * @throws InvalidCourseIdException if the course identifier is null or blank
+     */
+    public Student(
+            String id,
+            LifecycleStatus lifecycleStatus,
+            long code,
+            String firstName,
+            String lastName,
+            String email,
+            String courseId) {
+        super(lifecycleStatus);
+        this.id = new StudentId(id);
+        this.code = validateCode(code);
+        this.personalInfo = new PersonalInfo(firstName, lastName, Email.of(email));
+        this.courseId = validateCourseId(courseId);
+    }
+
+    // endregion
+
+    // region Factories
+
+    public static @NonNull Student create(String firstName, String lastName, Email email, String courseId) {
+        var id = StudentId.generate();
+        return new Student(id, firstName, lastName, email, courseId);
+    }
+
+    // endregion
 
     // region Getters
 
