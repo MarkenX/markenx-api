@@ -1,5 +1,6 @@
 package com.udla.markenx.api.students.domain.models.aggregates;
 
+import com.udla.markenx.api.students.domain.models.valueobjects.PersonName;
 import lombok.Getter;
 
 @Getter

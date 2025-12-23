@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.domain.models.aggregates;
+package com.udla.markenx.api.students.domain.models.valueobjects;
 
 import com.udla.markenx.api.students.domain.exceptions.InvalidPersonNameFormatException;
 import com.udla.markenx.api.students.domain.exceptions.PersonNameCannotBeEmptyException;
