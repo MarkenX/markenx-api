@@ -4,6 +4,7 @@
         "shared::aggregates",
         "shared::valueobjects",
         "shared::exceptions",
+        "shared::dtos",
     }
 )
 package com.udla.markenx.api.students;
