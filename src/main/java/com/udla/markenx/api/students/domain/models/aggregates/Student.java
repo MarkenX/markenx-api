@@ -33,7 +33,7 @@ public class Student extends Entity {
     }
 
     /**
-     * Formats the course code as a zero-padded four-digit string.
+     * Formats the student code as a zero-padded four-digit string.
      *
      * @return the formatted course code as a string
      */
