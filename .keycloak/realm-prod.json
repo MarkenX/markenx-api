@@ -1,0 +1,21 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "email": "admin@markenx.com",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "John",
+      "lastName": "Doe",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "CHANGE_ME",
+          "temporary": true
+        }
+      ],
+      "realmRoles": ["ADMIN"],
+      "requiredActions": ["UPDATE_PASSWORD"]
+    }
+  ]
+}
