@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableConfigurationProperties(KeycloakProperties.class)
-class KeycloakConfig {}
+public class KeycloakConfig {}
