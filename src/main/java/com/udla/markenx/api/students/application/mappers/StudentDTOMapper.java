@@ -8,12 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class StudentDTOMapper {
 
-    public StudentResponseDTO toDTO(@NonNull Student domain) {
+    public StudentResponseDTO toDTO(@NonNull Student domain, String email) {
         return new StudentResponseDTO(
                 domain.getId(),
                 domain.toString(),
                 domain.getFullName(),
-                domain.getEmail().getValue(),
+                email,
                 domain.getCourseId()
         );
     }

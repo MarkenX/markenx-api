@@ -31,7 +31,7 @@ public class User extends Entity {
         return role;
     }
 
-    public Email getEmail() {
-        return this.email;
+    public String getEmail() {
+        return this.email.getValue();
     }
 }

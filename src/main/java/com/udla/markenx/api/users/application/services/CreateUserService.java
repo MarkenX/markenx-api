@@ -19,6 +19,6 @@ public class CreateUserService implements CreateUserUseCase {
     @Override
     public void execute(@NonNull CreateUserCommand command) {
         User user = repository.findById(command.UserId());
-        identityProvider.createExternalIdentity(user.getEmail().getValue());
+        identityProvider.createExternalIdentity(user.getEmail());
     }
 }
