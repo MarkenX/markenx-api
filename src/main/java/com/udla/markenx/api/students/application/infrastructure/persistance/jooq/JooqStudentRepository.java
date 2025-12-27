@@ -1,7 +1,5 @@
-package com.udla.markenx.api.students.infrastructure.persistance.jooq;
+package com.udla.markenx.api.students.application.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.courses.domain.models.aggregates.Course;
-import com.udla.markenx.api.courses.infrastructure.persistence.jooq.CourseRecordMapper;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.students.domain.ports.outgoing.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.infrastructure.seeders;
+package com.udla.markenx.api.students.application.infrastructure.seeders;
 
 import com.udla.markenx.api.students.application.ports.incoming.SaveStudentUseCase;
 import lombok.RequiredArgsConstructor;

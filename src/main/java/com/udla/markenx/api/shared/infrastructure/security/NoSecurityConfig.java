@@ -1,4 +1,4 @@
-package com.udla.markenx.api.auth.infrastructure.security;
+package com.udla.markenx.api.shared.infrastructure.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
