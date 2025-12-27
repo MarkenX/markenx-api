@@ -1,5 +1,6 @@
 package com.udla.markenx.api.students.infrastructure.persistance.jooq;
 
+import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.students.domain.ports.outgoing.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,7 @@ import static org.jooq.impl.DSL.field;
 public class JooqStudentRepository implements StudentQueryRepository {
 
     private final DSLContext dsl;
-    private final StudentRecordMapper mapper = new StudentRecordMapper();
+    private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
 
     private static final String TABLE = "students";
 
@@ -27,7 +28,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
     }
 
     @Override
-    public Page<Student> findAllPaginated(@NonNull Pageable pageable) {
+    public Page<StudentUserReadDTO> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
                 .from(TABLE)

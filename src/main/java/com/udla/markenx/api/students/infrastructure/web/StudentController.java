@@ -4,6 +4,8 @@ import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.students.application.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.students.application.dtos.StudentResponseDTO;
 import com.udla.markenx.api.students.application.mappers.StudentDTOMapper;
+import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.application.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.students.application.ports.incoming.SaveStudentUseCase;
 import com.udla.markenx.api.students.application.ports.incoming.StudentQueryUseCase;
 import com.udla.markenx.api.students.application.queries.GetAllStudentsPaginatedQuery;
@@ -44,13 +46,13 @@ public class StudentController {
             @ApiResponse(responseCode = "200", description = "Students retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No students found")
     })
-    public ResponseEntity<@NotNull Page<@NotNull StudentResponseDTO>> getAll(
+    public ResponseEntity<@NotNull Page<@NotNull StudentUserReadDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         var query = new GetAllStudentsPaginatedQuery(page, size);
-        Page<@NotNull StudentResponseDTO> result =
-                studentQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
+        Page<@NotNull StudentUserReadDTO> result =
+                studentQueryUseCase.getAllPaginated(query);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
