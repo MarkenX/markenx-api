@@ -28,7 +28,7 @@ class KeycloakUserIdentityProvider implements UserIdentityProvider {
     }
 
     @Override
-    public void provisionIdentity(String email) {
+    public void createExternalIdentity(String email) {
 
         CreateUserRequest request = new CreateUserRequest(
             email, email, true, true,
