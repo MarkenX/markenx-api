@@ -4,7 +4,7 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
-import com.udla.markenx.api.students.domain.models.valueobjects.Email;
+import com.udla.markenx.api.users.domain.models.valueobjects.Email;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -33,7 +33,6 @@ public class Student extends Entity {
             StudentId id,
             String firstName,
             String lastName,
-            Email email,
             String courseId) {
         super();
         this.id = id;
@@ -113,10 +112,6 @@ public class Student extends Entity {
 
     public String getFullName() {
         return this.personalInfo.getFullName();
-    }
-
-    public Email getEmail() {
-        return this.personalInfo.getEmail();
     }
 
     // endregion

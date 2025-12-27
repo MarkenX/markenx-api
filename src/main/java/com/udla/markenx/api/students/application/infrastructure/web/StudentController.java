@@ -1,6 +1,6 @@
 package com.udla.markenx.api.students.infrastructure.web;
 
-import com.udla.markenx.api.students.application.commands.SaveStudentCommand;
+import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.students.application.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.students.application.dtos.StudentResponseDTO;
 import com.udla.markenx.api.students.application.mappers.StudentDTOMapper;
@@ -33,7 +33,7 @@ public class StudentController {
             @ApiResponse(responseCode = "201", description = "Student created successfully")
     })
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
-        var command = new SaveStudentCommand(
+        var command = new CreateUserCommand(
                 dto.firstName(), dto.lastName(), dto.email(), dto.courseId());
         return mapper.toDTO(saveTermUseCase.handle(command));
     }
