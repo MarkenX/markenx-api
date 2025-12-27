@@ -1,8 +1,8 @@
-package com.udla.markenx.api.students.domain.models.valueobjects;
+package com.udla.markenx.api.users.domain.models.valueobjects;
 
-import com.udla.markenx.api.students.domain.exceptions.EmailCannotBeEmptyException;
-import com.udla.markenx.api.students.domain.exceptions.EmailDomainNotAllowedException;
-import com.udla.markenx.api.students.domain.exceptions.InvalidEmailFormatException;
+import com.udla.markenx.api.users.domain.exceptions.EmailCannotBeEmptyException;
+import com.udla.markenx.api.users.domain.exceptions.EmailDomainNotAllowedException;
+import com.udla.markenx.api.users.domain.exceptions.InvalidEmailFormatException;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;

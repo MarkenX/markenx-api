@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.domain.exceptions;
+package com.udla.markenx.api.users.domain.exceptions;
 
 public class EmailDomainNotAllowedException extends EmailException {
     public EmailDomainNotAllowedException(String domain) {
