@@ -24,7 +24,8 @@ class KeycloakUserIdentityProvider implements UserIdentityProvider {
                                  KeycloakProperties props) {
         this.tokenClient = tokenClient;
         this.props = props;
-        this.webClient = builder.baseUrl(props.baseUrl()).build();
+        var baseUrl = String.format("%s://%s:%d",props.scheme(), props.host(), props.port());
+        this.webClient = builder.baseUrl(baseUrl).build();
     }
 
     @Override
