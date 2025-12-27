@@ -53,6 +53,7 @@ class KeycloakUserIdentityProvider implements UserIdentityProvider {
                         }
                         return resp.createException().flatMap(Mono::error);
                         })
-                ).block();
+                )
+            .block();
     }
 }
