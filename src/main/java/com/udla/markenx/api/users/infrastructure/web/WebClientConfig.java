@@ -1,4 +1,4 @@
-package com.udla.markenx.api.users.infrastructure;
+package com.udla.markenx.api.users.infrastructure.web;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
