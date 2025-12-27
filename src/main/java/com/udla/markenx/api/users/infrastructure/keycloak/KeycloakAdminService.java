@@ -36,12 +36,14 @@ class KeycloakAdminService implements UserIdentityProvider {
 
         tokenClient.getAccessToken()
             .flatMap(token ->
+                // Posts user creation request; extracts location on success
                 webClient.post()
                     .uri("/admin/realms/{realm}/users", props.realm())
                     .header(HttpHeaders.AUTHORIZATION, "Bearer " + token)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(request)
                     .exchangeToMono(resp -> {
+                        // Extracts location header on success
                         if (resp.statusCode().is2xxSuccessful()) {
                             return Mono.just(
                                 Objects.requireNonNull(resp.headers().asHttpHeaders()
