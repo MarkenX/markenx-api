@@ -1,9 +1,8 @@
 package com.udla.markenx.api.students.infrastructure.web;
 
-import com.udla.markenx.api.users.application.commands.CreateUserCommand;
+import com.udla.markenx.api.students.application.commands.SaveStudentCommand;
 import com.udla.markenx.api.students.application.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.students.application.dtos.StudentResponseDTO;
-import com.udla.markenx.api.students.application.mappers.StudentDTOMapper;
 import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.students.application.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.students.application.ports.incoming.SaveStudentUseCase;
@@ -24,8 +23,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("students")
 public class StudentController {
 
-    private final StudentDTOMapper mapper;
-    private final SaveStudentUseCase saveTermUseCase;
+    private final StudentResponseDTOMapper mapper;
+    private final SaveStudentUseCase saveStudentUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
 
     @PostMapping
@@ -35,9 +34,8 @@ public class StudentController {
             @ApiResponse(responseCode = "201", description = "Student created successfully")
     })
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
-        var command = new CreateUserCommand(
-                dto.firstName(), dto.lastName(), dto.email(), dto.courseId());
-        return mapper.toDTO(saveTermUseCase.handle(command));
+        var command = new SaveStudentCommand(dto.firstName(), dto.lastName(), dto.courseId());
+        return mapper.toDTO(saveStudentUseCase.handle(command), dto.email());
     }
 
     @GetMapping
