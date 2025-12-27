@@ -4,7 +4,7 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
-import com.udla.markenx.api.users.domain.models.valueobjects.Email;
+import com.udla.markenx.api.students.domain.exceptions.InvalidUserIdException;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -15,6 +15,7 @@ public class Student extends Entity {
     private final PersonalInfo personalInfo;
     private long code;
     private final String courseId;
+    private final String userId;
 
     // region Constructors
 
@@ -24,35 +25,39 @@ public class Student extends Entity {
      * @param id the unique identifier for the student
      * @param firstName the first name of the student
      * @param lastName the last name of the student
-     * @param email the email address of the student
      * @param courseId the identifier of the course associated with the student
+     * @param userId the unique identifier for the user associated with the student
      * @throws InvalidStudentCodeException if the student code is zero or negative
      * @throws InvalidCourseIdException if the course identifier is null or blank
+     * @throws InvalidUserIdException if the user identifier is null or blank
      */
     private Student(
             StudentId id,
             String firstName,
             String lastName,
-            String courseId) {
+            String courseId,
+            String userId) {
         super();
         this.id = id;
         this.code = validateCode(code);
-        this.personalInfo = new PersonalInfo(firstName, lastName, email);
+        this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
+        this.userId = validateUserId(userId);
     }
 
     /**
      * Constructs a new {@code Student} instance with the specified details.
      *
      * @param id the unique identifier for the student
-     * @param lifecycleStatus the lifecycle status of the student, indicating if they are active or disabled
-     * @param code the student code, representing a unique numerical identifier for the student
+     * @param lifecycleStatus the lifecycle status of the student, either ACTIVE or DISABLED
+     * @param code the unique numeric code for the student; must be greater than zero
      * @param firstName the first name of the student
      * @param lastName the last name of the student
-     * @param email the email address of the student
      * @param courseId the identifier of the course associated with the student
+     * @param userId the unique identifier for the user associated with the student
      * @throws InvalidStudentCodeException if the student code is zero or negative
      * @throws InvalidCourseIdException if the course identifier is null or blank
+     * @throws InvalidUserIdException if the user identifier is null or blank
      */
     public Student(
             String id,
@@ -60,22 +65,23 @@ public class Student extends Entity {
             long code,
             String firstName,
             String lastName,
-            String email,
-            String courseId) {
+            String courseId,
+            String userId) {
         super(lifecycleStatus);
         this.id = new StudentId(id);
         this.code = validateCode(code);
-        this.personalInfo = new PersonalInfo(firstName, lastName, Email.of(email));
+        this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
+        this.userId = validateUserId(userId);
     }
 
     // endregion
 
     // region Factories
 
-    public static @NonNull Student create(String firstName, String lastName, Email email, String courseId) {
+    public static @NonNull Student create(String firstName, String lastName, String courseId, String userId) {
         var id = StudentId.generate();
-        return new Student(id, firstName, lastName, email, courseId);
+        return new Student(id, firstName, lastName, courseId, userId);
     }
 
     // endregion
@@ -85,11 +91,9 @@ public class Student extends Entity {
      *
      * @param firstName the new first name of the student
      * @param lastName the new last name of the student
-     * @param email the new email address of the student
      */
-    public void update(String firstName, String lastName, Email email) {
+    public void update(String firstName, String lastName) {
         this.personalInfo.updateName(firstName, lastName);
-        this.personalInfo.updateEmail(email);
     }
 
     // region Getters
@@ -100,6 +104,10 @@ public class Student extends Entity {
 
     public String getCourseId() {
         return this.courseId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public String getFirstName() {
@@ -145,6 +153,20 @@ public class Student extends Entity {
             throw new InvalidCourseIdException();
         }
         return courseId;
+    }
+
+    /**
+     * Validates the given user identifier to ensure it is not null or blank.
+     *
+     * @param userId the user identifier to validate
+     * @return the validated user identifier if it passes validation
+     * @throws InvalidUserIdException if the user identifier is null or blank
+     */
+    public String validateUserId(String userId) {
+        if (userId == null || userId.isBlank()) {
+            throw new InvalidUserIdException();
+        }
+        return userId;
     }
 
     // endregion
