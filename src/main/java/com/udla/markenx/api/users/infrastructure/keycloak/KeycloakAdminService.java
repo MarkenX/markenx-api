@@ -27,14 +27,14 @@ class KeycloakAdminService implements UserIdentityProvider {
     }
 
     @Override
-    public String provisionIdentity(String email) {
+    public void provisionIdentity(String email) {
 
         CreateUserRequest request = new CreateUserRequest(
             email, email, true, true,
             List.of("UPDATE_PASSWORD")
         );
 
-        return tokenClient.getAccessToken()
+        tokenClient.getAccessToken()
             .flatMap(token ->
                 webClient.post()
                     .uri("/admin/realms/{realm}/users", props.realm())
@@ -45,11 +45,11 @@ class KeycloakAdminService implements UserIdentityProvider {
                         if (resp.statusCode().is2xxSuccessful()) {
                             return Mono.just(
                                 Objects.requireNonNull(resp.headers().asHttpHeaders()
-                                    .getFirst(HttpHeaders.LOCATION))
+                                        .getFirst(HttpHeaders.LOCATION))
                             );
                         }
                         return resp.createException().flatMap(Mono::error);
-                    })
-            ).block();
+                        })
+                ).block();
     }
 }
