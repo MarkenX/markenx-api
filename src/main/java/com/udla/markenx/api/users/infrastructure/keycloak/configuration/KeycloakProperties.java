@@ -1,4 +1,4 @@
-package com.udla.markenx.api.users.infrastructure.keycloak;
+package com.udla.markenx.api.users.infrastructure.keycloak.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

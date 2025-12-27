@@ -1,5 +1,6 @@
 package com.udla.markenx.api.users.infrastructure.keycloak;
 
+import com.udla.markenx.api.users.infrastructure.keycloak.configuration.KeycloakProperties;
 import com.udla.markenx.api.users.infrastructure.keycloak.dtos.CreateUserRequest;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserIdentityProvider;
 import org.springframework.http.HttpHeaders;
@@ -12,15 +13,15 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
-class KeycloakAdminService implements UserIdentityProvider {
+class KeycloakUserIdentityProvider implements UserIdentityProvider {
 
     private final WebClient webClient;
     private final KeycloakTokenClient tokenClient;
     private final KeycloakProperties props;
 
-    KeycloakAdminService(WebClient.Builder builder,
-                         KeycloakTokenClient tokenClient,
-                         KeycloakProperties props) {
+    KeycloakUserIdentityProvider(WebClient.Builder builder,
+                                 KeycloakTokenClient tokenClient,
+                                 KeycloakProperties props) {
         this.tokenClient = tokenClient;
         this.props = props;
         this.webClient = builder.baseUrl(props.baseUrl()).build();

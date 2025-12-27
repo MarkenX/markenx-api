@@ -1,5 +1,6 @@
 package com.udla.markenx.api.users.infrastructure.keycloak;
 
+import com.udla.markenx.api.users.infrastructure.keycloak.configuration.KeycloakProperties;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.BodyInserters;
