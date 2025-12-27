@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.application.infrastructure.email;
+package com.udla.markenx.api.users.infrastructure.email;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
