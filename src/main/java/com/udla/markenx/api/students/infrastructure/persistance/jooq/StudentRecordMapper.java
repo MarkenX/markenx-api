@@ -9,13 +9,13 @@ public class StudentRecordMapper {
 
     public Student toDomain(@NonNull Record r) {
         return new Student(
-                r.get("id", String.class),
-                LifecycleStatus.valueOf(r.get("lifecycle_status", String.class)),
-                r.get("code", Long.class),
-                r.get("first_name", String.class),
-                r.get("last_name", String.class),
-                r.get("email", String.class),
-                r.get("course_id", String.class)
+            r.get("id", String.class),
+            LifecycleStatus.valueOf(r.get("lifecycle_status", String.class)),
+            r.get("code", Long.class),
+            r.get("first_name", String.class),
+            r.get("last_name", String.class),
+            r.get("course_id", String.class),
+            r.get("user_id", String.class)
         );
     }
 }
