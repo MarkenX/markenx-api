@@ -20,15 +20,15 @@ public class JdbcStudentRepository implements StudentCommandRepository {
     public Student save(@NonNull Student student) {
         jdbcTemplate.update("""
             INSERT INTO students
-            (id, lifecycle_status, first_name, last_name, email, course_id)
+            (id, lifecycle_status, first_name, last_name, course_id, student_id)
             VALUES (?, ?, ?, ?, ?, ?)
             """,
                 student.getId(),
                 student.getLifecycleStatus().name(),
                 student.getFirstName(),
                 student.getLastName(),
-                student.getEmail().getValue(),
-                student.getCourseId()
+                student.getCourseId(),
+                student.getUserId()
         );
 
         return jdbcTemplate.queryForObject("""
