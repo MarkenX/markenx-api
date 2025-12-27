@@ -48,11 +48,11 @@ class KeycloakUserIdentityProvider implements UserIdentityProvider {
                         if (resp.statusCode().is2xxSuccessful()) {
                             return Mono.just(
                                 Objects.requireNonNull(resp.headers().asHttpHeaders()
-                                        .getFirst(HttpHeaders.LOCATION))
+                                    .getFirst(HttpHeaders.LOCATION))
                             );
                         }
                         return resp.createException().flatMap(Mono::error);
-                        })
+                    })
                 )
             .block();
     }
