@@ -22,6 +22,11 @@ public class JooqStudentRepository implements StudentQueryRepository {
     private static final String TABLE = "students";
 
     @Override
+    public Student findById(String id) {
+        return null;
+    }
+
+    @Override
     public Page<Student> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
