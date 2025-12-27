@@ -3,7 +3,7 @@ package com.udla.markenx.api.users.application.services;
 import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.users.application.ports.incoming.CreateUserUseCase;
 import com.udla.markenx.api.users.domain.models.aggregates.User;
-import com.udla.markenx.api.users.domain.ports.outgoing.UserQueryRepository;
+import com.udla.markenx.api.users.domain.ports.outgoing.UserCommandRepository;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserIdentityProvider;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateUserService implements CreateUserUseCase {
 
-    private final UserQueryRepository repository;
+    private final UserCommandRepository repository;
     private final UserIdentityProvider identityProvider;
 
     @Override
