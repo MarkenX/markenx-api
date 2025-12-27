@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.application.infrastructure.persistance.jooq;
+package com.udla.markenx.api.students.infrastructure.persistance.jooq;
 
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;

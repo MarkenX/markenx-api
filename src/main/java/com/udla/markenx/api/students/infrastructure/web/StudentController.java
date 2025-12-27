@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.application.infrastructure.web;
+package com.udla.markenx.api.students.infrastructure.web;
 
 import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.students.application.dtos.CreateStudentRequestDTO;
