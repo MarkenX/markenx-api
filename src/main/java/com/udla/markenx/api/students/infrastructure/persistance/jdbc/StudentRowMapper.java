@@ -26,8 +26,8 @@ public class StudentRowMapper implements RowMapper<Student> {
             rs.getLong("code"),
             rs.getString("first_name"),
             rs.getString("last_name"),
-            rs.getString("email"),
-            rs.getString("course_id")
+            rs.getString("course_id"),
+            rs.getString("user_id")
         );
     }
 }
