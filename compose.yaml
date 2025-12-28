@@ -1,26 +1,56 @@
+version: '3.9'
+
 services:
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.5
     container_name: keycloak
     ports:
       - "9090:8080"
-
     environment:
+      # Credenciales de administrador
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
 
-    volumes:
-      - ./.keycloak/realm.json:/opt/keycloak/data/import/realm.json
-      - ./.keycloak/scripts:/opt/keycloak/scripts
-      - ./.keycloak/99-init.sh:/opt/keycloak/init.sh
+      # Configuración del realm y cliente
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT: ${KEYCLOAK_CLIENT}
 
-    entrypoint:
-      - /bin/bash
-      - -c
-      - |
-        /opt/keycloak/bin/kc.sh start-dev --import-realm &
-        /opt/keycloak/init.sh
-        wait
+      # Configuración de PostgreSQL para Keycloak
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/${KEYCLOAK_DB_NAME}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+
+      # Configuraciones adicionales de Keycloak
+      KEYCLOAK_SCHEME: ${KEYCLOAK_SCHEME}
+      KEYCLOAK_HOST: ${KEYCLOAK_HOST}
+      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
+      KC_HTTP_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+    volumes:
+      # Archivo de configuración del realm
+      - ./.keycloak/realm-base.json:/opt/keycloak/data/import/realm.json:ro
+
+      # Scripts de inicialización
+      - ./.keycloak/scripts/00-start-keycloak.sh:/opt/keycloak/data/import/00-start-keycloak.sh:ro
+      - ./.keycloak/scripts/10-setup-realm.sh:/opt/keycloak/data/import/10-setup-realm.sh:ro
+      - ./.keycloak/scripts/20-setup-client.sh:/opt/keycloak/data/import/20-setup-client.sh:ro
+      - ./.keycloak/scripts/main.sh:/opt/keycloak/data/import/main.sh:ro
+
+      # Volumen para secrets generados
+      - ./secrets:/opt/keycloak/data/secrets:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    entrypoint: >
+      sh /opt/keycloak/data/import/main.sh
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
 
   # PostgreSQL para Keycloak
   keycloak-postgres:
