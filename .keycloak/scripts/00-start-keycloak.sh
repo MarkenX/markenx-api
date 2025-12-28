@@ -7,8 +7,8 @@ ADMIN_PASS="${KEYCLOAK_ADMIN_PASSWORD}"
 
 # Start Keycloak in background with realm import
 /opt/keycloak/bin/kc.sh start-dev --import-realm &
-KEYCLOAK_PID=$!
-echo $KEYCLOAK_PID > /tmp/keycloak.pid
+echo $! > /tmp/keycloak.pid
+echo "[INFO] Keycloak started with PID: $(cat /tmp/keycloak.pid)"
 
 # Wait for Admin API to be ready
 until /opt/keycloak/bin/kcadm.sh config credentials \

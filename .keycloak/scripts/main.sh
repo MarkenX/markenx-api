@@ -10,5 +10,9 @@ set -e
 KEYCLOAK_PID=$(cat /tmp/keycloak.pid 2>/dev/null)
 if [ -n "$KEYCLOAK_PID" ]; then
     echo "=== Keycloak running on PID: $KEYCLOAK_PID ==="
-    wait "$KEYCLOAK_PID"
+    # Loop to keep the script alive while Keycloak is running
+    while kill -0 "$KEYCLOAK_PID" 2>/dev/null; do
+        sleep 5
+    done
+    echo "[INFO] Keycloak process terminated"
 fi
