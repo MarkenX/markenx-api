@@ -2,6 +2,8 @@ package com.udla.markenx.api.users.infrastructure.keycloak.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
+import java.nio.file.Path;
+
 @ConfigurationProperties(prefix = "keycloak")
 public record KeycloakProperties(
         String scheme,
@@ -9,5 +11,6 @@ public record KeycloakProperties(
         int port,
         String realm,
         String clientId,
-        String clientSecret
+        String clientSecret,
+        Path clientSecretFile
 ) {}
