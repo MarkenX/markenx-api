@@ -3,5 +3,5 @@ package com.udla.markenx.api.users.application.ports.incoming;
 import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 
 public interface CreateUserUseCase {
-    void handle(CreateUserCommand command);
+    String handle(CreateUserCommand command);
 }

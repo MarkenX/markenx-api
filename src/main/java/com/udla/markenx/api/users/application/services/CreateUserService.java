@@ -4,6 +4,7 @@ import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.users.application.ports.incoming.CreateUserUseCase;
 import com.udla.markenx.api.users.domain.models.aggregates.User;
 import com.udla.markenx.api.users.domain.models.valueobjects.Email;
+import com.udla.markenx.api.users.domain.models.valueobjects.Role;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserCommandRepository;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserIdentityProvider;
 import lombok.RequiredArgsConstructor;
@@ -18,11 +19,12 @@ public class CreateUserService implements CreateUserUseCase {
     private final UserIdentityProvider identityProvider;
 
     @Override
-    public void handle(@NonNull CreateUserCommand command) {
+    public String handle(@NonNull CreateUserCommand command) {
         var email = Email.of(command.email());
-        User newUser = User.create(email, command.role());
+        User newUser = User.create(email, Role.valueOf(command.role()));
 
         User saved = repository.save(newUser);
         identityProvider.createExternalIdentity(saved.getEmail());
+        return saved.getId();
     }
 }

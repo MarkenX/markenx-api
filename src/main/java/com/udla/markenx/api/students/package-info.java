@@ -5,6 +5,8 @@
         "shared::valueobjects",
         "shared::exceptions",
         "shared::dtos",
+        "users::commands",
+        "users::ports-incoming"
     }
 )
 package com.udla.markenx.api.students;

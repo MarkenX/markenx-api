@@ -4,5 +4,5 @@ import com.udla.markenx.api.users.domain.models.valueobjects.Role;
 
 public record CreateUserCommand(
     String email,
-    Role role
+    String role
 ) {}
