@@ -2,6 +2,8 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.5
     container_name: keycloak
+    labels:
+      - "org.springframework.boot.ignore=true"
     ports:
       - "9090:8080"
     environment:
@@ -39,11 +41,11 @@ services:
       # Volumen para secrets generados
       - ./secrets:/opt/keycloak/data/secrets:rw
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8080/health/ready || exit 1" ]
-      interval: 10s
-      timeout: 5s
-      retries: 30
-      start_period: 30s
+      test: [ "CMD-SHELL", "test -f /tmp/keycloak-ready || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+      start_period: 60s
     entrypoint: >
       sh /opt/keycloak/data/import/main.sh
     depends_on:
@@ -55,6 +57,8 @@ services:
     image: postgres:16-alpine
     container_name: keycloak-postgres
     restart: unless-stopped
+    labels:
+      - "org.springframework.boot.ignore=true"
     environment:
       POSTGRES_DB: ${KEYCLOAK_DB_NAME}
       POSTGRES_USER: ${KEYCLOAK_DB_USER}
