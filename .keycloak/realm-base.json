@@ -21,14 +21,9 @@
       "clientId": "markenx-api",
       "enabled": true,
       "protocol": "openid-connect",
-      "bearerOnly": true
-    },
-    {
-      "clientId": "markenx-admin-client",
-      "enabled": true,
-      "protocol": "openid-connect",
       "publicClient": false,
-      "serviceAccountsEnabled": true
+      "serviceAccountsEnabled": true,
+      "clientAuthenticatorType": "client-secret"
     }
   ],
 
