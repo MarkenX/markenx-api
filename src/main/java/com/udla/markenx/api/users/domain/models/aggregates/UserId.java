@@ -7,7 +7,7 @@ public class UserId extends Identifier {
         super(value);
     }
 
-    public UserId generate() {
+    public static UserId generate() {
         return new UserId(java.util.UUID.randomUUID().toString());
     }
 }
