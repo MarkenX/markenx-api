@@ -63,7 +63,7 @@ public class JdbcCourseRepository
         Boolean exists = jdbcTemplate.queryForObject("""
         SELECT EXISTS (
             SELECT 1
-            FROM students
+            FROM courses
             WHERE id = ?
         )
         """,

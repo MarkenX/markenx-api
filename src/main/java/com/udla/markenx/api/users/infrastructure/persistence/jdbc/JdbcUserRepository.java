@@ -22,7 +22,7 @@ public class JdbcUserRepository implements UserCommandRepository {
             VALUES (?, ?, ?)
             """,
                 user.getId(),
-                user.getLifecycleStatus(),
+                user.getLifecycleStatus().getLabel(),
                 user.getEmail()
         );
         return user;
