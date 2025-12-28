@@ -39,7 +39,6 @@ public class Student extends Entity {
             String userId) {
         super();
         this.id = id;
-        this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
         this.userId = validateUserId(userId);

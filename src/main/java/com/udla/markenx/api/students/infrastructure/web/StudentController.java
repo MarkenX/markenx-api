@@ -34,7 +34,8 @@ public class StudentController {
             @ApiResponse(responseCode = "201", description = "Student created successfully")
     })
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
-        var command = new SaveStudentCommand(dto.firstName(), dto.lastName(), dto.courseId());
+        var command = new SaveStudentCommand(
+                dto.firstName(), dto.lastName(), dto.courseId(), dto.email());
         return mapper.toDTO(saveStudentUseCase.handle(command), dto.email());
     }
 
