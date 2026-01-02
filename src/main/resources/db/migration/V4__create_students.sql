@@ -1,11 +1,12 @@
 CREATE TABLE students (
     id CHAR(36) NOT NULL,
     lifecycle_status VARCHAR(20) NOT NULL,
+    status VARCHAR(255) NOT NULL,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     code INT NOT NULL AUTO_INCREMENT,
     course_id CHAR(36) NOT NULL,
-    user_id CHAR(36) NOT NULL,
+    user_id CHAR(36),
 
     CONSTRAINT pk_courses
         PRIMARY KEY (id),
