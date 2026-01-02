@@ -1,10 +1,9 @@
 package com.udla.markenx.api.courses.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.courses.domain.ports.outgoing.CourseCommandRepository;
-import com.udla.markenx.api.students.application.ports.incoming.EnsureCourseExists;
+import com.udla.markenx.api.students.application.ports.incoming.CourseValidation;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,7 +13,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class JdbcCourseRepository
-        implements CourseCommandRepository, EnsureCourseExists {
+        implements CourseCommandRepository, CourseValidation {
 
     private final CourseRowMapper rowMapper = new CourseRowMapper();
     private final JdbcTemplate jdbcTemplate;
@@ -59,7 +58,7 @@ public class JdbcCourseRepository
     }
 
     @Override
-    public void ensureExists(String courseId) {
+    public void ensureCourseExists(String courseId) {
         Boolean exists = jdbcTemplate.queryForObject("""
         SELECT EXISTS (
             SELECT 1
