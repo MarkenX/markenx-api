@@ -1,8 +1,8 @@
 package com.udla.markenx.api.students.infrastructure.seeders;
 
-import com.udla.markenx.api.students.application.commands.SaveStudentCommand;
+import com.udla.markenx.api.students.application.commands.RegisterStudentCommand;
 import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIds;
-import com.udla.markenx.api.students.application.ports.incoming.SaveStudentUseCase;
+import com.udla.markenx.api.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.List;
 public class StudentSeeder implements CommandLineRunner {
 
     private final FindAllCoursesIds findAllCoursesIds;
-    private final SaveStudentUseCase saveStudentUseCase;
+    private final RegisterStudentUseCase registerStudentUseCase;
     private final Flyway flyway;
 
     @Override
@@ -35,9 +35,9 @@ public class StudentSeeder implements CommandLineRunner {
 
         try {
             coursesIds.forEach(courseId -> {
-               var query = new SaveStudentCommand(
+               var query = new RegisterStudentCommand(
                        "Mateo David", "Guamán Mora", courseId, "dmora@udla.edu.ec");
-                Student saved = saveStudentUseCase.handle(query);
+                Student saved = registerStudentUseCase.handle(query);
                 log.info("The student {} was created", saved.toString());
             });
             log.info("Students seeded successfully.");
