@@ -5,6 +5,7 @@ import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidUserIdException;
+import com.udla.markenx.api.students.domain.models.valueobjects.StudentStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -13,9 +14,11 @@ public class Student extends Entity {
 
     private final StudentId id;
     private final PersonalInfo personalInfo;
-    private long code;
     private final String courseId;
     private final String userId;
+
+    private long code;
+    private StudentStatus status;
 
     // region Constructors
 
@@ -26,22 +29,20 @@ public class Student extends Entity {
      * @param firstName the first name of the student
      * @param lastName the last name of the student
      * @param courseId the identifier of the course associated with the student
-     * @param userId the unique identifier for the user associated with the student
      * @throws InvalidStudentCodeException if the student code is zero or negative
      * @throws InvalidCourseIdException if the course identifier is null or blank
-     * @throws InvalidUserIdException if the user identifier is null or blank
      */
     private Student(
             StudentId id,
             String firstName,
             String lastName,
-            String courseId,
-            String userId) {
+            String courseId) {
         super();
         this.id = id;
         this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
-        this.userId = validateUserId(userId);
+        this.userId = null;
+        this.status = StudentStatus.PENDING_IDENTITY;
     }
 
     /**
@@ -71,16 +72,16 @@ public class Student extends Entity {
         this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
-        this.userId = validateUserId(userId);
+        this.userId = userId;
     }
 
     // endregion
 
     // region Factories
 
-    public static @NonNull Student create(String firstName, String lastName, String courseId, String userId) {
+    public static @NonNull Student create(String firstName, String lastName, String courseId) {
         var id = StudentId.generate();
-        return new Student(id, firstName, lastName, courseId, userId);
+        return new Student(id, firstName, lastName, courseId);
     }
 
     // endregion
@@ -121,6 +122,9 @@ public class Student extends Entity {
         return this.personalInfo.getFullName();
     }
 
+    public String getStatusCode() {
+        return this.status.name();
+    }
     // endregion
 
     // region Validations
