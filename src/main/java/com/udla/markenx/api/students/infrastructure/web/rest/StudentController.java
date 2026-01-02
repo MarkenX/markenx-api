@@ -8,6 +8,7 @@ import com.udla.markenx.api.students.infrastructure.web.rest.mappers.StudentResp
 import com.udla.markenx.api.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.students.application.ports.incoming.StudentQueryUseCase;
 import com.udla.markenx.api.students.application.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +24,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("students")
 public class StudentController {
 
-    private final StudentResponseDTOMapper mapper;
+    private final StudentResponseDTOMapper responseDTOMapper;
+    private final StudentUserRedDTOMapper userDTOMapper;
     private final RegisterStudentUseCase registerStudentUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
 
@@ -36,7 +38,7 @@ public class StudentController {
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
         var command = new RegisterStudentCommand(
                 dto.firstName(), dto.lastName(), dto.courseId(), dto.email());
-        return mapper.toDTO(registerStudentUseCase.handle(command), dto.email());
+        return responseDTOMapper.toDTO(registerStudentUseCase.handle(command), dto.email());
     }
 
     @GetMapping
@@ -51,7 +53,7 @@ public class StudentController {
     ) {
         var query = new GetAllStudentsPaginatedQuery(page, size);
         Page<@NotNull StudentUserReadDTO> result =
-                studentQueryUseCase.getAllPaginated(query);
+                studentQueryUseCase.getAllPaginated(query).map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
