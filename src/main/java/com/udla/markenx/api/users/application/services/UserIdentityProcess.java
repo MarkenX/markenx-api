@@ -8,9 +8,11 @@ import com.udla.markenx.api.users.domain.events.UserCreatedEvent;
 import com.udla.markenx.api.users.domain.events.UserCreationFailedEvent;
 import com.udla.markenx.api.users.domain.models.valueobjects.Role;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
@@ -23,24 +25,40 @@ public class UserIdentityProcess {
     @EventListener
     public void on(StudentRegisteredEvent event) {
 
-        var command = new CreateUserCommand(
-                event.email(),
-                Role.STUDENT.name()
-        );
-
-        String userId = createUserUseCase.handle(command);
-
-        identityPort.createIdentity(event.email())
-                .doOnSuccess(email ->
+        createUser(event)
+                .flatMap(userId ->
+                        provisionIdentity(event.email())
+                                .thenReturn(userId)
+                )
+                .doOnSuccess(userId ->
                         events.publishEvent(
                                 new UserCreatedEvent(event.studentId(), userId)
                         )
                 )
-                .doOnError(ex ->
-                        events.publishEvent(
-                                new UserCreationFailedEvent(event.studentId(), ex.getMessage())
+                .onErrorResume(ex -> {
+                    events.publishEvent(
+                            new UserCreationFailedEvent(
+                                    event.studentId(),
+                                    ex.getMessage()
+                            )
+                    );
+                    return Mono.empty();
+                })
+                .subscribe();
+    }
+
+    private @NonNull Mono<String> createUser(StudentRegisteredEvent event) {
+        return Mono.fromCallable(() ->
+                createUserUseCase.handle(
+                        new CreateUserCommand(
+                                event.email(),
+                                Role.STUDENT.name()
                         )
                 )
-                .subscribe();
+        );
+    }
+
+    private @NonNull Mono<Void> provisionIdentity(String email) {
+        return identityPort.createIdentity(email).then();
     }
 }
