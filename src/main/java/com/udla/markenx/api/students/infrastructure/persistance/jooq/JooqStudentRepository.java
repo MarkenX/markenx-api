@@ -1,6 +1,6 @@
 package com.udla.markenx.api.students.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.students.domain.ports.outgoing.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;

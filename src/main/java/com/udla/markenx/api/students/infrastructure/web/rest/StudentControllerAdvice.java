@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.infrastructure.web;
+package com.udla.markenx.api.students.infrastructure.web.rest;
 
 import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
 import com.udla.markenx.api.students.domain.exceptions.StudentException;

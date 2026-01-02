@@ -1,6 +1,6 @@
 package com.udla.markenx.api.students.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import org.jooq.Record;
 import org.jspecify.annotations.NonNull;
 

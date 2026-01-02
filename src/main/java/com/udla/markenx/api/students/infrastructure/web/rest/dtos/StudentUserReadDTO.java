@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.application.dtos;
+package com.udla.markenx.api.students.infrastructure.web.rest.dtos;
 
 public record StudentUserReadDTO(
     String studentId,

@@ -1,6 +1,6 @@
 package com.udla.markenx.api.students.application.services;
 
-import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.students.application.ports.incoming.StudentQueryUseCase;
 import com.udla.markenx.api.students.application.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.students.domain.ports.outgoing.StudentQueryRepository;

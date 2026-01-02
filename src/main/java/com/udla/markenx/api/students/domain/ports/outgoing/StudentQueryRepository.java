@@ -1,7 +1,6 @@
 package com.udla.markenx.api.students.domain.ports.outgoing;
 
-import com.udla.markenx.api.academicterms.domain.models.aggregates.AcademicTerm;
-import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

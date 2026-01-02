@@ -1,11 +1,11 @@
-package com.udla.markenx.api.students.infrastructure.web;
+package com.udla.markenx.api.students.infrastructure.web.rest;
 
-import com.udla.markenx.api.students.application.commands.SaveStudentCommand;
-import com.udla.markenx.api.students.application.dtos.CreateStudentRequestDTO;
-import com.udla.markenx.api.students.application.dtos.StudentResponseDTO;
-import com.udla.markenx.api.students.application.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.students.application.mappers.StudentResponseDTOMapper;
-import com.udla.markenx.api.students.application.ports.incoming.SaveStudentUseCase;
+import com.udla.markenx.api.students.application.commands.RegisterStudentCommand;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentResponseDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
+import com.udla.markenx.api.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.students.application.ports.incoming.StudentQueryUseCase;
 import com.udla.markenx.api.students.application.queries.GetAllStudentsPaginatedQuery;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,7 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class StudentController {
 
     private final StudentResponseDTOMapper mapper;
-    private final SaveStudentUseCase saveStudentUseCase;
+    private final RegisterStudentUseCase registerStudentUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
 
     @PostMapping
@@ -34,9 +34,9 @@ public class StudentController {
             @ApiResponse(responseCode = "201", description = "Student created successfully")
     })
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
-        var command = new SaveStudentCommand(
+        var command = new RegisterStudentCommand(
                 dto.firstName(), dto.lastName(), dto.courseId(), dto.email());
-        return mapper.toDTO(saveStudentUseCase.handle(command), dto.email());
+        return mapper.toDTO(registerStudentUseCase.handle(command), dto.email());
     }
 
     @GetMapping

@@ -1,6 +1,6 @@
-package com.udla.markenx.api.students.application.mappers;
+package com.udla.markenx.api.students.infrastructure.web.rest.mappers;
 
-import com.udla.markenx.api.students.application.dtos.StudentResponseDTO;
+import com.udla.markenx.api.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
