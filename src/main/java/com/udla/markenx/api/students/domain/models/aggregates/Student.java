@@ -4,6 +4,7 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidStudentCodeException;
+import com.udla.markenx.api.students.domain.exceptions.InvalidStudentStatusTransitionException;
 import com.udla.markenx.api.students.domain.exceptions.InvalidUserIdException;
 import com.udla.markenx.api.students.domain.models.valueobjects.StudentStatus;
 import org.jetbrains.annotations.Contract;
@@ -125,6 +126,7 @@ public class Student extends Entity {
     public String getStatusCode() {
         return this.status.name();
     }
+
     // endregion
 
     // region Validations
@@ -173,6 +175,25 @@ public class Student extends Entity {
     }
 
     // endregion
+
+    public void markIdentityCreationStarted() {
+        transitionTo(StudentStatus.PENDING_IDENTITY);
+    }
+
+    public void markIdentityCreated() {
+        transitionTo(StudentStatus.ACTIVE);
+    }
+
+    public void markIdentityCreationFailed() {
+        transitionTo(StudentStatus.IDENTITY_CREATION_FAILED);
+    }
+
+    private void transitionTo(StudentStatus next) {
+        if (!status.canTransitionTo(next)) {
+            throw new InvalidStudentStatusTransitionException(status, next);
+        }
+        this.status = next;
+    }
 
     /**
      * Formats the student code as a zero-padded four-digit string.
