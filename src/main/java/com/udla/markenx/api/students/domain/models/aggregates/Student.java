@@ -16,7 +16,7 @@ public class Student extends Entity {
     private final StudentId id;
     private final PersonalInfo personalInfo;
     private final String courseId;
-    private final String userId;
+    private String userId;
 
     private long code;
     private StudentStatus status;
@@ -67,13 +67,15 @@ public class Student extends Entity {
             String firstName,
             String lastName,
             String courseId,
-            String userId) {
+            String userId,
+            StudentStatus status) {
         super(lifecycleStatus);
         this.id = new StudentId(id);
         this.code = validateCode(code);
         this.personalInfo = new PersonalInfo(firstName, lastName);
         this.courseId = validateCourseId(courseId);
         this.userId = userId;
+        this.status = status;
     }
 
     // endregion
@@ -176,10 +178,6 @@ public class Student extends Entity {
 
     // endregion
 
-    public void markIdentityCreationStarted() {
-        transitionTo(StudentStatus.PENDING_IDENTITY);
-    }
-
     public void markIdentityCreated() {
         transitionTo(StudentStatus.ACTIVE);
     }
@@ -208,5 +206,9 @@ public class Student extends Entity {
     @Override
     public String toString() {
         return String.format("STD-%s", formatCode());
+    }
+
+    public void assignUser(String userId) {
+        this.userId = validateUserId(userId);
     }
 }
