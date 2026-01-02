@@ -5,6 +5,5 @@ import com.udla.markenx.api.students.domain.models.aggregates.Student;
 public interface StudentCommandRepository {
     Student save(Student student);
     Student findById(String id);
-    Student assignUser(String studentId, String userId);
-    Student markIdentityFailed(String studentId);
+    void update(Student student);
 }
