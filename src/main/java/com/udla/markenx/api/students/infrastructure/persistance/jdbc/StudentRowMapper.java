@@ -2,6 +2,7 @@ package com.udla.markenx.api.students.infrastructure.persistance.jdbc;
 
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
+import com.udla.markenx.api.students.domain.models.valueobjects.StudentStatus;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.RowMapper;
 
@@ -27,7 +28,8 @@ public class StudentRowMapper implements RowMapper<Student> {
             rs.getString("first_name"),
             rs.getString("last_name"),
             rs.getString("course_id"),
-            rs.getString("user_id")
+            rs.getString("user_id"),
+            StudentStatus.valueOf(rs.getString("status"))
         );
     }
 }
