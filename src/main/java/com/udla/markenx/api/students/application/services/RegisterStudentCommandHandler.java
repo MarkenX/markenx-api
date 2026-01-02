@@ -32,7 +32,7 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
         repository.save(newStudent);
 
         events.publishEvent(
-                new StudentRegisteredEvent(newStudent.getId(), command.email())
+                new StudentRegisteredEvent(newStudent.getId(), command.email(), newStudent.getFullName())
         );
 
         return newStudent;
