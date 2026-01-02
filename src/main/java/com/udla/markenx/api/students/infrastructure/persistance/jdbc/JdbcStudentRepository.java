@@ -59,52 +59,30 @@ public class JdbcStudentRepository implements StudentCommandRepository {
     }
 
     @Override
-    public Student assignUser(String studentId, String userId) {
+    public void update(@NonNull Student student) {
+
         int updatedRows = jdbcTemplate.update("""
         UPDATE students
-        SET user_id = ?
+        SET
+            lifecycle_status = ?,
+            status = ?,
+            first_name = ?,
+            last_name = ?,
+            course_id = ?,
+            user_id = ?
         WHERE id = ?
         """,
-                userId,
-                studentId
+                student.getLifecycleStatus().name(),
+                student.getStatusCode(),
+                student.getFirstName(),
+                student.getLastName(),
+                student.getCourseId(),
+                student.getUserId(),
+                student.getId()
         );
 
         if (updatedRows == 0) {
-            throw new StudentNotFoundException(studentId);
+            throw new StudentNotFoundException(student.getId());
         }
-
-        return jdbcTemplate.queryForObject("""
-        SELECT *
-        FROM students
-        WHERE id = ?
-        """,
-                rowMapper,
-                studentId
-        );
-    }
-
-    @Override
-    public Student markIdentityFailed(String studentId) {
-        int updatedRows = jdbcTemplate.update("""
-        UPDATE students
-        SET status = ?
-        WHERE id = ?
-        """,
-                StudentStatus.IDENTITY_CREATION_FAILED.name(),
-                studentId
-        );
-
-        if (updatedRows == 0) {
-            throw new StudentNotFoundException(studentId);
-        }
-
-        return jdbcTemplate.queryForObject("""
-        SELECT *
-        FROM students
-        WHERE id = ?
-        """,
-                rowMapper,
-                studentId
-        );
     }
 }
