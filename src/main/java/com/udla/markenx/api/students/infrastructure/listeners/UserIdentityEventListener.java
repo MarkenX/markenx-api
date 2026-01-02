@@ -1,4 +1,4 @@
-package com.udla.markenx.api.students.infrastructure.eventlisteners;
+package com.udla.markenx.api.students.infrastructure.listeners;
 
 import com.udla.markenx.api.students.application.ports.incoming.UpdateStudentUseCase;
 import com.udla.markenx.api.users.domain.events.UserCreatedEvent;

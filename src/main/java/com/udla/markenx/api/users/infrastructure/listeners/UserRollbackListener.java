@@ -1,4 +1,4 @@
-package com.udla.markenx.api.users.infrastructure.eventlisteners;
+package com.udla.markenx.api.users.infrastructure.listeners;
 
 import com.udla.markenx.api.users.domain.events.UserIdentityRollbackEvent;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserCommandRepository;
