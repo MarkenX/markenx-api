@@ -1,5 +1,6 @@
 package com.udla.markenx.api.users.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.users.domain.models.aggregates.User;
 import com.udla.markenx.api.users.domain.ports.outgoing.UserCommandRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +13,6 @@ import org.springframework.stereotype.Repository;
 public class JdbcUserRepository implements UserCommandRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private final UserRowMapper mapper;
 
     @Override
     public User save(@NonNull User user) {
@@ -22,14 +22,21 @@ public class JdbcUserRepository implements UserCommandRepository {
             VALUES (?, ?, ?)
             """,
                 user.getId(),
-                user.getLifecycleStatus().getLabel(),
+                user.getLifecycleStatus().name(),
                 user.getEmail()
         );
         return user;
     }
 
     @Override
-    public User findById(String id) {
-        return null;
+    public void deleteById(String id) {
+        jdbcTemplate.update("""
+            UPDATE users
+            SET lifecycle_status = ?
+            WHERE id = ?
+            """,
+                LifecycleStatus.DISABLED,
+                id
+        );
     }
 }
