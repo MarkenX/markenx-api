@@ -37,6 +37,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
     public void markIdentityCreationFailed(String studentId) {
         Student student = repository.findById(studentId);
         student.markIdentityCreationFailed();
+        student.disable();
         repository.save(student);
 
         events.publishEvent(
