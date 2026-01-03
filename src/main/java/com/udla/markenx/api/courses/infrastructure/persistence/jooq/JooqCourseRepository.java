@@ -2,6 +2,7 @@ package com.udla.markenx.api.courses.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.courses.domain.ports.outgoing.CourseQueryRepository;
+import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIds;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
@@ -10,11 +11,14 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqCourseRepository implements CourseQueryRepository {
+public class JooqCourseRepository
+        implements CourseQueryRepository, FindAllCoursesIds {
 
     private final DSLContext dsl;
     private final CourseRecordMapper mapper = new CourseRecordMapper();
@@ -42,5 +46,13 @@ public class JooqCourseRepository implements CourseQueryRepository {
                 pageable,
                 safeTotal
         );
+    }
+
+    @Override
+    public List<String> findAllIds() {
+        return dsl
+                .select(field("id", String.class))
+                .from(TABLE)
+                .fetchInto(String.class);
     }
 }

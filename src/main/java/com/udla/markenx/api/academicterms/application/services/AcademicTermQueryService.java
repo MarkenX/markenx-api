@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class AcademicTermQueryService implements AcademicTermQueryUseCase{
+public class AcademicTermQueryService implements AcademicTermQueryUseCase {
 
     private final AcademicTermQueryRepository repository;
 
