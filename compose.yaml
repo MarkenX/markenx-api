@@ -1,24 +1,96 @@
 services:
+  keycloak:
+    image: quay.io/keycloak/keycloak:25.0.5
+    container_name: keycloak
+    labels:
+      - "org.springframework.boot.ignore=true"
+    ports:
+      - "9090:8080"
+    environment:
+      # Credenciales de administrador
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+
+      # Configuración del realm y cliente
+      KEYCLOAK_REALM: ${KEYCLOAK_REALM}
+      KEYCLOAK_CLIENT: ${KEYCLOAK_CLIENT}
+
+      # Configuración de PostgreSQL para Keycloak
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://keycloak-postgres:5432/${KEYCLOAK_DB_NAME}
+      KC_DB_USERNAME: ${KEYCLOAK_DB_USER}
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+
+      # Configuraciones adicionales de Keycloak
+      KEYCLOAK_SCHEME: ${KEYCLOAK_SCHEME}
+      KEYCLOAK_HOST: ${KEYCLOAK_HOST}
+      KEYCLOAK_PORT: ${KEYCLOAK_PORT}
+      KC_HTTP_ENABLED: true
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+    volumes:
+      # Archivo de configuración del realm
+      - ./.keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
+
+      # Scripts de inicialización
+      - ./.keycloak/scripts/00-start-keycloak.sh:/opt/keycloak/data/import/00-start-keycloak.sh:ro
+      - ./.keycloak/scripts/10-setup-realm.sh:/opt/keycloak/data/import/10-setup-realm.sh:ro
+      - ./.keycloak/scripts/20-setup-client.sh:/opt/keycloak/data/import/20-setup-client.sh:ro
+      - ./.keycloak/scripts/main.sh:/opt/keycloak/data/import/main.sh:ro
+
+      # Volumen para secrets generados
+      - ./secrets:/opt/keycloak/data/secrets:rw
+    healthcheck:
+      test: [ "CMD-SHELL", "test -f /tmp/keycloak-ready || exit 1" ]
+      interval: 5s
+      timeout: 3s
+      retries: 60
+      start_period: 60s
+    entrypoint: >
+      sh /opt/keycloak/data/import/main.sh
+    depends_on:
+      keycloak-postgres:
+        condition: service_healthy
+
+  # PostgreSQL para Keycloak
+  keycloak-postgres:
+    image: postgres:16-alpine
+    container_name: keycloak-postgres
+    restart: unless-stopped
+    labels:
+      - "org.springframework.boot.ignore=true"
+    environment:
+      POSTGRES_DB: ${KEYCLOAK_DB_NAME}
+      POSTGRES_USER: ${KEYCLOAK_DB_USER}
+      POSTGRES_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --locale=C"
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${KEYCLOAK_DB_USER} -d ${KEYCLOAK_DB_NAME}" ]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+
+  # MySQL para API
   mysql:
     image: mysql:8.0.36
     container_name: markenx-mysql
     restart: unless-stopped
-
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-
+      MYSQL_TCP_PORT: 3306
     ports:
       - "3306:3306"
-
-    volumes:
-      - mysql-data:/var/lib/mysql
-
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
       timeout: 5s
       retries: 10
-
-volumes:
-  mysql-data:
+      start_period: 30s
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
