@@ -30,12 +30,14 @@ public abstract class Assignment extends Entity {
             AssignmentId id,
             AssignmentInfo info,
             AssignmentDeadline deadline,
+            AssignmentScore minScoreToPass,
             AssignmentStatus status,
             String courseId) {
         super();
         this.id = id;
         this.info = info;
         this.deadline = deadline;
+        this.minScoreToPass = minScoreToPass;
         this.status = status;
         this.courseId = validateAcademicTermId(courseId);
     }
@@ -46,6 +48,7 @@ public abstract class Assignment extends Entity {
             long code,
             AssignmentInfo info,
             AssignmentDeadline deadline,
+            AssignmentScore minScoreToPass,
             AssignmentStatus status,
             String courseId) {
         super(lifecycleStatus);
@@ -53,6 +56,7 @@ public abstract class Assignment extends Entity {
         this.code = validateCode(code);
         this.info = info;
         this.deadline = deadline;
+        this.minScoreToPass = minScoreToPass;
         this.status = status;
         this.courseId = validateAcademicTermId(courseId);
     }
@@ -71,6 +75,10 @@ public abstract class Assignment extends Entity {
 
     public AssignmentDeadline getDeadline() {
         return this.deadline;
+    }
+
+    public AssignmentScore getMinScoreToPass() {
+        return this.minScoreToPass;
     }
 
     public LocalDate getDeadlineDate() {
@@ -99,6 +107,10 @@ public abstract class Assignment extends Entity {
 
     public void reschedule(AssignmentDeadline newDeadline) {
         this.deadline = newDeadline;
+    }
+
+    public void changeMinimumScoreToPass(AssignmentScore newMinScoreToPass) {
+        this.minScoreToPass = newMinScoreToPass;
     }
 
     public void changeAcademicTerm(String academicTermId) {
