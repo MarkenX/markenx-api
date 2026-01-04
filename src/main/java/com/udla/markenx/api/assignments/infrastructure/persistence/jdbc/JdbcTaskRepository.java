@@ -2,8 +2,10 @@ package com.udla.markenx.api.assignments.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.assignments.domain.ports.outgoing.TaskCommandRepository;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -41,6 +43,19 @@ public class JdbcTaskRepository implements TaskCommandRepository {
 
     @Override
     public Task findById(String id) {
-        return null;
+        try {
+            return jdbcTemplate.queryForObject("""
+            SELECT *
+            FROM tasks
+            WHERE id = ?
+            """,
+                rowMapper,
+                id
+            );
+        } catch (EmptyResultDataAccessException ex) {
+            throw new EntityNotFoundException(
+                "No se encontró la tarea con el identificador:" + id
+            );
+        }
     }
 }
