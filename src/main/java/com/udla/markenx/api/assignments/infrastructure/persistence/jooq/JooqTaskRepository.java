@@ -25,7 +25,10 @@ public class JooqTaskRepository implements TaskQueryRepository {
 
     @Override
     public List<Task> findAll() {
-        return List.of();
+        return dsl
+                .select()
+                .from(TABLE)
+                .fetch(mapper::toDomain);
     }
 
     @Override
