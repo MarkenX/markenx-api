@@ -6,14 +6,12 @@ import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInf
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
-import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @SuppressWarnings({"LombokGetterMayBeUsed"})
-public class Assignment extends Entity {
+public abstract class Assignment extends Entity {
 
     private final AssignmentId id;
 
@@ -55,32 +53,6 @@ public class Assignment extends Entity {
         this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
-    }
-
-    // endregion
-
-    // region Factories
-
-    public static @NonNull Assignment create(AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
-        var id = AssignmentId.generate();
-        return new Assignment(
-                id,
-                info,
-                AssignmentDeadline.future(deadline),
-                AssignmentStatus.NOT_STARTED,
-                academicTermId
-        );
-    }
-
-    public static @NonNull Assignment createHistorical(AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
-        var id = AssignmentId.generate();
-        return new Assignment(
-                id,
-                info,
-                AssignmentDeadline.historical(deadline),
-                AssignmentStatus.NOT_STARTED,
-                academicTermId
-        );
     }
 
     // endregion
@@ -151,7 +123,9 @@ public class Assignment extends Entity {
 
     // endregion
 
-    private void transitionTo(AssignmentStatus next) {
+    public abstract void updateStatus();
+
+    protected void transitionTo(AssignmentStatus next) {
         if (!status.canTransitionTo(next)) {
             throw new InvalidAssignmentStatusTransitionException(status, next);
         }
