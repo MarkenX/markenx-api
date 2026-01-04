@@ -24,7 +24,7 @@ public abstract class Assignment extends Entity {
 
     // region Constructors
 
-    private Assignment(
+    protected Assignment(
             AssignmentId id,
             AssignmentInfo info,
             AssignmentDeadline deadline,
