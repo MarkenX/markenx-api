@@ -22,7 +22,7 @@ public abstract class Assignment extends Entity {
     private AssignmentScore minScoreToPass;
     private AssignmentStatus status;
 
-    private String academicTermId;
+    private String courseId;
 
     // region Constructors
 
@@ -31,13 +31,13 @@ public abstract class Assignment extends Entity {
             AssignmentInfo info,
             AssignmentDeadline deadline,
             AssignmentStatus status,
-            String academicTermId) {
+            String courseId) {
         super();
         this.id = id;
         this.info = info;
         this.deadline = deadline;
         this.status = status;
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.courseId = validateAcademicTermId(courseId);
     }
 
     public Assignment(
@@ -47,14 +47,14 @@ public abstract class Assignment extends Entity {
             AssignmentInfo info,
             AssignmentDeadline deadline,
             AssignmentStatus status,
-            String academicTermId) {
+            String courseId) {
         super(lifecycleStatus);
         this.id = new AssignmentId(id);
         this.code = validateCode(code);
         this.info = info;
         this.deadline = deadline;
         this.status = status;
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.courseId = validateAcademicTermId(courseId);
     }
 
     // endregion
@@ -85,8 +85,8 @@ public abstract class Assignment extends Entity {
         return this.status;
     }
 
-    public String getAcademicTermId() {
-        return this.academicTermId;
+    public String getCourseId() {
+        return this.courseId;
     }
 
     // endregion
@@ -102,7 +102,7 @@ public abstract class Assignment extends Entity {
     }
 
     public void changeAcademicTerm(String academicTermId) {
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.courseId = validateAcademicTermId(academicTermId);
     }
 
     // endregion
@@ -118,7 +118,7 @@ public abstract class Assignment extends Entity {
 
     public String validateAcademicTermId(String academicTermId) {
         if (academicTermId == null || academicTermId.isBlank()) {
-            throw new InvalidAcademicTermIdException();
+            throw new InvalidCourseIdException();
         }
         return academicTermId;
     }
