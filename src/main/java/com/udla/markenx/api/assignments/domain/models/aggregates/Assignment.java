@@ -2,6 +2,7 @@ package com.udla.markenx.api.assignments.domain.models.aggregates;
 
 import com.udla.markenx.api.assignments.domain.exceptions.InvalidAcademicTermIdException;
 import com.udla.markenx.api.assignments.domain.exceptions.InvalidAssignmentCodeException;
+import com.udla.markenx.api.assignments.domain.exceptions.InvalidAssignmentDescriptionException;
 import com.udla.markenx.api.assignments.domain.exceptions.InvalidAssignmentTitleException;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
@@ -34,7 +35,7 @@ public class Assignment extends Entity {
         super();
         this.id = id;
         this.title = validateTitle(title);
-        this.description = description;
+        this.description = validateDescription(description);
         this.dueDate = dueDate;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -53,7 +54,7 @@ public class Assignment extends Entity {
         this.id = new AssignmentId(id);
         this.code = validateCode(code);
         this.title = validateTitle(title);
-        this.description = description;
+        this.description = validateDescription(description);
         this.dueDate = dueDate;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -110,6 +111,13 @@ public class Assignment extends Entity {
             throw new InvalidAssignmentTitleException();
         }
         return title;
+    }
+
+    public String validateDescription(String description) {
+        if (description == null || description.isBlank()) {
+            throw new InvalidAssignmentDescriptionException();
+        }
+        return description;
     }
 
     // endregion
