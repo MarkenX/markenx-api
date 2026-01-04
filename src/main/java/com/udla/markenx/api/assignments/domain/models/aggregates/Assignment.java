@@ -3,6 +3,7 @@ package com.udla.markenx.api.assignments.domain.models.aggregates;
 import com.udla.markenx.api.assignments.domain.exceptions.*;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInfo;
+import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentScore;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
@@ -18,6 +19,7 @@ public abstract class Assignment extends Entity {
     private long code;
     private AssignmentInfo info;
     private AssignmentDeadline deadline;
+    private AssignmentScore score;
     private AssignmentStatus status;
 
     private String academicTermId;
