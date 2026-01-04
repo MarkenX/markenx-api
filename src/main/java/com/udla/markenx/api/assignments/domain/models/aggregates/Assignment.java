@@ -18,6 +18,8 @@ public class Assignment extends Entity {
 
     private String academicTermId;
 
+    // region Constructors
+
     private Assignment(
             AssignmentId id,
             long code,
@@ -35,6 +37,8 @@ public class Assignment extends Entity {
         this.status = status;
         this.academicTermId = academicTermId;
     }
+
+    // endregion
 
     // region Getters
 
