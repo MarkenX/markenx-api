@@ -62,4 +62,47 @@ public class JdbcTaskRepository implements TaskCommandRepository {
             );
         }
     }
+
+    @Override
+    public Task update(@NonNull Task task) {
+        int updatedRows = jdbcTemplate.update("""
+        UPDATE tasks
+        SET
+            lifecycle_status = ?,
+            status = ?,
+            title = ?,
+            summary = ?,
+            deadline = ?,
+            course_id = ?,
+            min_score_to_pass = ?,
+            max_attempts = ?,
+            current_attempt = ?
+        WHERE id = ?
+        """,
+                task.getLifecycleStatus().name(),
+                task.getStatus().name(),
+                task.getInfo().title(),
+                task.getInfo().summary(),
+                task.getDeadline().value(),
+                task.getCourseId(),
+                task.getMinScoreToPass().value(),
+                task.getMaxAttempts(),
+                task.getCurrentAttempt(),
+                task.getId()
+        );
+
+        if (updatedRows == 0) {
+            throw new EntityNotFoundException(
+                "No se encontró la tarea con el identificador:" + task.getId()
+            );
+        }
+
+        return jdbcTemplate.queryForObject("""
+            SELECT *
+            FROM tasks
+            WHERE id = ?
+            """,
+                rowMapper,
+                task.getId());
+    }
 }

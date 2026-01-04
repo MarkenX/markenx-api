@@ -19,7 +19,7 @@ public class UpdateTaskService implements UpdateTaskUseCase {
     public Task markTaskAsFailedIfOverdue(@NonNull MarkTaskAsFailedIfOverdueCommand command) {
         Task task = repository.findById(command.id());
         task.markAsFailedIfNotCompleted();
-        return repository.save(task);
+        return repository.update(task);
     }
 
     @Override
