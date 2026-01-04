@@ -1,4 +1,4 @@
-package com.udla.markenx.api.assignments.infrastructure;
+package com.udla.markenx.api.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.assignments.domain.exceptions.AssignmentException;
 import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
