@@ -5,6 +5,7 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 
 import java.time.LocalDate;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class Assignment extends Entity {
 
     private final AssignmentId id;
@@ -34,4 +35,32 @@ public class Assignment extends Entity {
         this.status = status;
         this.academicTermId = academicTermId;
     }
+
+    // region Getters
+
+    public String getId() {
+        return this.id.value();
+    }
+
+    public String getTitle() {
+        return this.title;
+    }
+
+    public String getDescription() {
+        return this.description;
+    }
+
+    public LocalDate getDueDate() {
+        return this.dueDate;
+    }
+
+    public String getStatus() {
+        return this.status.name();
+    }
+
+    public String getAcademicTermId() {
+        return this.academicTermId;
+    }
+
+    // endregion
 }
