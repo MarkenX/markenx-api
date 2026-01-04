@@ -89,7 +89,7 @@ public class Task extends Assignment {
                 info,
                 AssignmentDeadline.historical(deadline),
                 minScoreToPass,
-                AssignmentStatus.NOT_STARTED,
+                AssignmentStatus.OUTDATED,
                 courseId,
                 maxAttempts,
                 0
