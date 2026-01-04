@@ -36,4 +36,8 @@ public record AssignmentDeadline(LocalDateTime value) {
     public LocalTime time() {
         return value.toLocalTime();
     }
+
+    public boolean isOverdue() {
+        return value.isBefore(LocalDateTime.now());
+    }
 }
