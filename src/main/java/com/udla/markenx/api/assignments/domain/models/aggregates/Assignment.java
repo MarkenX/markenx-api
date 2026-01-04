@@ -139,6 +139,8 @@ public class Assignment extends Entity {
 
     // endregion
 
+    // region Equals & HashCode
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -150,6 +152,8 @@ public class Assignment extends Entity {
     public int hashCode() {
         return id.hashCode();
     }
+
+    // endregion
 
     @Override
     public String toString() {
