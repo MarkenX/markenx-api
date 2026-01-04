@@ -138,4 +138,10 @@ public class Task extends Assignment {
             this.status = AssignmentStatus.FAILED;
         }
     }
+
+    @Override
+    public String toString() {
+        return String.format("TSK-%s", formatCode());
+
+    }
 }
