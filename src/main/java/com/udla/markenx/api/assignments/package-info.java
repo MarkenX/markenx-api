@@ -1,14 +1,12 @@
 @ApplicationModule(
-        displayName = "Course Management",
+        displayName = "Assignment Management",
         allowedDependencies = {
                 "shared::aggregates",
                 "shared::valueobjects",
                 "shared::exceptions",
                 "shared::dtos",
-                "students::ports-incoming",
-                "assignments::ports-incoming"
         }
 )
-package com.udla.markenx.api.courses;
+package com.udla.markenx.api.assignments;
 
 import org.springframework.modulith.ApplicationModule;
