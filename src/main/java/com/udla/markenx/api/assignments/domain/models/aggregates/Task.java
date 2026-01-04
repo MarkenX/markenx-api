@@ -11,6 +11,11 @@ import java.time.LocalDateTime;
 
 public class Task extends Assignment {
 
+    private int maxAttempts;
+    private int currentAttempt;
+
+    // region Constructors
+
     private Task(
             AssignmentId id,
             AssignmentInfo info,
@@ -20,6 +25,7 @@ public class Task extends Assignment {
             String academicTermId) {
         super(id, info, deadline, minScoreToPass, status, academicTermId);
     }
+
     public Task(
             String id,
             LifecycleStatus lifecycleStatus,
@@ -32,6 +38,10 @@ public class Task extends Assignment {
     ) {
         super(id, lifecycleStatus, code, info, deadline, minScoreToPass, status, academicTermId);
     }
+
+    // endregion
+
+    // region Factories
 
     public static @NonNull Task create(
             AssignmentInfo info,
@@ -66,6 +76,8 @@ public class Task extends Assignment {
                 academicTermId
         );
     }
+
+    // endregion
 
     @Override
     public void updateStatus() {
