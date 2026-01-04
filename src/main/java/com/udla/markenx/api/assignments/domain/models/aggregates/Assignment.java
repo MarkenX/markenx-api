@@ -6,14 +6,13 @@ import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInf
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
+@SuppressWarnings({"LombokGetterMayBeUsed"})
 public class Assignment extends Entity {
 
     private final AssignmentId id;
