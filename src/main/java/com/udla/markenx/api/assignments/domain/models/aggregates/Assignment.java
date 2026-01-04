@@ -7,6 +7,8 @@ import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentSco
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -160,9 +162,14 @@ public abstract class Assignment extends Entity {
 
     // endregion
 
+    @Contract(pure = true)
+    private @NonNull String formatCode() {
+        return String.format("%04d", code);
+    }
+
     @Override
     public String toString() {
-        return String.format("ASN-%d", code);
+        return String.format("ASN-%s", formatCode());
 
     }
 }
