@@ -5,9 +5,17 @@ import com.udla.markenx.api.assignments.application.ports.incoming.SaveTaskUseCa
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentScore;
+import com.udla.markenx.api.assignments.domain.ports.outgoing.TaskCommandRepository;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.stereotype.Service;
 
+@Service
+@RequiredArgsConstructor
 public class SaveTaskCommandHandler implements SaveTaskUseCase {
+
+    private final TaskCommandRepository repository;
+
     @Override
     public Task handle(@NonNull SaveTaskCommand command) {
 
@@ -33,6 +41,6 @@ public class SaveTaskCommandHandler implements SaveTaskUseCase {
             );
         }
 
-        return null;
+        return repository.save(newTask);
     }
 }
