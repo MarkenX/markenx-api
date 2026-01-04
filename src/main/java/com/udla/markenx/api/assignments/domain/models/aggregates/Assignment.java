@@ -17,7 +17,7 @@ public class Assignment extends Entity {
 
     private long code;
     private String title;
-    private String description;
+    private String summary;
     private LocalDateTime deadline;
     private AssignmentStatus status;
 
@@ -28,14 +28,14 @@ public class Assignment extends Entity {
     private Assignment(
             AssignmentId id,
             String title,
-            String description,
+            String summary,
             LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
         super();
         this.id = id;
         this.title = validateTitle(title);
-        this.description = validateDescription(description);
+        this.summary = validateSummary(summary);
         this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -46,7 +46,7 @@ public class Assignment extends Entity {
             LifecycleStatus lifecycleStatus,
             long code,
             String title,
-            String description,
+            String summary,
             LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
@@ -54,7 +54,7 @@ public class Assignment extends Entity {
         this.id = new AssignmentId(id);
         this.code = validateCode(code);
         this.title = validateTitle(title);
-        this.description = validateDescription(description);
+        this.summary = validateSummary(summary);
         this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -86,8 +86,8 @@ public class Assignment extends Entity {
         return this.title;
     }
 
-    public String getDescription() {
-        return this.description;
+    public String getSummary() {
+        return this.summary;
     }
 
     public LocalDateTime getDeadline() {
@@ -135,7 +135,7 @@ public class Assignment extends Entity {
         return title;
     }
 
-    public String validateDescription(String description) {
+    public String validateSummary(String description) {
         if (description == null || description.isBlank()) {
             throw new InvalidAssignmentDescriptionException();
         }
