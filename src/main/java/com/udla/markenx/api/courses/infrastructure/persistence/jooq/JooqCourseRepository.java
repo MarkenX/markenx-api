@@ -2,7 +2,7 @@ package com.udla.markenx.api.courses.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.courses.domain.ports.outgoing.CourseQueryRepository;
-import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIds;
+import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIdsForStudentsHandler;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
@@ -18,7 +18,7 @@ import static org.jooq.impl.DSL.field;
 @Repository
 @RequiredArgsConstructor
 public class JooqCourseRepository
-        implements CourseQueryRepository, FindAllCoursesIds {
+        implements CourseQueryRepository, FindAllCoursesIdsForStudentsHandler {
 
     private final DSLContext dsl;
     private final CourseRecordMapper mapper = new CourseRecordMapper();
@@ -49,7 +49,7 @@ public class JooqCourseRepository
     }
 
     @Override
-    public List<String> findAllIds() {
+    public List<String> handle() {
         return dsl
                 .select(field("id", String.class))
                 .from(TABLE)

@@ -1,7 +1,7 @@
 package com.udla.markenx.api.students.infrastructure.seeders;
 
 import com.udla.markenx.api.students.application.commands.RegisterStudentCommand;
-import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIds;
+import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIdsForStudentsHandler;
 import com.udla.markenx.api.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.students.domain.models.aggregates.Student;
@@ -23,7 +23,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudentSeeder implements CommandLineRunner {
 
-    private final FindAllCoursesIds findAllCoursesIds;
+    private final FindAllCoursesIdsForStudentsHandler findAllCoursesIdsForStudents;
     private final RegisterStudentUseCase registerStudentUseCase;
     private final Flyway flyway;
 
@@ -31,7 +31,7 @@ public class StudentSeeder implements CommandLineRunner {
     public void run(String @NonNull ... args) {
         log.info("Seeding students...");
 
-        List<String> coursesIds = findAllCoursesIds.findAllIds();
+        List<String> coursesIds = findAllCoursesIdsForStudents.handle();
 
         try {
             coursesIds.forEach(courseId -> {
