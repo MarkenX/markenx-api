@@ -1,7 +1,9 @@
 package com.udla.markenx.api.assignments.domain.models.aggregates;
 
+import com.udla.markenx.api.assignments.domain.exceptions.InvalidAssignmentCodeException;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 
 import java.time.LocalDate;
 
@@ -30,7 +32,25 @@ public class Assignment extends Entity {
             String academicTermId) {
         super();
         this.id = id;
-        this.code = code;
+        this.title = title;
+        this.description = description;
+        this.dueDate = dueDate;
+        this.status = status;
+        this.academicTermId = academicTermId;
+    }
+
+    public Assignment(
+            String id,
+            LifecycleStatus lifecycleStatus,
+            long code,
+            String title,
+            String description,
+            LocalDate dueDate,
+            AssignmentStatus status,
+            String academicTermId) {
+        super(lifecycleStatus);
+        this.id = new AssignmentId(id);
+        this.code = validateCode(code);
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
@@ -64,6 +84,17 @@ public class Assignment extends Entity {
 
     public String getAcademicTermId() {
         return this.academicTermId;
+    }
+
+    // endregion
+
+    // region Validations
+
+    public long validateCode(long code) {
+        if (code <= 0) {
+            throw new InvalidAssignmentCodeException();
+        }
+        return code;
     }
 
     // endregion
