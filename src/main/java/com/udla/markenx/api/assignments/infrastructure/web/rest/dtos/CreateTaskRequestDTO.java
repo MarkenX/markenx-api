@@ -1,0 +1,12 @@
+package com.udla.markenx.api.assignments.infrastructure.web.rest.dtos;
+
+import java.time.LocalDateTime;
+
+public record CreateTaskRequestDTO(
+        String title,
+        String summary,
+        LocalDateTime deadline,
+        double minScoreToPass,
+        String courseId
+) {
+}
