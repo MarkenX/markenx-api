@@ -114,8 +114,28 @@ public class Task extends Assignment {
 
     // endregion
 
-    @Override
-    public void updateStatus() {
+    public void registerAttemptResult(@NonNull AssignmentScore score) {
 
+        this.currentAttempt++;
+
+        if (score.isGreaterOrEqualThan(this.minScoreToPass)) {
+            this.status = AssignmentStatus.COMPLETED;
+            return;
+        }
+
+        if (deadline.isOverdue()) {
+            this.status = AssignmentStatus.FAILED;
+            return;
+        }
+
+        this.status = AssignmentStatus.IN_PROGRESS;
+    }
+
+    public void markAsFailedIfNotCompleted() {
+        if (this.status == AssignmentStatus.COMPLETED) return;
+
+        if (deadline.isOverdue()) {
+            this.status = AssignmentStatus.FAILED;
+        }
     }
 }
