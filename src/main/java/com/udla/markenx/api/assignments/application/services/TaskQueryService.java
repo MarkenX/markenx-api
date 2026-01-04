@@ -5,7 +5,9 @@ import com.udla.markenx.api.assignments.application.queries.GetAllTasksPaginated
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.assignments.domain.ports.outgoing.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,11 +20,12 @@ public class TaskQueryService implements TaskQueryUseCase {
 
     @Override
     public List<Task> getAll() {
-        return List.of();
+        return repository.findAll();
     }
 
     @Override
-    public Page<Task> getAllPaginated(GetAllTasksPaginatedQuery query) {
-        return null;
+    public Page<Task> getAllPaginated(@NonNull GetAllTasksPaginatedQuery query) {
+        var pageable = PageRequest.of(query.page(), query.size());
+        return repository.findAllPaginated(pageable);
     }
 }
