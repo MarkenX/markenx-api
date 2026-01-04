@@ -92,16 +92,12 @@ public class Assignment extends Entity {
         return this.id.value();
     }
 
-    public String getTitle() {
-        return this.info.title();
+    public AssignmentInfo getInfo() {
+        return this.info;
     }
 
-    public String getSummary() {
-        return this.info.summary();
-    }
-
-    public LocalDateTime getDeadline() {
-        return this.deadline.value();
+    public AssignmentDeadline getDeadline() {
+        return this.deadline;
     }
 
     public LocalDate getDeadlineDate() {
@@ -112,8 +108,8 @@ public class Assignment extends Entity {
         return this.deadline.time();
     }
 
-    public String getStatus() {
-        return this.status.name();
+    public AssignmentStatus getStatus() {
+        return this.status;
     }
 
     public String getAcademicTermId() {
