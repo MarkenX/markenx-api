@@ -26,7 +26,6 @@ public class Assignment extends Entity {
 
     private Assignment(
             AssignmentId id,
-            long code,
             String title,
             String description,
             LocalDate dueDate,
