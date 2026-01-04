@@ -19,7 +19,7 @@ public abstract class Assignment extends Entity {
     private long code;
     private AssignmentInfo info;
     private AssignmentDeadline deadline;
-    private AssignmentScore score;
+    private AssignmentScore minScoreToPass;
     private AssignmentStatus status;
 
     private String academicTermId;
