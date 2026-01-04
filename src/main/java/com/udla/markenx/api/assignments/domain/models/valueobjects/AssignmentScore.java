@@ -12,4 +12,12 @@ public record AssignmentScore(Double value) {
             throw new ScoreOutOfAllowedRangeException();
         }
     }
+
+    public boolean isGreaterOrEqualThan(AssignmentScore other) {
+        if (other == null) {
+            throw new IllegalArgumentException("El score de comparación no puede ser nulo.");
+        }
+        return this.value >= other.value;
+    }
+
 }
