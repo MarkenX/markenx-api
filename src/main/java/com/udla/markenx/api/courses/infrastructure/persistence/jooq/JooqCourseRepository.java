@@ -1,5 +1,6 @@
 package com.udla.markenx.api.courses.infrastructure.persistence.jooq;
 
+import com.udla.markenx.api.assignments.application.ports.incoming.FindAllCoursesIdsForAssignmentsHandler;
 import com.udla.markenx.api.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.courses.domain.ports.outgoing.CourseQueryRepository;
 import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIdsForStudentsHandler;
@@ -17,8 +18,10 @@ import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqCourseRepository
-        implements CourseQueryRepository, FindAllCoursesIdsForStudentsHandler {
+public class JooqCourseRepository implements
+        CourseQueryRepository,
+        FindAllCoursesIdsForStudentsHandler,
+        FindAllCoursesIdsForAssignmentsHandler {
 
     private final DSLContext dsl;
     private final CourseRecordMapper mapper = new CourseRecordMapper();
