@@ -1,6 +1,6 @@
 package com.udla.markenx.api.assignments.application.services;
 
-import com.udla.markenx.api.assignments.application.commands.UpdateTaskStatusCommand;
+import com.udla.markenx.api.assignments.application.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.assignments.application.ports.incoming.UpdateTaskUseCase;
 import com.udla.markenx.api.assignments.application.queries.GetTaskByIdQuery;
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
@@ -16,7 +16,7 @@ public class UpdateTaskService implements UpdateTaskUseCase {
     private final TaskCommandRepository repository;
 
     @Override
-    public Task updateStatus(@NonNull UpdateTaskStatusCommand command) {
+    public Task markTaskAsFailedIfOverdue(@NonNull MarkTaskAsFailedIfOverdueCommand command) {
         Task task = repository.findById(command.id());
         task.markAsFailedIfNotCompleted();
         return repository.save(task);

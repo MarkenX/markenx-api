@@ -1,6 +1,6 @@
 package com.udla.markenx.api.assignments.infrastructure.tasks;
 
-import com.udla.markenx.api.assignments.application.commands.UpdateTaskStatusCommand;
+import com.udla.markenx.api.assignments.application.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.assignments.application.ports.incoming.TaskQueryUseCase;
 import com.udla.markenx.api.assignments.application.ports.incoming.UpdateTaskUseCase;
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
@@ -21,8 +21,8 @@ public class TaskStatusScheduler {
     public void checkAndUpdateTaskStatuses() {
         List<Task> tasks = taskQueryUseCase.getAll();
         for (Task task : tasks) {
-            var command = new UpdateTaskStatusCommand(task.getId());
-            updateTaskUseCase.updateStatus(command);
+            var command = new MarkTaskAsFailedIfOverdueCommand(task.getId());
+            updateTaskUseCase.markTaskAsFailedIfOverdue(command);
         }
     }
 
