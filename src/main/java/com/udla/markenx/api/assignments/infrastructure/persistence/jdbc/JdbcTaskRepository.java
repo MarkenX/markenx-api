@@ -3,14 +3,40 @@ package com.udla.markenx.api.assignments.infrastructure.persistence.jdbc;
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.assignments.domain.ports.outgoing.TaskCommandRepository;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcTaskRepository implements TaskCommandRepository {
+
+    private final TaskRowMapper rowMapper = new TaskRowMapper();
+    private final JdbcTemplate jdbcTemplate;
+
     @Override
-    public Task save(Task task) {
-        return null;
+    public Task save(@NonNull Task task) {
+        jdbcTemplate.update("""
+            INSERT INTO tasks
+            (id, lifecycle_status, status, title, summary, deadline, course_id)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+                task.getId(),
+                task.getLifecycleStatus().name(),
+                task.getStatus().name(),
+                task.getInfo().title(),
+                task.getInfo().summary(),
+                task.getDeadline().value(),
+                task.getCourseId()
+        );
+
+        return jdbcTemplate.queryForObject("""
+                SELECT *
+                FROM tasks
+                WHERE id = ?
+                """,
+                rowMapper,
+                task.getId());
     }
 
     @Override
