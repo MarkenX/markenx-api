@@ -9,6 +9,8 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Assignment extends Entity {
@@ -18,7 +20,7 @@ public class Assignment extends Entity {
     private long code;
     private String title;
     private String description;
-    private LocalDate dueDate;
+    private LocalDateTime deadline;
     private AssignmentStatus status;
 
     private String academicTermId;
@@ -29,14 +31,14 @@ public class Assignment extends Entity {
             AssignmentId id,
             String title,
             String description,
-            LocalDate dueDate,
+            LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
         super();
         this.id = id;
         this.title = validateTitle(title);
         this.description = validateDescription(description);
-        this.dueDate = dueDate;
+        this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
@@ -47,7 +49,7 @@ public class Assignment extends Entity {
             long code,
             String title,
             String description,
-            LocalDate dueDate,
+            LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
         super(lifecycleStatus);
@@ -55,7 +57,7 @@ public class Assignment extends Entity {
         this.code = validateCode(code);
         this.title = validateTitle(title);
         this.description = validateDescription(description);
-        this.dueDate = dueDate;
+        this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
@@ -76,8 +78,16 @@ public class Assignment extends Entity {
         return this.description;
     }
 
-    public LocalDate getDueDate() {
-        return this.dueDate;
+    public LocalDateTime getDeadline() {
+        return this.deadline;
+    }
+
+    public LocalDate getDeadlineDate() {
+        return this.deadline.toLocalDate();
+    }
+
+    public LocalTime getDeadlineTime() {
+        return this.deadline.toLocalTime();
     }
 
     public String getStatus() {
