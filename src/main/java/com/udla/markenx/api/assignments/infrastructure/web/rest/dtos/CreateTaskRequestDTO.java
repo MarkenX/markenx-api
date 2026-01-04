@@ -7,6 +7,7 @@ public record CreateTaskRequestDTO(
         String summary,
         LocalDateTime deadline,
         double minScoreToPass,
+        int maxAttempts,
         String courseId
 ) {
 }
