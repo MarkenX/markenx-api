@@ -37,15 +37,16 @@ public class Task extends Assignment {
             String id,
             LifecycleStatus lifecycleStatus,
             long code,
-            AssignmentInfo info,
-            AssignmentDeadline deadline,
-            AssignmentScore minScoreToPass,
+            String title,
+            String summary,
+            LocalDateTime deadline,
+            double minScoreToPass,
             AssignmentStatus status,
             String courseId,
             int maxAttempts,
             int currentAttempt
     ) {
-        super(id, lifecycleStatus, code, info, deadline, minScoreToPass, status, courseId);
+        super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, status, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
         this.currentAttempt = validateCurrentAttempt(currentAttempt);
     }

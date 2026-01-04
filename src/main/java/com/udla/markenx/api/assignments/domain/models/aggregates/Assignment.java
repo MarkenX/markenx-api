@@ -11,6 +11,7 @@ import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @SuppressWarnings({"LombokGetterMayBeUsed"})
@@ -48,17 +49,19 @@ public abstract class Assignment extends Entity {
             String id,
             LifecycleStatus lifecycleStatus,
             long code,
-            AssignmentInfo info,
-            AssignmentDeadline deadline,
-            AssignmentScore minScoreToPass,
+            String title,
+            String summary,
+            LocalDateTime deadline,
+            double minScoreToPass,
             AssignmentStatus status,
-            String courseId) {
+            String courseId
+    ) {
         super(lifecycleStatus);
         this.id = new AssignmentId(id);
         this.code = validateCode(code);
-        this.info = info;
-        this.deadline = deadline;
-        this.minScoreToPass = minScoreToPass;
+        this.info = new AssignmentInfo(title, summary);
+        this.deadline = new AssignmentDeadline(deadline);
+        this.minScoreToPass = new AssignmentScore(minScoreToPass);
         this.status = status;
         this.courseId = validateAcademicTermId(courseId);
     }
