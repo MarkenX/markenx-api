@@ -1,9 +1,7 @@
-package com.udla.markenx.api.courses.infrastructure.persistence.jooq;
+package com.udla.markenx.api.assignments.infrastructure.persistence.jooq;
 
-import com.udla.markenx.api.assignments.application.ports.incoming.FindAllCoursesIdsForAssignmentsHandler;
-import com.udla.markenx.api.courses.domain.models.aggregates.Course;
-import com.udla.markenx.api.courses.domain.ports.outgoing.CourseQueryRepository;
-import com.udla.markenx.api.students.application.ports.incoming.FindAllCoursesIdsForStudentsHandler;
+import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
+import com.udla.markenx.api.assignments.domain.ports.outgoing.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
@@ -18,21 +16,27 @@ import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqCourseRepository implements
-        CourseQueryRepository,
-        FindAllCoursesIdsForStudentsHandler,
-        FindAllCoursesIdsForAssignmentsHandler {
+public class JooqTaskRepository implements TaskQueryRepository {
 
     private final DSLContext dsl;
-    private final CourseRecordMapper mapper = new CourseRecordMapper();
+    private final TaskRecordMapper mapper = new TaskRecordMapper();
 
-    private static final String TABLE = "courses";
+    private static final String TABLE = "tasks";
 
     @Override
-    public Page<Course> findAllPaginated(@NonNull Pageable pageable) {
+    public List<Task> findAll() {
+        return dsl
+                .select()
+                .from(TABLE)
+                .fetch(mapper::toDomain);
+    }
+
+    @Override
+    public Page<Task> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
                 .from(TABLE)
+                .orderBy(field("title").desc())
                 .limit(pageable.getPageSize())
                 .offset((int) pageable.getOffset())
                 .fetch();
@@ -49,13 +53,5 @@ public class JooqCourseRepository implements
                 pageable,
                 safeTotal
         );
-    }
-
-    @Override
-    public List<String> handle() {
-        return dsl
-                .select(field("id", String.class))
-                .from(TABLE)
-                .fetchInto(String.class);
     }
 }
