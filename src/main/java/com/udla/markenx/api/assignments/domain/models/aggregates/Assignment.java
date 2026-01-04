@@ -113,15 +113,15 @@ public class Assignment extends Entity {
 
     // region Setters
 
-    public void setInfo(AssignmentInfo info) {
-        this.info = info;
+    public void updateInfo(AssignmentInfo newInfo) {
+        this.info = newInfo;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
-        this.deadline = validateDeadline(deadline);
+    public void reschedule(LocalDateTime newDeadline) {
+        this.deadline = validateDeadline(newDeadline);
     }
 
-    public void setAcademicTermId(String academicTermId) {
+    public void changeAcademicTerm(String academicTermId) {
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
