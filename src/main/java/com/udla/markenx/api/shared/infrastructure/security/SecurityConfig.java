@@ -19,8 +19,14 @@ public class SecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                    // Rutas públicas
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/onboarding/**").permitAll()
+                    // Swagger UI - rutas públicas
+                    .requestMatchers("/api/v1/swagger-ui/**").permitAll()
+                    .requestMatchers("/api/v1/swagger-ui.html").permitAll()
+                    .requestMatchers("/api/v1/v3/api-docs/**").permitAll()
+                    // Todas las demás requieren autenticación
                     .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth ->
