@@ -4,6 +4,7 @@ import com.udla.markenx.api.assignments.domain.exceptions.*;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,7 +36,7 @@ public class Assignment extends Entity {
         this.id = id;
         this.title = validateTitle(title);
         this.description = validateDescription(description);
-        this.deadline = validateDeadline(deadline);
+        this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
     }
@@ -54,9 +55,23 @@ public class Assignment extends Entity {
         this.code = validateCode(code);
         this.title = validateTitle(title);
         this.description = validateDescription(description);
-        this.deadline = validateDeadline(deadline);
+        this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
+    }
+
+    // endregion
+
+    // region Factories
+
+    public static @NonNull Assignment create(String title, String description, LocalDateTime deadline, String academicTermId) {
+        var id = AssignmentId.generate();
+        return new Assignment(id, title, description, deadline, AssignmentStatus.NOT_STARTED, academicTermId);
+    }
+
+    public static @NonNull Assignment createHistorical(String title, String description, LocalDateTime deadline, String academicTermId) {
+        validateDeadline(deadline);
+        return create(title, description, deadline, academicTermId);
     }
 
     // endregion
@@ -127,14 +142,13 @@ public class Assignment extends Entity {
         return description;
     }
 
-    public LocalDateTime validateDeadline(LocalDateTime dueDate) {
+    public static void validateDeadline(LocalDateTime dueDate) {
         if (dueDate == null) {
             throw new DueDateNotProvidedException();
         }
         if (!dueDate.isAfter(LocalDateTime.now())) {
             throw new DueDateMustBeInTheFutureException();
         }
-        return dueDate;
     }
 
     // endregion
