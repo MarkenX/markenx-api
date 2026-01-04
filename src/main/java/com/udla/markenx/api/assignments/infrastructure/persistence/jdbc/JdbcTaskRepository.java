@@ -19,17 +19,21 @@ public class JdbcTaskRepository implements TaskCommandRepository {
     @Override
     public Task save(@NonNull Task task) {
         jdbcTemplate.update("""
-            INSERT INTO tasks
-            (id, lifecycle_status, status, title, summary, deadline, course_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+        INSERT INTO tasks
+        (id, lifecycle_status, status, title, summary, deadline, course_id, 
+         min_score_to_pass, max_attempts, current_attempt)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """,
                 task.getId(),
                 task.getLifecycleStatus().name(),
                 task.getStatus().name(),
                 task.getInfo().title(),
                 task.getInfo().summary(),
                 task.getDeadline().value(),
-                task.getCourseId()
+                task.getCourseId(),
+                task.getMinScoreToPass().value(),
+                task.getMaxAttempts(),
+                task.getCurrentAttempt()
         );
 
         return jdbcTemplate.queryForObject("""
