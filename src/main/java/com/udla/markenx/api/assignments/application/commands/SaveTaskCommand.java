@@ -8,6 +8,7 @@ public record SaveTaskCommand(
         LocalDateTime deadline,
         Double minScoreToPass,
         String courseId,
-        int maxAttempts
+        int maxAttempts,
+        boolean isHistorical
 ) {
 }
