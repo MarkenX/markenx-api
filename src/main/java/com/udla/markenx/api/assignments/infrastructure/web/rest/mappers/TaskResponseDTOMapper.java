@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskResponseDTOMapper {
 
-    public TaskResponseDTO ToDTO(@NonNull Task task) {
+    public TaskResponseDTO toDTO(@NonNull Task task) {
         return new TaskResponseDTO(
                 task.getId(),
                 task.toString(),
