@@ -1,6 +1,7 @@
 package com.udla.markenx.api.assignments.domain.models.aggregates;
 
 import com.udla.markenx.api.assignments.domain.exceptions.*;
+import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
@@ -19,7 +20,7 @@ public class Assignment extends Entity {
 
     private long code;
     private AssignmentInfo info;
-    private LocalDateTime deadline;
+    private AssignmentDeadline deadline;
     private AssignmentStatus status;
 
     private String academicTermId;
@@ -29,7 +30,7 @@ public class Assignment extends Entity {
     private Assignment(
             AssignmentId id,
             AssignmentInfo info,
-            LocalDateTime deadline,
+            AssignmentDeadline deadline,
             AssignmentStatus status,
             String academicTermId) {
         super();
@@ -45,7 +46,7 @@ public class Assignment extends Entity {
             LifecycleStatus lifecycleStatus,
             long code,
             AssignmentInfo info,
-            LocalDateTime deadline,
+            AssignmentDeadline deadline,
             AssignmentStatus status,
             String academicTermId) {
         super(lifecycleStatus);
@@ -61,16 +62,26 @@ public class Assignment extends Entity {
 
     // region Factories
 
-    public static @NonNull Assignment create(
-            AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
+    public static @NonNull Assignment create(AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
         var id = AssignmentId.generate();
-        return new Assignment(id, info, deadline, AssignmentStatus.NOT_STARTED, academicTermId);
+        return new Assignment(
+                id,
+                info,
+                AssignmentDeadline.future(deadline),
+                AssignmentStatus.NOT_STARTED,
+                academicTermId
+        );
     }
 
-    public static @NonNull Assignment createHistorical(
-            AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
-        validateDeadline(deadline);
-        return create(info, deadline, academicTermId);
+    public static @NonNull Assignment createHistorical(AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
+        var id = AssignmentId.generate();
+        return new Assignment(
+                id,
+                info,
+                AssignmentDeadline.historical(deadline),
+                AssignmentStatus.NOT_STARTED,
+                academicTermId
+        );
     }
 
     // endregion
@@ -90,15 +101,15 @@ public class Assignment extends Entity {
     }
 
     public LocalDateTime getDeadline() {
-        return this.deadline;
+        return this.deadline.value();
     }
 
     public LocalDate getDeadlineDate() {
-        return this.deadline.toLocalDate();
+        return this.deadline.date();
     }
 
     public LocalTime getDeadlineTime() {
-        return this.deadline.toLocalTime();
+        return this.deadline.time();
     }
 
     public String getStatus() {
@@ -117,8 +128,8 @@ public class Assignment extends Entity {
         this.info = newInfo;
     }
 
-    public void reschedule(LocalDateTime newDeadline) {
-        this.deadline = validateDeadline(newDeadline);
+    public void reschedule(AssignmentDeadline newDeadline) {
+        this.deadline = newDeadline;
     }
 
     public void changeAcademicTerm(String academicTermId) {
@@ -141,17 +152,6 @@ public class Assignment extends Entity {
             throw new InvalidAcademicTermIdException();
         }
         return academicTermId;
-    }
-
-    @Contract("null -> fail")
-    public static @NonNull LocalDateTime validateDeadline(LocalDateTime dueDate) {
-        if (dueDate == null) {
-            throw new DueDateNotProvidedException();
-        }
-        if (!dueDate.isAfter(LocalDateTime.now())) {
-            throw new DueDateMustBeInTheFutureException();
-        }
-        return dueDate;
     }
 
     // endregion
