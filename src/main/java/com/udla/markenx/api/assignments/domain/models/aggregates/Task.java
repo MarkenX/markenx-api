@@ -11,6 +11,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDateTime;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class Task extends Assignment {
 
     private int maxAttempts;
@@ -96,6 +97,27 @@ public class Task extends Assignment {
     }
 
     // endregion
+
+    // region Getters
+
+    public int getMaxAttempts() {
+        return this.maxAttempts;
+    }
+
+    public int getCurrentAttempt() {
+        return this.currentAttempt;
+    }
+
+    // endregion
+
+    // region Setters
+
+    public void setMaxAttempts(int maxAttempts) {
+        this.maxAttempts = validateMaxAttempts(maxAttempts);
+    }
+
+    // endregion
+
 
     // region Validations
 
