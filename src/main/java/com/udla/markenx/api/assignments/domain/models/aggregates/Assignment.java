@@ -18,9 +18,9 @@ public abstract class Assignment extends Entity {
 
     private long code;
     private AssignmentInfo info;
-    private AssignmentDeadline deadline;
-    private AssignmentScore minScoreToPass;
-    private AssignmentStatus status;
+    protected AssignmentDeadline deadline;
+    protected AssignmentScore minScoreToPass;
+    protected AssignmentStatus status;
 
     private String courseId;
 
@@ -136,8 +136,6 @@ public abstract class Assignment extends Entity {
     }
 
     // endregion
-
-    public abstract void updateStatus();
 
     protected void transitionTo(AssignmentStatus next) {
         if (!status.canTransitionTo(next)) {
