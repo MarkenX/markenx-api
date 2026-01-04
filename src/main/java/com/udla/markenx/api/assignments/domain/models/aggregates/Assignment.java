@@ -1,6 +1,7 @@
 package com.udla.markenx.api.assignments.domain.models.aggregates;
 
 import com.udla.markenx.api.assignments.domain.exceptions.*;
+import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
@@ -16,8 +17,7 @@ public class Assignment extends Entity {
     private final AssignmentId id;
 
     private long code;
-    private String title;
-    private String summary;
+    private AssignmentInfo info;
     private LocalDateTime deadline;
     private AssignmentStatus status;
 
@@ -27,15 +27,13 @@ public class Assignment extends Entity {
 
     private Assignment(
             AssignmentId id,
-            String title,
-            String summary,
+            AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
         super();
         this.id = id;
-        this.title = validateTitle(title);
-        this.summary = validateSummary(summary);
+        this.info = info;
         this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -45,16 +43,14 @@ public class Assignment extends Entity {
             String id,
             LifecycleStatus lifecycleStatus,
             long code,
-            String title,
-            String summary,
+            AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentStatus status,
             String academicTermId) {
         super(lifecycleStatus);
         this.id = new AssignmentId(id);
         this.code = validateCode(code);
-        this.title = validateTitle(title);
-        this.summary = validateSummary(summary);
+        this.info = info;
         this.deadline = deadline;
         this.status = status;
         this.academicTermId = validateAcademicTermId(academicTermId);
@@ -64,14 +60,16 @@ public class Assignment extends Entity {
 
     // region Factories
 
-    public static @NonNull Assignment create(String title, String description, LocalDateTime deadline, String academicTermId) {
+    public static @NonNull Assignment create(
+            AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
         var id = AssignmentId.generate();
-        return new Assignment(id, title, description, deadline, AssignmentStatus.NOT_STARTED, academicTermId);
+        return new Assignment(id, info, deadline, AssignmentStatus.NOT_STARTED, academicTermId);
     }
 
-    public static @NonNull Assignment createHistorical(String title, String description, LocalDateTime deadline, String academicTermId) {
+    public static @NonNull Assignment createHistorical(
+            AssignmentInfo info, LocalDateTime deadline, String academicTermId) {
         validateDeadline(deadline);
-        return create(title, description, deadline, academicTermId);
+        return create(info, deadline, academicTermId);
     }
 
     // endregion
@@ -83,11 +81,11 @@ public class Assignment extends Entity {
     }
 
     public String getTitle() {
-        return this.title;
+        return this.info.title();
     }
 
     public String getSummary() {
-        return this.summary;
+        return this.info.summary();
     }
 
     public LocalDateTime getDeadline() {
@@ -126,20 +124,6 @@ public class Assignment extends Entity {
             throw new InvalidAcademicTermIdException();
         }
         return academicTermId;
-    }
-
-    public String validateTitle(String title) {
-        if (title == null || title.isBlank()) {
-            throw new InvalidAssignmentTitleException();
-        }
-        return title;
-    }
-
-    public String validateSummary(String description) {
-        if (description == null || description.isBlank()) {
-            throw new InvalidAssignmentDescriptionException();
-        }
-        return description;
     }
 
     public static void validateDeadline(LocalDateTime dueDate) {
