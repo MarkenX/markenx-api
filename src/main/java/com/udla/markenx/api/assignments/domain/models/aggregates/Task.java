@@ -1,5 +1,6 @@
 package com.udla.markenx.api.assignments.domain.models.aggregates;
 
+import com.udla.markenx.api.assignments.domain.exceptions.InvalidMaxAttemptsException;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentScore;
@@ -22,8 +23,10 @@ public class Task extends Assignment {
             AssignmentDeadline deadline,
             AssignmentScore minScoreToPass,
             AssignmentStatus status,
-            String academicTermId) {
+            String academicTermId,
+            int maxAttempts) {
         super(id, info, deadline, minScoreToPass, status, academicTermId);
+        this.maxAttempts = validateMaxAttempts(maxAttempts);
     }
 
     public Task(
@@ -37,6 +40,7 @@ public class Task extends Assignment {
             String academicTermId
     ) {
         super(id, lifecycleStatus, code, info, deadline, minScoreToPass, status, academicTermId);
+        this.maxAttempts = validateMaxAttempts(maxAttempts);
     }
 
     // endregion
@@ -47,7 +51,8 @@ public class Task extends Assignment {
             AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
-            String academicTermId
+            String academicTermId,
+            int maxAttempts
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -56,7 +61,8 @@ public class Task extends Assignment {
                 AssignmentDeadline.future(deadline),
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
-                academicTermId
+                academicTermId,
+                maxAttempts
         );
     }
 
@@ -64,7 +70,8 @@ public class Task extends Assignment {
             AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
-            String academicTermId
+            String academicTermId,
+            int maxAttempts
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -73,8 +80,20 @@ public class Task extends Assignment {
                 AssignmentDeadline.historical(deadline),
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
-                academicTermId
+                academicTermId,
+                maxAttempts
         );
+    }
+
+    // endregion
+
+    // region Validations
+
+    public int validateMaxAttempts(int maxAttempts) {
+        if (maxAttempts <= 0) {
+            throw new InvalidMaxAttemptsException();
+        }
+        return maxAttempts;
     }
 
     // endregion
