@@ -5,13 +5,14 @@ import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInf
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-@SuppressWarnings("LombokGetterMayBeUsed")
+@SuppressWarnings({"LombokGetterMayBeUsed", "LombokSetterMayBeUsed"})
 public class Assignment extends Entity {
 
     private final AssignmentId id;
@@ -110,6 +111,22 @@ public class Assignment extends Entity {
 
     // endregion
 
+    // region Setters
+
+    public void setInfo(AssignmentInfo info) {
+        this.info = info;
+    }
+
+    public void setDeadline(LocalDateTime deadline) {
+        this.deadline = validateDeadline(deadline);
+    }
+
+    public void setAcademicTermId(String academicTermId) {
+        this.academicTermId = validateAcademicTermId(academicTermId);
+    }
+
+    // endregion
+
     // region Validations
 
     public long validateCode(long code) {
@@ -126,13 +143,15 @@ public class Assignment extends Entity {
         return academicTermId;
     }
 
-    public static void validateDeadline(LocalDateTime dueDate) {
+    @Contract("null -> fail")
+    public static @NonNull LocalDateTime validateDeadline(LocalDateTime dueDate) {
         if (dueDate == null) {
             throw new DueDateNotProvidedException();
         }
         if (!dueDate.isAfter(LocalDateTime.now())) {
             throw new DueDateMustBeInTheFutureException();
         }
+        return dueDate;
     }
 
     // endregion
