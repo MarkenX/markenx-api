@@ -163,7 +163,7 @@ public abstract class Assignment extends Entity {
     // endregion
 
     @Contract(pure = true)
-    private @NonNull String formatCode() {
+    protected @NonNull String formatCode() {
         return String.format("%04d", code);
     }
 
