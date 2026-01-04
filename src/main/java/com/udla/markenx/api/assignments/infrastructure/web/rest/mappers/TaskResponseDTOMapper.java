@@ -2,12 +2,13 @@ package com.udla.markenx.api.assignments.infrastructure.web.rest.mappers;
 
 import com.udla.markenx.api.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
 public class TaskResponseDTOMapper {
 
-    public TaskResponseDTO ToDTO(Task task) {
+    public TaskResponseDTO ToDTO(@NonNull Task task) {
         return new TaskResponseDTO(
                 task.getId(),
                 task.toString(),
