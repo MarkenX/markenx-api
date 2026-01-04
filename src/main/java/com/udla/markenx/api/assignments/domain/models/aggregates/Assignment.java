@@ -150,4 +150,10 @@ public class Assignment extends Entity {
     public int hashCode() {
         return id.hashCode();
     }
+
+    @Override
+    public String toString() {
+        return String.format("ASN-%d", code);
+
+    }
 }
