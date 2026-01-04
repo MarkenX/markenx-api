@@ -1,5 +1,6 @@
 package com.udla.markenx.api.assignments.domain.models.aggregates;
 
+import com.udla.markenx.api.assignments.domain.exceptions.InvalidAcademicTermIdException;
 import com.udla.markenx.api.assignments.domain.exceptions.InvalidAssignmentCodeException;
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
@@ -36,7 +37,7 @@ public class Assignment extends Entity {
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
-        this.academicTermId = academicTermId;
+        this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
     public Assignment(
@@ -55,7 +56,7 @@ public class Assignment extends Entity {
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
-        this.academicTermId = academicTermId;
+        this.academicTermId = validateAcademicTermId(academicTermId);
     }
 
     // endregion
@@ -95,6 +96,13 @@ public class Assignment extends Entity {
             throw new InvalidAssignmentCodeException();
         }
         return code;
+    }
+
+    public String validateAcademicTermId(String academicTermId) {
+        if (academicTermId == null || academicTermId.isBlank()) {
+            throw new InvalidAcademicTermIdException();
+        }
+        return academicTermId;
     }
 
     // endregion
