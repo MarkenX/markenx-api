@@ -6,6 +6,8 @@ import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentInf
 import com.udla.markenx.api.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import com.udla.markenx.api.students.domain.exceptions.InvalidStudentStatusTransitionException;
+import com.udla.markenx.api.students.domain.models.valueobjects.StudentStatus;
 import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
@@ -150,6 +152,13 @@ public class Assignment extends Entity {
     }
 
     // endregion
+
+    private void transitionTo(AssignmentStatus next) {
+        if (!status.canTransitionTo(next)) {
+            throw new InvalidAssignmentStatusTransitionException(status, next);
+        }
+        this.status = next;
+    }
 
     // region Equals & HashCode
 
