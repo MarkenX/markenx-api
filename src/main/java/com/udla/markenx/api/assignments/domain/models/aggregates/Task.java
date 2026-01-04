@@ -56,7 +56,7 @@ public class Task extends Assignment {
             AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
-            String academicTermId,
+            String courseId,
             int maxAttempts
     ) {
         var id = AssignmentId.generate();
@@ -66,7 +66,7 @@ public class Task extends Assignment {
                 AssignmentDeadline.future(deadline),
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
-                academicTermId,
+                courseId,
                 maxAttempts,
                 0
         );
@@ -76,7 +76,7 @@ public class Task extends Assignment {
             AssignmentInfo info,
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
-            String academicTermId,
+            String courseId,
             int maxAttempts
     ) {
         var id = AssignmentId.generate();
@@ -86,7 +86,7 @@ public class Task extends Assignment {
                 AssignmentDeadline.historical(deadline),
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
-                academicTermId,
+                courseId,
                 maxAttempts,
                 0
         );
