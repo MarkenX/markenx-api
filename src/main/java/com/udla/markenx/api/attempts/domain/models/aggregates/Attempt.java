@@ -1,5 +1,6 @@
 package com.udla.markenx.api.attempts.domain.models.aggregates;
 
+import com.udla.markenx.api.attempts.domain.exceptions.InvalidAttemptStatusTransitionException;
 import com.udla.markenx.api.attempts.domain.exceptions.InvalidStudentIdException;
 import com.udla.markenx.api.attempts.domain.exceptions.InvalidTaskIdException;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptResult;
@@ -79,6 +80,13 @@ public class Attempt extends Entity {
     }
 
     // endregion
+
+    protected void transitionTo(AttemptStatus next) {
+        if (!status.canTransitionTo(next)) {
+            throw new InvalidAttemptStatusTransitionException(status, next);
+        }
+        this.status = next;
+    }
 
     // region Validations
 
