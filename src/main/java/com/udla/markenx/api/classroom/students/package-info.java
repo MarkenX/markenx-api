@@ -5,7 +5,7 @@
         "shared::valueobjects",
         "shared::exceptions",
         "shared::dtos",
-        "users::events"
+        "classroom.users::events"
     }
 )
 package com.udla.markenx.api.classroom.students;

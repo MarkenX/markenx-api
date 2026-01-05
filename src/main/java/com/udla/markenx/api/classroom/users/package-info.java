@@ -3,7 +3,7 @@
     allowedDependencies = {
             "shared::aggregates",
             "shared::valueobjects",
-            "students::events"
+            "classroom.students::events"
 })
 package com.udla.markenx.api.classroom.users;
 
