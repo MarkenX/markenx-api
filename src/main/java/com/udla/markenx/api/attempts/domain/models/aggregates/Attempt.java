@@ -1,8 +1,6 @@
 package com.udla.markenx.api.attempts.domain.models.aggregates;
 
-import com.udla.markenx.api.attempts.domain.exceptions.InvalidAttemptStatusTransitionException;
-import com.udla.markenx.api.attempts.domain.exceptions.InvalidStudentIdException;
-import com.udla.markenx.api.attempts.domain.exceptions.InvalidTaskIdException;
+import com.udla.markenx.api.attempts.domain.exceptions.*;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptResult;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
@@ -15,7 +13,7 @@ import java.math.BigDecimal;
 public class Attempt extends Entity {
 
     private final AttemptId id;
-    private final AttemptResult result;
+    private AttemptResult result;
     private AttemptStatus status;
     private final String taskId;
     private final String studentId;
@@ -100,8 +98,16 @@ public class Attempt extends Entity {
 
     // endregion
 
-    public void updateStatusFromResult(@NonNull AttemptResult result, double minScoreToPass) {
-        if (result.approvalRate() >=  minScoreToPass) {
+    public void registerResults(AttemptResult result, double minScoreToPass) {
+        if (this.result != null) {
+            throw new ResultsAlreadyRegisteredException();
+        }
+        this.result = validateResult(result);
+        determineAndSetStatus(minScoreToPass);
+    }
+
+    private void determineAndSetStatus(double minScoreToPass) {
+        if (this.result.approvalRate() >= minScoreToPass) {
             transitionTo(AttemptStatus.APPROVED);
         } else {
             transitionTo(AttemptStatus.DISAPPROVED);
@@ -129,6 +135,13 @@ public class Attempt extends Entity {
             throw new InvalidStudentIdException();
         }
         return studentId;
+    }
+
+    public AttemptResult validateResult(AttemptResult result) {
+        if (this.result == null) {
+            throw new NullAttemptResultException();
+        }
+        return this.result;
     }
 
     // endregion
