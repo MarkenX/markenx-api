@@ -39,6 +39,18 @@ public class Scenario {
 
     // endregion
 
+    // region Setters
+
+    public void setTitle(String title) {
+        this.title = validateTitle(title);
+    }
+
+    public void setDescription(String description) {
+        this.description = validateDescription(description);
+    }
+
+    // endregion
+
     // region Validations
 
     public String validateTitle(String title) {
