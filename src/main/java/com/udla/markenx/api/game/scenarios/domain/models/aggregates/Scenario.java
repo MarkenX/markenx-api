@@ -3,6 +3,7 @@ package com.udla.markenx.api.game.scenarios.domain.models.aggregates;
 import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioDescriptionException;
 import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioTitleException;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
@@ -12,6 +13,8 @@ public class Scenario {
     private long code;
     private String title;
     private String description;
+
+    // region Constructors
 
     public Scenario(
             ScenarioId id,
@@ -32,6 +35,20 @@ public class Scenario {
         this.title = validateTitle(title);
         this.description = validateDescription(description);
     }
+
+    // endregion
+
+    // region Factories
+
+    public static @NotNull Scenario create(
+            String title,
+            String description
+    ) {
+        var id = ScenarioId.generate();
+        return new Scenario(id, title, description);
+    }
+
+    // endregion
 
     // region Getters
 
