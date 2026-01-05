@@ -21,4 +21,28 @@ public class Dimension {
         this.consumerExpectation = consumerExpectation;
         this.productInitialOffer = productInitialOffer;
     }
+
+    // region Getters
+
+    public DimensionId getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public double getConsumerExpectation() {
+        return consumerExpectation;
+    }
+
+    public double getProductInitialOffer() {
+        return productInitialOffer;
+    }
+
+    // endregion
 }
