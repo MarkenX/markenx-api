@@ -1,8 +1,8 @@
 package com.udla.markenx.api.game.attempts.domain.models.aggregates;
 
-import com.udla.markenx.api.attempts.domain.exceptions.*;
 import com.udla.markenx.api.game.attempts.domain.exceptions.*;
-import com.udla.markenx.api.videogame.attempts.domain.exceptions.*;
+import com.udla.markenx.api.game.attempts.domain.exceptions.*;
+import com.udla.markenx.api.game.attempts.domain.exceptions.*;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptResult;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
 import org.jspecify.annotations.NonNull;
