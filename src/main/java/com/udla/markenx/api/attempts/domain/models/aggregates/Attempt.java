@@ -7,6 +7,7 @@ import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptResult;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 
@@ -53,6 +54,24 @@ public class Attempt extends Entity {
         this.status = status;
         this.taskId = validateTaskId(taskId);
         this.studentId = validateStudentId(studentId);
+    }
+
+    // endregion
+
+    // region Factories
+
+    public static @NonNull Attempt create(
+            String taskId,
+            String studentId
+    ) {
+        var id = AttemptId.generate();
+        return new Attempt(
+                id,
+                null,
+                AttemptStatus.UNKNOWN,
+                taskId,
+                studentId
+        );
     }
 
     // endregion
