@@ -1,9 +1,26 @@
 package com.udla.markenx.api.attempts.domain.models.valueobjects;
 
 public enum AttemptStatus {
-    APPROVED("Aprobado"),
-    DISAPPROVED("Reprobado"),
-    UNKNOWN("Desconocido");
+    APPROVED("Aprobado") {
+        @Override
+        public boolean canTransitionTo(AttemptStatus next) {
+            return false;
+        }
+    },
+
+    DISAPPROVED("Reprobado") {
+        @Override
+        public boolean canTransitionTo(AttemptStatus next) {
+            return false;
+        }
+    },
+
+    UNKNOWN("Desconocido") {
+        @Override
+        public boolean canTransitionTo(AttemptStatus next) {
+            return next == APPROVED || next == DISAPPROVED;
+        }
+    };
 
     private final String label;
 
@@ -14,4 +31,6 @@ public enum AttemptStatus {
     public String getLabel() {
         return label;
     }
+
+    public abstract boolean canTransitionTo(AttemptStatus next);
 }
