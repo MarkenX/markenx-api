@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface ScenarioQueryRepository {
     List<Scenario> findAll();
-    Page<@NotNull Scenario> findAll(Pageable pageable);
+    Page<@NotNull Scenario> findAllPaginated(Pageable pageable);
 }
