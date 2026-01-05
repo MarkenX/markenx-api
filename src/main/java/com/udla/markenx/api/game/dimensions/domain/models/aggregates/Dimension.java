@@ -1,5 +1,7 @@
 package com.udla.markenx.api.game.dimensions.domain.models.aggregates;
 
+import com.udla.markenx.api.game.dimensions.domain.exceptions.*;
+
 public class Dimension {
 
     private final DimensionId id;
@@ -16,6 +18,11 @@ public class Dimension {
             double productInitialOffer
     ) {
         this.id = id;
+        validateName(name);
+        validateDescription(description);
+        validateConsumerExpectation(consumerExpectation);
+        validateProductInitialOffer(productInitialOffer);
+
         this.name = name;
         this.description = description;
         this.consumerExpectation = consumerExpectation;
@@ -42,6 +49,34 @@ public class Dimension {
 
     public double getProductInitialOffer() {
         return productInitialOffer;
+    }
+
+    // endregion
+
+    // region Validations
+
+    private void validateName(String name) {
+        if (name == null || name.trim().isEmpty()) {
+            throw new InvalidDimensionNameException();
+        }
+    }
+
+    private void validateDescription(String description) {
+        if (description == null || description.trim().isEmpty()) {
+            throw new InvalidDimensionDescriptionException();
+        }
+    }
+
+    private void validateConsumerExpectation(double consumerExpectation) {
+        if (consumerExpectation < 0 || consumerExpectation > 1) {
+            throw new InvalidConsumerExpectationException();
+        }
+    }
+
+    private void validateProductInitialOffer(double productInitialOffer) {
+        if (productInitialOffer < 0 || productInitialOffer > 1) {
+            throw new InvalidProductInitialOfferException();
+        }
     }
 
     // endregion
