@@ -3,6 +3,7 @@ package com.udla.markenx.api.game.dimensions.domain.models.aggregates;
 import com.udla.markenx.api.game.dimensions.domain.exceptions.*;
 import org.jspecify.annotations.NonNull;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class Dimension {
 
     private final DimensionId id;
