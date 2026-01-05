@@ -10,6 +10,8 @@ public class Dimension {
     private final double consumerExpectation;
     private final double productInitialOffer;
 
+    // region Constructors
+
     public Dimension(
             DimensionId id,
             String name,
@@ -28,6 +30,27 @@ public class Dimension {
         this.consumerExpectation = consumerExpectation;
         this.productInitialOffer = productInitialOffer;
     }
+
+    public Dimension(
+            String id,
+            String name,
+            String description,
+            double consumerExpectation,
+            double productInitialOffer
+    ) {
+        this.id = new DimensionId(id);
+        validateName(name);
+        validateDescription(description);
+        validateConsumerExpectation(consumerExpectation);
+        validateProductInitialOffer(productInitialOffer);
+
+        this.name = name;
+        this.description = description;
+        this.consumerExpectation = consumerExpectation;
+        this.productInitialOffer = productInitialOffer;
+    }
+
+    // endregion
 
     // region Getters
 
