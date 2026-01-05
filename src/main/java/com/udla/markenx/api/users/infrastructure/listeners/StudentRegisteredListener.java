@@ -1,6 +1,6 @@
 package com.udla.markenx.api.users.infrastructure.listeners;
 
-import com.udla.markenx.api.students.domain.events.StudentRegisteredEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.users.application.ports.incoming.UserIdentityUseCase;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

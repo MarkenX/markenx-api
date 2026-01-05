@@ -1,6 +1,6 @@
 package com.udla.markenx.api.users.application.services;
 
-import com.udla.markenx.api.students.domain.events.StudentRegisteredEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.users.application.commands.CreateUserCommand;
 import com.udla.markenx.api.users.application.ports.incoming.CreateUserUseCase;
 import com.udla.markenx.api.users.application.ports.incoming.UserIdentityUseCase;
