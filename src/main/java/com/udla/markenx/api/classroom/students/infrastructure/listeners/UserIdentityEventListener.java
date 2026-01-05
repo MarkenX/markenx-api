@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.infrastructure.listeners;
 
 import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
-import com.udla.markenx.api.users.domain.events.UserCreatedEvent;
-import com.udla.markenx.api.users.domain.events.UserCreationFailedEvent;
+import com.udla.markenx.api.classroom.users.domain.events.UserCreatedEvent;
+import com.udla.markenx.api.classroom.users.domain.events.UserCreationFailedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.academicterms.domain.models.aggregates;
 
-import com.udla.markenx.api.academicterms.domain.exceptions.*;
+import com.udla.markenx.api.classroom.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.classroom.academicterms.domain.exceptions.*;
 import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.classroom.academicterms.domain.utils.DateUtils;
