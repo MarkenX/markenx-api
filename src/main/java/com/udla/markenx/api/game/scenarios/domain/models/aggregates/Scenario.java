@@ -1,5 +1,9 @@
 package com.udla.markenx.api.game.scenarios.domain.models.aggregates;
 
+import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioTitleException;
+import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.NotNull;
+
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Scenario {
 
@@ -30,6 +34,18 @@ public class Scenario {
 
     public String getDescription() {
         return description;
+    }
+
+    // endregion
+
+    // region Validations
+
+    @Contract("null -> fail")
+    public static @NotNull String validateTitle(String title) {
+        if (title == null || title.isBlank()) {
+            throw new InvalidScenarioTitleException();
+        }
+        return title;
     }
 
     // endregion
