@@ -2,6 +2,8 @@ package com.udla.markenx.api.game.scenarios.domain.models.aggregates;
 
 import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioDescriptionException;
 import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioTitleException;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Scenario {
@@ -70,4 +72,15 @@ public class Scenario {
     }
 
     // endregion
+
+    @Contract(pure = true)
+    protected @NonNull String formatCode() {
+        return String.format("%04d", code);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("SCN-%s", formatCode());
+
+    }
 }
