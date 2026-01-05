@@ -3,14 +3,12 @@ package com.udla.markenx.api.attempts.domain.models.aggregates;
 import com.udla.markenx.api.attempts.domain.exceptions.*;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptResult;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptStatus;
-import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
-import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jspecify.annotations.NonNull;
 
 import java.math.BigDecimal;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
-public class Attempt extends Entity {
+public class Attempt {
 
     private final AttemptId id;
     private AttemptResult result;
@@ -27,7 +25,6 @@ public class Attempt extends Entity {
             String taskId,
             String studentId
     ) {
-        super();
         this.id = id;
         this.result = result;
         this.status = status;
@@ -37,7 +34,6 @@ public class Attempt extends Entity {
 
     public Attempt(
             String id,
-            LifecycleStatus lifecycleStatus,
             int currentTurn,
             BigDecimal budgetRemaining,
             double approvalRate,
@@ -46,7 +42,6 @@ public class Attempt extends Entity {
             String taskId,
             String studentId
     ) {
-        super(lifecycleStatus);
         this.id = new AttemptId(id);
         this.result = new AttemptResult(currentTurn, budgetRemaining, approvalRate, profileScore);
         this.status = status;
