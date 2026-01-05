@@ -23,6 +23,16 @@ public class Scenario {
         this.description = validateDescription(description);
     }
 
+    public Scenario(
+            String id,
+            String title,
+            String description
+    ) {
+        this.id = new ScenarioId(id);
+        this.title = validateTitle(title);
+        this.description = validateDescription(description);
+    }
+
     // region Getters
 
     public String getId() {
