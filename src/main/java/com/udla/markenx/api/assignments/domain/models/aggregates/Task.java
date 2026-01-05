@@ -142,23 +142,23 @@ public class Task extends Assignment {
         this.currentAttempt++;
 
         if (score.isGreaterOrEqualThan(this.minScoreToPass)) {
-            this.status = AssignmentStatus.COMPLETED;
+            transitionTo(AssignmentStatus.COMPLETED);
             return;
         }
 
         if (deadline.isOverdue()) {
-            this.status = AssignmentStatus.FAILED;
+            transitionTo(AssignmentStatus.FAILED);
             return;
         }
 
-        this.status = AssignmentStatus.IN_PROGRESS;
+        transitionTo(AssignmentStatus.IN_PROGRESS);
     }
 
     public void markAsFailedIfNotCompleted() {
         if (this.status == AssignmentStatus.COMPLETED) return;
 
         if (deadline.isOverdue()) {
-            this.status = AssignmentStatus.FAILED;
+            transitionTo(AssignmentStatus.FAILED);
         }
     }
 
