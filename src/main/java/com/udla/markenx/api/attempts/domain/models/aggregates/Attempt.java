@@ -9,16 +9,19 @@ public class Attempt extends Entity {
     private final AttemptId id;
     private final AttemptResult result;
     private final String taskId;
+    private final String studentId;
 
     private Attempt(
             AttemptId id,
             AttemptResult result,
-            String taskId
+            String taskId,
+            String studentId
     ) {
         super();
         this.id = id;
         this.result = result;
         this.taskId = validateTaskId(taskId);
+        this.studentId = studentId;
     }
 
     // region Validations
