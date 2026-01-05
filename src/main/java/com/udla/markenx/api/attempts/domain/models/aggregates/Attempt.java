@@ -9,6 +9,7 @@ import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 
 import java.math.BigDecimal;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public class Attempt extends Entity {
 
     private final AttemptId id;
@@ -51,6 +52,30 @@ public class Attempt extends Entity {
         this.status = status;
         this.taskId = validateTaskId(taskId);
         this.studentId = validateStudentId(studentId);
+    }
+
+    // endregion
+
+    // region Getters
+
+    public String getId() {
+        return this.id.value();
+    }
+
+    public AttemptResult getResult() {
+        return this.result;
+    }
+
+    public AttemptStatus getStatus() {
+        return this.status;
+    }
+
+    public String getTaskId() {
+        return this.taskId;
+    }
+
+    public String getStudentId() {
+        return this.studentId;
     }
 
     // endregion
