@@ -1,7 +1,6 @@
 package com.udla.markenx.api.game.dimensions.domain.models.aggregates;
 
 import com.udla.markenx.api.game.dimensions.domain.exceptions.*;
-import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 public class Dimension {
@@ -122,6 +121,22 @@ public class Dimension {
         if (productInitialOffer < 0 || productInitialOffer > 1) {
             throw new InvalidProductInitialOfferException();
         }
+    }
+
+    // endregion
+
+    // region Equals & HashCode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Dimension that)) return false;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     // endregion
