@@ -1,5 +1,5 @@
 @ApplicationModule(
-        displayName = "Attempts Management",
+        displayName = "Attempt Management",
         allowedDependencies = {
                 "shared::aggregates",
                 "shared::valueobjects",
