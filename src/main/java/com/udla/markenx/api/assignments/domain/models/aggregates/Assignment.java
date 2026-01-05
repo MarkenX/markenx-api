@@ -42,7 +42,7 @@ public abstract class Assignment extends Entity {
         this.deadline = deadline;
         this.minScoreToPass = minScoreToPass;
         this.status = status;
-        this.courseId = validateAcademicTermId(courseId);
+        this.courseId = validateCourseId(courseId);
     }
 
     public Assignment(
@@ -63,7 +63,7 @@ public abstract class Assignment extends Entity {
         this.deadline = new AssignmentDeadline(deadline);
         this.minScoreToPass = new AssignmentScore(minScoreToPass);
         this.status = status;
-        this.courseId = validateAcademicTermId(courseId);
+        this.courseId = validateCourseId(courseId);
     }
 
     // endregion
@@ -119,7 +119,7 @@ public abstract class Assignment extends Entity {
     }
 
     public void changeAcademicTerm(String academicTermId) {
-        this.courseId = validateAcademicTermId(academicTermId);
+        this.courseId = validateCourseId(academicTermId);
     }
 
     // endregion
@@ -133,11 +133,11 @@ public abstract class Assignment extends Entity {
         return code;
     }
 
-    public String validateAcademicTermId(String academicTermId) {
-        if (academicTermId == null || academicTermId.isBlank()) {
+    public String validateCourseId(String courseId) {
+        if (courseId == null || courseId.isBlank()) {
             throw new InvalidCourseIdException();
         }
-        return academicTermId;
+        return courseId;
     }
 
     // endregion
