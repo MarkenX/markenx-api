@@ -2,9 +2,11 @@ package com.udla.markenx.api.attempts.domain.models.valueobjects;
 
 import com.udla.markenx.api.attempts.domain.exceptions.*;
 
+import java.math.BigDecimal;
+
 public record AttemptResult(
         int currentTurn,
-        int budgetRemaining,
+        BigDecimal budgetRemaining,
         double approvalRate,
         double profileScore
 ) {
@@ -21,8 +23,8 @@ public record AttemptResult(
         }
     }
 
-    private void validateBudgetRemaining(int budgetRemaining) {
-        if (budgetRemaining < 0) {
+    private void validateBudgetRemaining(BigDecimal budgetRemaining) {
+        if (budgetRemaining.compareTo(BigDecimal.ZERO) < 0) {
             throw new BudgetCannotBeNegativeException();
         }
     }
