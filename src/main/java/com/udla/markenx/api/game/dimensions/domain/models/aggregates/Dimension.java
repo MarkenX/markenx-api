@@ -1,6 +1,8 @@
 package com.udla.markenx.api.game.dimensions.domain.models.aggregates;
 
 import com.udla.markenx.api.game.dimensions.domain.exceptions.*;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 
 public class Dimension {
 
@@ -48,6 +50,26 @@ public class Dimension {
         this.description = description;
         this.consumerExpectation = consumerExpectation;
         this.productInitialOffer = productInitialOffer;
+    }
+
+    // endregion
+
+    // region Factories
+
+    public static @NonNull Dimension create(
+            String name,
+            String description,
+            double consumerExpectation,
+            double productInitialOffer
+    ) {
+        var id = DimensionId.generate();
+        return new Dimension(
+                id,
+                name,
+                description,
+                consumerExpectation,
+                productInitialOffer
+        );
     }
 
     // endregion
