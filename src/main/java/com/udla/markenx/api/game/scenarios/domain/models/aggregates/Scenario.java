@@ -1,8 +1,7 @@
 package com.udla.markenx.api.game.scenarios.domain.models.aggregates;
 
+import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioDescriptionException;
 import com.udla.markenx.api.game.scenarios.domain.exceptions.InvalidScenarioTitleException;
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Scenario {
@@ -18,8 +17,8 @@ public class Scenario {
             String description
     ) {
         this.id = id;
-        this.title = title;
-        this.description = description;
+        this.title = validateTitle(title);
+        this.description = validateDescription(description);
     }
 
     // region Getters
@@ -40,12 +39,18 @@ public class Scenario {
 
     // region Validations
 
-    @Contract("null -> fail")
-    public static @NotNull String validateTitle(String title) {
+    public String validateTitle(String title) {
         if (title == null || title.isBlank()) {
             throw new InvalidScenarioTitleException();
         }
         return title;
+    }
+
+    public String validateDescription(String description) {
+        if (description == null || description.isBlank()) {
+            throw new InvalidScenarioDescriptionException();
+        }
+        return description;
     }
 
     // endregion
