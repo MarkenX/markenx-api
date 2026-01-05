@@ -54,4 +54,20 @@ public class Scenario {
     }
 
     // endregion
+
+    // region Equals & HashCode
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Scenario that)) return false;
+        return id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
+
+    // endregion
 }
