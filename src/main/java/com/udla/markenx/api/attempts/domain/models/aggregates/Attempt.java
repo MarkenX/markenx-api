@@ -5,6 +5,9 @@ import com.udla.markenx.api.attempts.domain.exceptions.InvalidTaskIdException;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptResult;
 import com.udla.markenx.api.attempts.domain.models.valueobjects.AttemptStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
+
+import java.math.BigDecimal;
 
 public class Attempt extends Entity {
 
@@ -13,6 +16,8 @@ public class Attempt extends Entity {
     private AttemptStatus status;
     private final String taskId;
     private final String studentId;
+
+    // region Constructors
 
     private Attempt(
             AttemptId id,
@@ -28,6 +33,27 @@ public class Attempt extends Entity {
         this.taskId = validateTaskId(taskId);
         this.studentId = validateStudentId(studentId);
     }
+
+    public Attempt(
+            String id,
+            LifecycleStatus lifecycleStatus,
+            int currentTurn,
+            BigDecimal budgetRemaining,
+            double approvalRate,
+            double profileScore,
+            AttemptStatus status,
+            String taskId,
+            String studentId
+    ) {
+        super(lifecycleStatus);
+        this.id = new AttemptId(id);
+        this.result = new AttemptResult(currentTurn, budgetRemaining, approvalRate, profileScore);
+        this.status = status;
+        this.taskId = validateTaskId(taskId);
+        this.studentId = validateStudentId(studentId);
+    }
+
+    // endregion
 
     // region Validations
 
