@@ -1,6 +1,7 @@
 @ApplicationModule(
         displayName = "Dimension Management",
         allowedDependencies = {
+                "shared::aggregates",
                 "shared::valueobjects",
         })
 package com.udla.markenx.api.game.dimensions;
