@@ -100,6 +100,14 @@ public class Attempt extends Entity {
 
     // endregion
 
+    public void updateStatusFromResult(@NonNull AttemptResult result, double minScoreToPass) {
+        if (result.approvalRate() >=  minScoreToPass) {
+            transitionTo(AttemptStatus.APPROVED);
+        } else {
+            transitionTo(AttemptStatus.DISAPPROVED);
+        }
+    }
+
     protected void transitionTo(AttemptStatus next) {
         if (!status.canTransitionTo(next)) {
             throw new InvalidAttemptStatusTransitionException(status, next);
