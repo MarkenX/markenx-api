@@ -6,6 +6,10 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Scenario {
 
@@ -13,6 +17,10 @@ public class Scenario {
     private long code;
     private String title;
     private String description;
+    private String consumerId;
+    private final List<String> dimensionIds;
+    private final List<String> actionIds;
+    private final List<String> eventIds;
 
     // region Constructors
 
@@ -24,6 +32,10 @@ public class Scenario {
         this.id = id;
         this.title = validateTitle(title);
         this.description = validateDescription(description);
+        this.consumerId = null;
+        this.dimensionIds = new ArrayList<>();
+        this.actionIds = new ArrayList<>();
+        this.eventIds = new ArrayList<>();
     }
 
     public Scenario(
@@ -34,6 +46,28 @@ public class Scenario {
         this.id = new ScenarioId(id);
         this.title = validateTitle(title);
         this.description = validateDescription(description);
+        this.consumerId = null;
+        this.dimensionIds = new ArrayList<>();
+        this.actionIds = new ArrayList<>();
+        this.eventIds = new ArrayList<>();
+    }
+
+    public Scenario(
+            String id,
+            String title,
+            String description,
+            String consumerId,
+            List<String> dimensionIds,
+            List<String> actionIds,
+            List<String> eventIds
+    ) {
+        this.id = new ScenarioId(id);
+        this.title = validateTitle(title);
+        this.description = validateDescription(description);
+        this.consumerId = consumerId;
+        this.dimensionIds = dimensionIds != null ? new ArrayList<>(dimensionIds) : new ArrayList<>();
+        this.actionIds = actionIds != null ? new ArrayList<>(actionIds) : new ArrayList<>();
+        this.eventIds = eventIds != null ? new ArrayList<>(eventIds) : new ArrayList<>();
     }
 
     // endregion
@@ -64,6 +98,22 @@ public class Scenario {
         return description;
     }
 
+    public String getConsumerId() {
+        return consumerId;
+    }
+
+    public List<String> getDimensionIds() {
+        return Collections.unmodifiableList(dimensionIds);
+    }
+
+    public List<String> getActionIds() {
+        return Collections.unmodifiableList(actionIds);
+    }
+
+    public List<String> getEventIds() {
+        return Collections.unmodifiableList(eventIds);
+    }
+
     // endregion
 
     // region Setters
@@ -74,6 +124,44 @@ public class Scenario {
 
     public void setDescription(String description) {
         this.description = validateDescription(description);
+    }
+
+    // endregion
+
+    // region Association Methods
+
+    public void associateConsumer(String consumerId) {
+        this.consumerId = consumerId;
+    }
+
+    public void addDimension(String dimensionId) {
+        if (dimensionId != null && !dimensionIds.contains(dimensionId)) {
+            dimensionIds.add(dimensionId);
+        }
+    }
+
+    public void addAction(String actionId) {
+        if (actionId != null && !actionIds.contains(actionId)) {
+            actionIds.add(actionId);
+        }
+    }
+
+    public void addEvent(String eventId) {
+        if (eventId != null && !eventIds.contains(eventId)) {
+            eventIds.add(eventId);
+        }
+    }
+
+    public void removeDimension(String dimensionId) {
+        dimensionIds.remove(dimensionId);
+    }
+
+    public void removeAction(String actionId) {
+        actionIds.remove(actionId);
+    }
+
+    public void removeEvent(String eventId) {
+        eventIds.remove(eventId);
     }
 
     // endregion
@@ -120,6 +208,5 @@ public class Scenario {
     @Override
     public String toString() {
         return String.format("SCN-%s", formatCode());
-
     }
 }
