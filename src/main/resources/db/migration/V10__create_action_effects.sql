@@ -1,3 +1,5 @@
+-- action_effects: stores effects of actions on dimensions
+-- dimension_id is a UUID reference only (no FK) to support DDD module independence
 CREATE TABLE action_effects (
     id CHAR(36) NOT NULL,
     action_id CHAR(36) NOT NULL,
@@ -13,10 +15,7 @@ CREATE TABLE action_effects (
         REFERENCES actions (id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_action_effects_dimension
-        FOREIGN KEY (dimension_id)
-        REFERENCES dimensions (id)
-        ON DELETE RESTRICT,
+    -- dimension_id: reference only (no FK) - validated at application layer
 
     CONSTRAINT uk_action_effects_unique
         UNIQUE (action_id, dimension_id)

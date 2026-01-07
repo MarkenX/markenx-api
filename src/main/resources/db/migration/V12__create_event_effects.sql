@@ -1,3 +1,5 @@
+-- event_effects: stores effects of game events on dimensions
+-- dimension_id is a UUID reference only (no FK) to support DDD module independence
 CREATE TABLE event_effects (
     id CHAR(36) NOT NULL,
     event_id CHAR(36) NOT NULL,
@@ -13,10 +15,7 @@ CREATE TABLE event_effects (
         REFERENCES game_events (id)
         ON DELETE CASCADE,
 
-    CONSTRAINT fk_event_effects_dimension
-        FOREIGN KEY (dimension_id)
-        REFERENCES dimensions (id)
-        ON DELETE RESTRICT,
+    -- dimension_id: reference only (no FK) - validated at application layer
 
     CONSTRAINT uk_event_effects_unique
         UNIQUE (event_id, dimension_id)

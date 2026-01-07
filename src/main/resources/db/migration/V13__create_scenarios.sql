@@ -1,3 +1,5 @@
+-- scenarios: main game scenarios for marketing simulation
+-- consumer_id is a UUID reference only (no FK) to support DDD module independence
 CREATE TABLE scenarios (
     id CHAR(36) NOT NULL,
     title VARCHAR(255) NOT NULL,
@@ -10,12 +12,9 @@ CREATE TABLE scenarios (
         PRIMARY KEY (id),
 
     CONSTRAINT uk_scenarios_title
-        UNIQUE (title),
+        UNIQUE (title)
 
-    CONSTRAINT fk_scenarios_consumer
-        FOREIGN KEY (consumer_id)
-        REFERENCES consumers (id)
-        ON DELETE SET NULL
+    -- consumer_id: reference only (no FK) - validated at application layer
 );
 
 CREATE INDEX idx_scenarios_title

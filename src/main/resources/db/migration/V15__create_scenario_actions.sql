@@ -1,3 +1,5 @@
+-- scenario_actions: associates actions with scenarios
+-- action_id is a UUID reference only (no FK) to support DDD module independence
 CREATE TABLE scenario_actions (
     scenario_id CHAR(36) NOT NULL,
     action_id CHAR(36) NOT NULL,
@@ -8,12 +10,9 @@ CREATE TABLE scenario_actions (
     CONSTRAINT fk_scenario_actions_scenario
         FOREIGN KEY (scenario_id)
         REFERENCES scenarios (id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 
-    CONSTRAINT fk_scenario_actions_action
-        FOREIGN KEY (action_id)
-        REFERENCES actions (id)
-        ON DELETE RESTRICT
+    -- action_id: reference only (no FK) - validated at application layer
 );
 
 CREATE INDEX idx_scenario_actions_scenario

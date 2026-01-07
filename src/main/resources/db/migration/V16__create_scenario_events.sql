@@ -1,3 +1,5 @@
+-- scenario_events: associates game events with scenarios
+-- event_id is a UUID reference only (no FK) to support DDD module independence
 CREATE TABLE scenario_events (
     scenario_id CHAR(36) NOT NULL,
     event_id CHAR(36) NOT NULL,
@@ -8,12 +10,9 @@ CREATE TABLE scenario_events (
     CONSTRAINT fk_scenario_events_scenario
         FOREIGN KEY (scenario_id)
         REFERENCES scenarios (id)
-        ON DELETE CASCADE,
+        ON DELETE CASCADE
 
-    CONSTRAINT fk_scenario_events_event
-        FOREIGN KEY (event_id)
-        REFERENCES game_events (id)
-        ON DELETE RESTRICT
+    -- event_id: reference only (no FK) - validated at application layer
 );
 
 CREATE INDEX idx_scenario_events_scenario
