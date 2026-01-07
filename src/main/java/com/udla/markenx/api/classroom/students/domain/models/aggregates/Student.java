@@ -15,7 +15,7 @@ public class Student extends Entity {
 
     private final StudentId id;
     private final PersonalInfo personalInfo;
-    private final String courseId;
+    private String courseId;
     private String userId;
 
     private long code;
@@ -97,6 +97,16 @@ public class Student extends Entity {
      */
     public void update(String firstName, String lastName) {
         this.personalInfo.updateName(firstName, lastName);
+    }
+
+    /**
+     * Changes the course the student is assigned to.
+     *
+     * @param courseId the new course identifier
+     * @throws InvalidCourseIdException if the course identifier is null or blank
+     */
+    public void changeCourse(String courseId) {
+        this.courseId = validateCourseId(courseId);
     }
 
     // region Getters
