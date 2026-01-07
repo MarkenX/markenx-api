@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
 import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.CourseValidation;
+import com.udla.markenx.api.classroom.students.application.ports.incoming.EnsureCourseHasUpcomingTerm;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
@@ -15,13 +15,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
 
-    private final CourseValidation courseValidation;
+    private final EnsureCourseHasUpcomingTerm ensureCourseHasUpcomingTerm;
     private final StudentCommandRepository repository;
     private final ApplicationEventPublisher events;
 
     @Override
     public Student handle(@NonNull RegisterStudentCommand command) {
-        courseValidation.ensureCourseExists(command.courseId());
+        ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
 
         Student newStudent = Student.create(
                 command.firstName(),
