@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.scenarios.infrastructure.seeders;
 
+import com.udla.markenx.api.game.actions.domain.models.valueobjects.ActionCategory;
 import com.udla.markenx.api.game.scenarios.application.commands.CreateScenarioCommand;
 import com.udla.markenx.api.game.scenarios.application.commands.CreateScenarioCommand.ActionDTO;
 import com.udla.markenx.api.game.scenarios.application.commands.CreateScenarioCommand.ActionEffectDTO;
@@ -12,6 +13,7 @@ import com.udla.markenx.api.game.scenarios.application.ports.incoming.CreateScen
 import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -46,7 +48,7 @@ public class ScenarioSeeder implements CommandLineRunner {
         }
     }
 
-    private CreateScenarioCommand buildSampleScenarioCommand() {
+    private @NonNull CreateScenarioCommand buildSampleScenarioCommand() {
         String priceId = UUID.randomUUID().toString();
         String qualityId = UUID.randomUUID().toString();
         String brandId = UUID.randomUUID().toString();
@@ -66,7 +68,7 @@ public class ScenarioSeeder implements CommandLineRunner {
         );
     }
 
-    private List<DimensionDTO> buildDimensions(String priceId, String qualityId, String brandId) {
+    private @NonNull List<DimensionDTO> buildDimensions(String priceId, String qualityId, String brandId) {
         return List.of(
                 new DimensionDTO(
                         priceId,
@@ -106,7 +108,7 @@ public class ScenarioSeeder implements CommandLineRunner {
         );
     }
 
-    private List<ActionDTO> buildActions(String priceId, String qualityId, String brandId) {
+    private @NonNull List<ActionDTO> buildActions(String priceId, String qualityId, String brandId) {
         String discountActionId = UUID.randomUUID().toString();
         String qualityActionId = UUID.randomUUID().toString();
         String brandActionId = UUID.randomUUID().toString();
@@ -118,7 +120,7 @@ public class ScenarioSeeder implements CommandLineRunner {
                         "apply_discount",
                         "Aplicar descuento del 15% al producto",
                         new BigDecimal("500.00"),
-                        "PRICING",
+                        ActionCategory.PRICE.name(),
                         false,
                         null,
                         List.of(new ActionEffectDTO(priceId, 0.2))
@@ -128,7 +130,7 @@ public class ScenarioSeeder implements CommandLineRunner {
                         "improve_quality",
                         "Mejorar los materiales y componentes del producto",
                         new BigDecimal("1200.00"),
-                        "PRODUCT",
+                        ActionCategory.PRODUCTION.name(),
                         false,
                         null,
                         List.of(
@@ -141,7 +143,7 @@ public class ScenarioSeeder implements CommandLineRunner {
                         "marketing_campaign",
                         "Lanzar campaña de marketing en redes sociales",
                         new BigDecimal("800.00"),
-                        "MARKETING",
+                        ActionCategory.PROMOTION.name(),
                         false,
                         null,
                         List.of(new ActionEffectDTO(brandId, 0.25))
@@ -151,7 +153,7 @@ public class ScenarioSeeder implements CommandLineRunner {
                         "premium_package",
                         "Crear versión premium con garantía extendida",
                         new BigDecimal("300.00"),
-                        "PRODUCT",
+                        ActionCategory.PRODUCTION.name(),
                         true,
                         qualityActionId,
                         List.of(
