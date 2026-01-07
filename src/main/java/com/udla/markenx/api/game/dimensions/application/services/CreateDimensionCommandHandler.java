@@ -16,13 +16,22 @@ public class CreateDimensionCommandHandler implements CreateDimensionUseCase {
 
     @Override
     public Dimension handle(@NonNull CreateDimensionCommand command) {
-        Dimension dimension = Dimension.create(
-                command.name(),
-                command.displayName(),
-                command.description(),
-                command.consumerExpectation(),
-                command.productInitialOffer()
-        );
+        Dimension dimension = command.id() != null
+                ? Dimension.createWithId(
+                        command.id(),
+                        command.name(),
+                        command.displayName(),
+                        command.description(),
+                        command.consumerExpectation(),
+                        command.productInitialOffer()
+                )
+                : Dimension.create(
+                        command.name(),
+                        command.displayName(),
+                        command.description(),
+                        command.consumerExpectation(),
+                        command.productInitialOffer()
+                );
 
         return repository.save(dimension);
     }

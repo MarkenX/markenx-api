@@ -95,8 +95,10 @@ public class ScenarioSeeder implements CommandLineRunner {
         );
     }
 
-    private ConsumerDTO buildConsumer() {
+    @Contract(" -> new")
+    private @NonNull ConsumerDTO buildConsumer() {
         return new ConsumerDTO(
+                UUID.randomUUID().toString(),
                 "Consumidor Tecnológico",
                 28,
                 new BigDecimal("1500.00"),

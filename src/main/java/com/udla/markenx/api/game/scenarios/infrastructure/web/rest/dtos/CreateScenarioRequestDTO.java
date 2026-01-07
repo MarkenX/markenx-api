@@ -12,6 +12,7 @@ public record CreateScenarioRequestDTO(
         List<EventRequestDTO> events
 ) {
     public record ConsumerRequestDTO(
+            String id,
             String name,
             Integer age,
             BigDecimal budget,

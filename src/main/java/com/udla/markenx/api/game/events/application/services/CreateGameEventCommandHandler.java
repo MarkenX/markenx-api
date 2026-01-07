@@ -26,11 +26,18 @@ public class CreateGameEventCommandHandler implements CreateGameEventUseCase {
                     .collect(Collectors.toList())
                 : List.of();
 
-        GameEvent event = GameEvent.create(
-                command.title(),
-                command.description(),
-                effects
-        );
+        GameEvent event = command.id() != null
+                ? GameEvent.createWithId(
+                        command.id(),
+                        command.title(),
+                        command.description(),
+                        effects
+                )
+                : GameEvent.create(
+                        command.title(),
+                        command.description(),
+                        effects
+                );
 
         GameEvent savedEvent = repository.save(event);
 

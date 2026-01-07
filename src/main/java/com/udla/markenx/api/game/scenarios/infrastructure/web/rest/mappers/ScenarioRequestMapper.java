@@ -24,6 +24,7 @@ public class ScenarioRequestMapper {
     private CreateScenarioCommand.ConsumerDTO toConsumerDTO(CreateScenarioRequestDTO.ConsumerRequestDTO dto) {
         if (dto == null) return null;
         return new CreateScenarioCommand.ConsumerDTO(
+                dto.id(),
                 dto.name(),
                 dto.age(),
                 dto.budget(),

@@ -82,6 +82,7 @@ public class CreateScenarioCommandHandler implements CreateScenarioUseCase {
         return dtos.stream()
                 .map(dto -> {
                     CreateDimensionCommand cmd = new CreateDimensionCommand(
+                            dto.id(),
                             dto.name(),
                             dto.displayName(),
                             dto.description(),
@@ -94,8 +95,9 @@ public class CreateScenarioCommandHandler implements CreateScenarioUseCase {
                 .collect(Collectors.toList());
     }
 
-    private Consumer processConsumer(CreateScenarioCommand.ConsumerDTO dto) {
+    private Consumer processConsumer(CreateScenarioCommand.@NonNull ConsumerDTO dto) {
         CreateConsumerCommand cmd = new CreateConsumerCommand(
+                dto.id(),
                 dto.name(),
                 dto.age(),
                 dto.budget(),
@@ -118,6 +120,7 @@ public class CreateScenarioCommandHandler implements CreateScenarioUseCase {
                             : List.of();
 
                     CreateActionCommand cmd = new CreateActionCommand(
+                            dto.id(),
                             dto.name(),
                             dto.description(),
                             dto.cost(),
@@ -146,6 +149,7 @@ public class CreateScenarioCommandHandler implements CreateScenarioUseCase {
                             : List.of();
 
                     CreateGameEventCommand cmd = new CreateGameEventCommand(
+                            dto.id(),
                             dto.title(),
                             dto.description(),
                             effects

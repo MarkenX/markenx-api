@@ -30,15 +30,26 @@ public class CreateActionCommandHandler implements CreateActionUseCase {
                     .collect(Collectors.toList())
                 : List.of();
 
-        Action action = Action.create(
-                command.name(),
-                command.description(),
-                command.cost(),
-                category,
-                command.isInitiallyLocked(),
-                command.prerequisiteActionId(),
-                effects
-        );
+        Action action = command.id() != null
+                ? Action.createWithId(
+                        command.id(),
+                        command.name(),
+                        command.description(),
+                        command.cost(),
+                        category,
+                        command.isInitiallyLocked(),
+                        command.prerequisiteActionId(),
+                        effects
+                )
+                : Action.create(
+                        command.name(),
+                        command.description(),
+                        command.cost(),
+                        category,
+                        command.isInitiallyLocked(),
+                        command.prerequisiteActionId(),
+                        effects
+                );
 
         Action savedAction = repository.save(action);
 

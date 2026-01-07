@@ -16,12 +16,20 @@ public class CreateConsumerCommandHandler implements CreateConsumerUseCase {
 
     @Override
     public Consumer handle(@NonNull CreateConsumerCommand command) {
-        Consumer consumer = Consumer.create(
-                command.name(),
-                command.age(),
-                command.budget(),
-                command.targetAcceptanceScore()
-        );
+        Consumer consumer = command.id() != null
+                ? Consumer.createWithId(
+                        command.id(),
+                        command.name(),
+                        command.age(),
+                        command.budget(),
+                        command.targetAcceptanceScore()
+                )
+                : Consumer.create(
+                        command.name(),
+                        command.age(),
+                        command.budget(),
+                        command.targetAcceptanceScore()
+                );
 
         return repository.save(consumer);
     }
