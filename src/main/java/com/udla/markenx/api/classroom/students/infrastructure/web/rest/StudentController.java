@@ -1,12 +1,16 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 
+import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
 import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
+import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.StudentQueryUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,6 +32,7 @@ public class StudentController {
     private final StudentUserRedDTOMapper userDTOMapper;
     private final RegisterStudentUseCase registerStudentUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
+    private final UpdateStudentUseCase updateStudentUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,5 +65,38 @@ public class StudentController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @PutMapping("/{id}")
+    @Operation(summary = "Update a student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Student updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Student not found")
+    })
+    public StudentResponseDTO update(
+            @PathVariable String id,
+            @RequestBody UpdateStudentRequestDTO dto
+    ) {
+        var command = new UpdateStudentCommand(
+                id,
+                dto.firstName(),
+                dto.lastName(),
+                dto.courseId()
+        );
+        var student = updateStudentUseCase.update(command);
+        return responseDTOMapper.toDTO(student, null);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    @Operation(summary = "Disable a student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "202", description = "Student disable request accepted"),
+            @ApiResponse(responseCode = "400", description = "Student cannot be disabled"),
+            @ApiResponse(responseCode = "404", description = "Student not found")
+    })
+    public void disable(@PathVariable String id) {
+        var command = new DisableStudentCommand(id);
+        updateStudentUseCase.disable(command);
     }
 }
