@@ -22,6 +22,7 @@ public class DimensionRowMapper implements RowMapper<Dimension> {
         return new Dimension(
                 rs.getString("id"),
                 rs.getString("name"),
+                rs.getString("display_name"),
                 rs.getString("description"),
                 rs.getDouble("consumer_expectation"),
                 rs.getDouble("product_initial_offer")

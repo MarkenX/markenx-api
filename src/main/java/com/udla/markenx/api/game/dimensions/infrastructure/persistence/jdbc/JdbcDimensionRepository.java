@@ -20,11 +20,12 @@ public class JdbcDimensionRepository implements DimensionCommandRepository {
     public Dimension save(@NonNull Dimension dimension) {
         jdbcTemplate.update("""
         INSERT INTO dimensions
-        (id, name, description, consumer_expectation, product_initial_offer)
-        VALUES (?, ?, ?, ?, ?)
+        (id, name, display_name, description, consumer_expectation, product_initial_offer)
+        VALUES (?, ?, ?, ?, ?, ?)
         """,
-                dimension.getId().value(),  // Asumiendo que DimensionId tiene método value()
+                dimension.getId().value(),
                 dimension.getName(),
+                dimension.getDisplayName(),
                 dimension.getDescription(),
                 dimension.getConsumerExpectation(),
                 dimension.getProductInitialOffer()

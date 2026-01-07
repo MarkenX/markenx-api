@@ -1,6 +1,7 @@
 CREATE TABLE dimensions (
     id CHAR(36) NOT NULL,
     name VARCHAR(255) NOT NULL,
+    display_name VARCHAR(255) NOT NULL,
     description TEXT NOT NULL,
     consumer_expectation DECIMAL(3,2) NOT NULL
         CHECK (consumer_expectation >= 0 AND consumer_expectation <= 1),

@@ -8,6 +8,7 @@ public class Dimension {
 
     private final DimensionId id;
     private final String name;
+    private final String displayName;
     private final String description;
     private final double consumerExpectation;
     private final double productInitialOffer;
@@ -17,17 +18,20 @@ public class Dimension {
     public Dimension(
             DimensionId id,
             String name,
+            String displayName,
             String description,
             double consumerExpectation,
             double productInitialOffer
     ) {
         this.id = id;
         validateName(name);
+        validateDisplayName(displayName);
         validateDescription(description);
         validateConsumerExpectation(consumerExpectation);
         validateProductInitialOffer(productInitialOffer);
 
         this.name = name;
+        this.displayName = displayName;
         this.description = description;
         this.consumerExpectation = consumerExpectation;
         this.productInitialOffer = productInitialOffer;
@@ -36,17 +40,20 @@ public class Dimension {
     public Dimension(
             String id,
             String name,
+            String displayName,
             String description,
             double consumerExpectation,
             double productInitialOffer
     ) {
         this.id = new DimensionId(id);
         validateName(name);
+        validateDisplayName(displayName);
         validateDescription(description);
         validateConsumerExpectation(consumerExpectation);
         validateProductInitialOffer(productInitialOffer);
 
         this.name = name;
+        this.displayName = displayName;
         this.description = description;
         this.consumerExpectation = consumerExpectation;
         this.productInitialOffer = productInitialOffer;
@@ -58,6 +65,7 @@ public class Dimension {
 
     public static @NonNull Dimension create(
             String name,
+            String displayName,
             String description,
             double consumerExpectation,
             double productInitialOffer
@@ -66,6 +74,7 @@ public class Dimension {
         return new Dimension(
                 id,
                 name,
+                displayName,
                 description,
                 consumerExpectation,
                 productInitialOffer
@@ -82,6 +91,10 @@ public class Dimension {
 
     public String getName() {
         return name;
+    }
+
+    public String getDisplayName() {
+        return displayName;
     }
 
     public String getDescription() {
@@ -103,6 +116,12 @@ public class Dimension {
     private void validateName(String name) {
         if (name == null || name.trim().isEmpty()) {
             throw new InvalidDimensionNameException();
+        }
+    }
+
+    private void validateDisplayName(String displayName) {
+        if (displayName == null || displayName.trim().isEmpty()) {
+            throw new InvalidDimensionDisplayNameException();
         }
     }
 
