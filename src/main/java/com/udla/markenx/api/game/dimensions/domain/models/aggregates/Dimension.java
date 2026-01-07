@@ -81,6 +81,24 @@ public class Dimension {
         );
     }
 
+    public static @NonNull Dimension createWithId(
+            String id,
+            String name,
+            String displayName,
+            String description,
+            double consumerExpectation,
+            double productInitialOffer
+    ) {
+        return new Dimension(
+                new DimensionId(id),
+                name,
+                displayName,
+                description,
+                consumerExpectation,
+                productInitialOffer
+        );
+    }
+
     // endregion
 
     // region Getters

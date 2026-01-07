@@ -60,6 +60,20 @@ public class GameEvent {
         );
     }
 
+    public static @NonNull GameEvent createWithId(
+            String id,
+            String title,
+            String description,
+            List<EventEffect> effects
+    ) {
+        return new GameEvent(
+                new GameEventId(id),
+                title,
+                description,
+                effects
+        );
+    }
+
     // endregion
 
     // region Getters

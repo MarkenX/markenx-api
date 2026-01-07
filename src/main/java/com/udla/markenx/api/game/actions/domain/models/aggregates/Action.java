@@ -88,6 +88,28 @@ public class Action {
         );
     }
 
+    public static @NonNull Action createWithId(
+            String id,
+            String name,
+            String description,
+            BigDecimal cost,
+            ActionCategory category,
+            boolean isInitiallyLocked,
+            String prerequisiteActionId,
+            List<ActionEffect> effects
+    ) {
+        return new Action(
+                new ActionId(id),
+                name,
+                description,
+                cost,
+                category,
+                isInitiallyLocked,
+                prerequisiteActionId,
+                effects
+        );
+    }
+
     // endregion
 
     // region Getters

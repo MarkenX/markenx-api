@@ -74,6 +74,22 @@ public class Consumer {
         );
     }
 
+    public static @NonNull Consumer createWithId(
+            String id,
+            String name,
+            Integer age,
+            BigDecimal budget,
+            double targetAcceptanceScore
+    ) {
+        return new Consumer(
+                new ConsumerId(id),
+                name,
+                age,
+                budget,
+                targetAcceptanceScore
+        );
+    }
+
     // endregion
 
     // region Getters
