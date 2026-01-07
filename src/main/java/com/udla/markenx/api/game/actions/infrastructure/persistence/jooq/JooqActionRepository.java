@@ -46,7 +46,7 @@ public class JooqActionRepository implements ActionQueryRepository {
     @Override
     public List<Action> findByScenarioId(String scenarioId) {
         return dsl
-                .select(field("a.*"))
+                .select()
                 .from(table(TABLE).as("a"))
                 .join(table(SCENARIO_ACTIONS_TABLE).as("sa"))
                 .on(field("sa.action_id").eq(field("a.id")))

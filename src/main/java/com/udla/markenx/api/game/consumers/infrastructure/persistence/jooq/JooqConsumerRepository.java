@@ -44,7 +44,7 @@ public class JooqConsumerRepository implements ConsumerQueryRepository {
     @Override
     public Optional<Consumer> findByScenarioId(String scenarioId) {
         return dsl
-                .select(field("c.*"))
+                .select()
                 .from(table(TABLE).as("c"))
                 .join(table(SCENARIOS_TABLE).as("s"))
                 .on(field("s.consumer_id").eq(field("c.id")))
@@ -52,4 +52,5 @@ public class JooqConsumerRepository implements ConsumerQueryRepository {
                 .fetchOptional()
                 .map(mapper::toDomain);
     }
+
 }

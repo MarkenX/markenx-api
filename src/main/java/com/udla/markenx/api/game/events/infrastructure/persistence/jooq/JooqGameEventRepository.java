@@ -46,7 +46,7 @@ public class JooqGameEventRepository implements GameEventQueryRepository {
     @Override
     public List<GameEvent> findByScenarioId(String scenarioId) {
         return dsl
-                .select(field("e.*"))
+                .select()
                 .from(table(TABLE).as("e"))
                 .join(table(SCENARIO_EVENTS_TABLE).as("se"))
                 .on(field("se.event_id").eq(field("e.id")))

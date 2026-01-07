@@ -44,7 +44,7 @@ public class JooqDimensionRepository implements DimensionQueryRepository {
     @Override
     public List<Dimension> findByScenarioId(String scenarioId) {
         return dsl
-                .select(field("d.*"))
+                .select()
                 .from(table(TABLE).as("d"))
                 .join(table(SCENARIO_DIMENSIONS_TABLE).as("sd"))
                 .on(field("sd.dimension_id").eq(field("d.id")))
@@ -52,4 +52,5 @@ public class JooqDimensionRepository implements DimensionQueryRepository {
                 .fetch()
                 .map(mapper::toDomain);
     }
+
 }
