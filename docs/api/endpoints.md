@@ -11,6 +11,7 @@ Esta documentación describe todos los endpoints expuestos por la API de MarkenX
 3. [Módulo Students](#módulo-students)
 4. [Módulo Assignments (Tasks)](#módulo-assignments-tasks)
 5. [Módulo Scenarios](#módulo-scenarios)
+6. [Módulo Attempts](#módulo-attempts)
 
 ---
 
@@ -842,6 +843,168 @@ GET /api/scenarios
 
 ---
 
+## Módulo Attempts
+
+Base path: `/api/v1/attempts`
+
+### Registrar Resultado de Partida
+
+```
+POST /api/v1/attempts
+```
+
+**Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El campo `finalOutcome` se calcula automáticamente comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea.
+
+**Request Body:**
+
+```json
+{
+  "taskId": "string (UUID)",
+  "studentId": "string (UUID)",
+  "sessionDate": "YYYY-MM-DDTHH:mm:ss",
+  "finalAcceptance": 0.83,
+  "remainingBudget": 120.00,
+  "totalTurnsUsed": 5,
+  "profileDiscoveryPercentage": 0.75,
+  "history": [
+    {
+      "turnNumber": 1,
+      "acceptanceAtEnd": 0.60,
+      "budgetAtEnd": 180.00,
+      "eventOccurredTitle": "",
+      "actionsTakenIds": [
+        "3f8a9bde-1c2f-4a6b-9d2f-0a1b2c3d4e5f",
+        "7a4c2d1e-9b8f-4c3a-8d7e-2f1e0d9c8b7a"
+      ]
+    },
+    {
+      "turnNumber": 2,
+      "acceptanceAtEnd": 0.68,
+      "budgetAtEnd": 140.00,
+      "eventOccurredTitle": "Protesta ciudadana",
+      "actionsTakenIds": [
+        "9d7e6f5a-3b2c-4d1e-8f9a-0b1c2d3e4f5a"
+      ]
+    }
+  ]
+}
+```
+
+**Campos del Request:**
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| taskId | string (UUID) | Sí | ID de la tarea asociada |
+| studentId | string (UUID) | Sí | ID del estudiante |
+| sessionDate | datetime | Sí | Fecha y hora de la sesión de juego |
+| finalAcceptance | number (0.0-1.0) | Sí | Tasa de aceptación final del consumidor |
+| remainingBudget | number | Sí | Presupuesto restante al final de la partida |
+| totalTurnsUsed | integer | Sí | Número total de turnos utilizados |
+| profileDiscoveryPercentage | number (0.0-1.0) | Sí | Porcentaje de descubrimiento del perfil del consumidor |
+| history | array | No | Lista de registros por turno |
+
+**Campos de TurnHistory:**
+
+| Campo | Tipo | Requerido | Descripción |
+|-------|------|-----------|-------------|
+| turnNumber | integer | Sí | Número del turno (1, 2, 3...) |
+| acceptanceAtEnd | number (0.0-1.0) | Sí | Tasa de aceptación al final del turno |
+| budgetAtEnd | number | Sí | Presupuesto restante al final del turno |
+| eventOccurredTitle | string | No | Título del evento ocurrido en el turno (vacío si no hubo) |
+| actionsTakenIds | array[string] | No | IDs de las acciones ejecutadas en el turno |
+
+**Response:** `201 Created`
+
+```json
+{
+  "id": "string (UUID)",
+  "taskId": "string (UUID)",
+  "studentId": "string (UUID)",
+  "sessionDate": "YYYY-MM-DDTHH:mm:ss",
+  "finalAcceptance": 0.83,
+  "remainingBudget": 120.00,
+  "totalTurnsUsed": 5,
+  "profileDiscoveryPercentage": 0.75,
+  "finalOutcome": "APPROVED",
+  "history": [
+    {
+      "turnNumber": 1,
+      "acceptanceAtEnd": 0.60,
+      "budgetAtEnd": 180.00,
+      "eventOccurredTitle": "",
+      "actionsTakenIds": ["..."]
+    }
+  ]
+}
+```
+
+**Nota sobre `finalOutcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request. Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea:
+- Si `profileDiscoveryPercentage >= minScoreToPass` → `APPROVED`
+- Si `profileDiscoveryPercentage < minScoreToPass` → `DISAPPROVED`
+
+**Errores posibles:**
+
+- `400 Bad Request` - Datos de entrada inválidos (valores fuera de rango)
+- `404 Not Found` - La tarea especificada no existe
+
+---
+
+### Obtener Resultado de Partida por ID
+
+```
+GET /api/v1/attempts/{id}
+```
+
+**Descripción:** Obtiene los detalles completos de una sesión de juego registrada, incluyendo el historial de turnos.
+
+**Parámetros de ruta:**
+
+| Parámetro | Tipo | Descripción |
+|-----------|------|-------------|
+| id | string | UUID del attempt (resultado de partida) |
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "string (UUID)",
+  "taskId": "string (UUID)",
+  "studentId": "string (UUID)",
+  "sessionDate": "YYYY-MM-DDTHH:mm:ss",
+  "finalAcceptance": 0.83,
+  "remainingBudget": 120.00,
+  "totalTurnsUsed": 5,
+  "profileDiscoveryPercentage": 0.75,
+  "finalOutcome": "APPROVED",
+  "history": [
+    {
+      "turnNumber": 1,
+      "acceptanceAtEnd": 0.60,
+      "budgetAtEnd": 180.00,
+      "eventOccurredTitle": "",
+      "actionsTakenIds": [
+        "3f8a9bde-1c2f-4a6b-9d2f-0a1b2c3d4e5f"
+      ]
+    },
+    {
+      "turnNumber": 2,
+      "acceptanceAtEnd": 0.68,
+      "budgetAtEnd": 140.00,
+      "eventOccurredTitle": "Protesta ciudadana",
+      "actionsTakenIds": [
+        "9d7e6f5a-3b2c-4d1e-8f9a-0b1c2d3e4f5a"
+      ]
+    }
+  ]
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `AttemptNotFoundException`: El resultado de partida con ID especificado no existe
+
+---
+
 ## Códigos de Estado HTTP
 
 | Código | Descripción                                                |
@@ -893,6 +1056,22 @@ GET /api/scenarios
 | Excepción                   | Descripción                       |
 |-----------------------------|-----------------------------------|
 | `ScenarioNotFoundException` | El escenario solicitado no existe |
+
+### Módulo Attempts
+
+| Excepción                              | Descripción                                              |
+|----------------------------------------|----------------------------------------------------------|
+| `AttemptNotFoundException`             | El resultado de partida solicitado no existe             |
+| `InvalidTaskIdException`               | El ID de tarea es inválido (nulo o vacío)                |
+| `InvalidStudentIdException`            | El ID de estudiante es inválido (nulo o vacío)           |
+| `InvalidSessionDateException`          | La fecha de sesión es inválida (nula)                    |
+| `ApprovalRateOutOfRangeException`      | La tasa de aceptación está fuera del rango [0.0, 1.0]    |
+| `ProfileScoreOutOfRangeException`      | El puntaje de perfil está fuera del rango [0.0, 1.0]     |
+| `BudgetCannotBeNegativeException`      | El presupuesto no puede ser negativo                     |
+| `CurrentTurnMustBePositiveException`   | El número de turnos debe ser positivo                    |
+| `InvalidTurnNumberException`           | El número de turno debe ser positivo                     |
+| `ResultsAlreadyRegisteredException`    | Los resultados ya fueron registrados para este intento   |
+| `InvalidAttemptStatusTransitionException` | Transición de estado no permitida                     |
 
 ---
 
