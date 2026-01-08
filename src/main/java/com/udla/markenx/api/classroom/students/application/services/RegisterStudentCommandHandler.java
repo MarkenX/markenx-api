@@ -21,7 +21,9 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
 
     @Override
     public Student handle(@NonNull RegisterStudentCommand command) {
-        ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
+        if (!command.isHistorical()) {
+            ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
+        }
 
         Student newStudent = Student.create(
                 command.firstName(),

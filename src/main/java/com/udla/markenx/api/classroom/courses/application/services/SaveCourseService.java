@@ -18,7 +18,9 @@ public class SaveCourseService implements SaveCourseUseCase {
 
     @Override
     public Course handle(@NonNull SaveCourseCommand command) {
-        ensureAcademicTermIsUpcoming.ensureIsUpcoming(command.academicTermId());
+        if (!command.isHistorical()) {
+            ensureAcademicTermIsUpcoming.ensureIsUpcoming(command.academicTermId());
+        }
 
         Course newCourse = Course.create(command.name(), command.academicTermId());
         return repository.save(newCourse);
