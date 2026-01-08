@@ -2,8 +2,11 @@ package com.udla.markenx.api.classroom.academicterms.infrastructure.persistence.
 
 import com.udla.markenx.api.classroom.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
 import com.udla.markenx.api.classroom.academicterms.domain.ports.outgoing.AcademicTermCommandRepository;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.EnsureAcademicTermExists;
+import com.udla.markenx.api.classroom.courses.application.ports.incoming.EnsureAcademicTermIsUpcoming;
+import com.udla.markenx.api.classroom.courses.domain.exceptions.AcademicTermNotUpcomingException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -14,7 +17,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class JdbcAcademicTermRepository implements
-        AcademicTermCommandRepository, EnsureAcademicTermExists {
+        AcademicTermCommandRepository, EnsureAcademicTermExists, EnsureAcademicTermIsUpcoming {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<AcademicTerm> rowMapper = new AcademicTermRowMapper();
@@ -71,4 +74,21 @@ public class JdbcAcademicTermRepository implements
         }
     }
 
+    @Override
+    public void ensureIsUpcoming(String academicTermId) {
+        ensureExists(academicTermId);
+
+        String status = jdbcTemplate.queryForObject("""
+            SELECT status
+            FROM academic_terms
+            WHERE id = ?
+            """,
+                String.class,
+                academicTermId
+        );
+
+        if (!AcademicTermStatus.UPCOMING.name().equals(status)) {
+            throw new AcademicTermNotUpcomingException(academicTermId);
+        }
+    }
 }

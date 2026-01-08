@@ -1,6 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -53,5 +54,18 @@ public class JooqTaskRepository implements TaskQueryRepository {
                 pageable,
                 safeTotal
         );
+    }
+
+    @Override
+    public List<Task> findByStatuses(@NonNull List<AssignmentStatus> statuses) {
+        var statusNames = statuses.stream()
+                .map(AssignmentStatus::name)
+                .toList();
+
+        return dsl
+                .select()
+                .from(TABLE)
+                .where(field("status").in(statusNames))
+                .fetch(mapper::toDomain);
     }
 }

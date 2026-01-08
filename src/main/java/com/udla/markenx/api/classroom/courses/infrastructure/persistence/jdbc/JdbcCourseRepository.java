@@ -1,9 +1,13 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.classroom.assignments.application.ports.incoming.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.domain.ports.outgoing.CourseCommandRepository;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.CourseValidation;
+import com.udla.markenx.api.classroom.students.application.ports.incoming.EnsureCourseHasUpcomingTerm;
+import com.udla.markenx.api.classroom.students.domain.exceptions.CourseNotInUpcomingTermException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -13,7 +17,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 @RequiredArgsConstructor
 public class JdbcCourseRepository
-        implements CourseCommandRepository, CourseValidation {
+        implements CourseCommandRepository, CourseValidation,
+                   EnsureCourseHasUpcomingTerm, EnsureCourseHasUpcomingTermForAssignment {
 
     private final CourseRowMapper rowMapper = new CourseRowMapper();
     private final JdbcTemplate jdbcTemplate;
@@ -72,6 +77,25 @@ public class JdbcCourseRepository
 
         if (Boolean.FALSE.equals(exists)) {
             throw new CourseNotFoundException(courseId);
+        }
+    }
+
+    @Override
+    public void ensureCourseHasUpcomingTerm(String courseId) {
+        ensureCourseExists(courseId);
+
+        String status = jdbcTemplate.queryForObject("""
+            SELECT at.status
+            FROM courses c
+            JOIN academic_terms at ON c.academic_term_id = at.id
+            WHERE c.id = ?
+            """,
+                String.class,
+                courseId
+        );
+
+        if (!AcademicTermStatus.UPCOMING.name().equals(status)) {
+            throw new CourseNotInUpcomingTermException(courseId);
         }
     }
 }
