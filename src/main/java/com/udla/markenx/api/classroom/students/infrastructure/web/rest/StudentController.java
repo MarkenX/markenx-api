@@ -42,7 +42,7 @@ public class StudentController {
     })
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
         var command = new RegisterStudentCommand(
-                dto.firstName(), dto.lastName(), dto.courseId(), dto.email());
+                dto.firstName(), dto.lastName(), dto.courseId(), dto.email(), false);
         return responseDTOMapper.toDTO(registerStudentUseCase.handle(command), dto.email());
     }
 

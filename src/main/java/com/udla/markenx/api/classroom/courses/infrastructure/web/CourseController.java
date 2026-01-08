@@ -41,7 +41,7 @@ public class CourseController {
             @ApiResponse(responseCode = "201", description = "Course created successfully")
     })
     public CourseResponseDTO create(@RequestBody CreateCourseRequestDTO dto) {
-        var command = new SaveCourseCommand(dto.name(), dto.academicTermId());
+        var command = new SaveCourseCommand(dto.name(), dto.academicTermId(), false);
         return mapper.toDTO(saveCourseUseCase.handle(command));
     }
 
