@@ -35,8 +35,21 @@ public class JdbcUserRepository implements UserCommandRepository {
             SET lifecycle_status = ?
             WHERE id = ?
             """,
-                LifecycleStatus.DISABLED,
+                LifecycleStatus.DISABLED.name(),
                 id
+        );
+    }
+
+    @Override
+    public void update(@NonNull User user) {
+        jdbcTemplate.update("""
+            UPDATE users
+            SET lifecycle_status = ?, email = ?
+            WHERE id = ?
+            """,
+                user.getLifecycleStatus().name(),
+                user.getEmail(),
+                user.getId()
         );
     }
 }

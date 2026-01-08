@@ -35,7 +35,7 @@ public class CourseSeeder implements CommandLineRunner {
 
         try {
             academicTermsIds.forEach(termId -> {
-                var query = new SaveCourseCommand("Test", termId);
+                var query = new SaveCourseCommand("Test", termId, true);
                 Course saved = saveCourseUseCase.handle(query);
                 log.info("The course {} was created", saved.toString());
             });

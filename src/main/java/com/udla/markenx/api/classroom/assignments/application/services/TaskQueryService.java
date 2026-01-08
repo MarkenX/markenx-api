@@ -3,6 +3,7 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -27,5 +28,10 @@ public class TaskQueryService implements TaskQueryUseCase {
     public Page<Task> getAllPaginated(@NonNull GetAllTasksPaginatedQuery query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return repository.findAllPaginated(pageable);
+    }
+
+    @Override
+    public List<Task> getByStatuses(@NonNull List<AssignmentStatus> statuses) {
+        return repository.findByStatuses(statuses);
     }
 }

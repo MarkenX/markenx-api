@@ -36,7 +36,7 @@ public class StudentSeeder implements CommandLineRunner {
         try {
             coursesIds.forEach(courseId -> {
                var query = new RegisterStudentCommand(
-                       "Mateo David", "Guamán Mora", courseId, "dmora@udla.edu.ec");
+                       "Mateo David", "Guamán Mora", courseId, "dmora@udla.edu.ec", true);
                 Student saved = registerStudentUseCase.handle(query);
                 log.info("The student {} was created", saved.toString());
             });
