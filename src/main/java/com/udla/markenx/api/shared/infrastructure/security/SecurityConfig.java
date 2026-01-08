@@ -22,12 +22,6 @@ public class SecurityConfig {
                     // Rutas públicas
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/onboarding/**").permitAll()
-                    // Swagger UI - rutas públicas
-                    .requestMatchers("/swagger-ui.html").permitAll()
-                    .requestMatchers("/swagger-ui/**").permitAll()
-                    .requestMatchers("/v3/api-docs").permitAll()
-                    .requestMatchers("/v3/api-docs/**").permitAll()
-                    // Todas las demás requieren autenticación
                     .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth ->
