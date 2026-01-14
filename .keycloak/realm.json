@@ -1,5 +1,5 @@
 {
-  "realm": "markenx",
+  "realm": "MarkenX",
   "enabled": true,
   "displayName": "MarkenX",
   "registrationAllowed": false,
@@ -8,30 +8,20 @@
   "duplicateEmailsAllowed": false,
   "resetPasswordAllowed": true,
   "bruteForceProtected": true,
-
-  "roles": {
-    "realm": [
-      { "name": "ADMIN" },
-      { "name": "STUDENT" }
-    ]
-  },
-
-  "clients": [
-    {
-      "clientId": "markenx-api",
-      "enabled": true,
-      "protocol": "openid-connect",
-      "publicClient": false,
-      "serviceAccountsEnabled": true,
-      "clientAuthenticatorType": "client-secret"
-    }
-  ],
-
+  "verifyEmail": false,
   "accessTokenLifespan": 300,
   "ssoSessionIdleTimeout": 1800,
   "supportedLocales": ["en", "es"],
   "defaultLocale": "es",
-
   "eventsEnabled": true,
-  "eventsListeners": ["jboss-logging"]
+  "eventsListeners": ["jboss-logging"],
+
+  "roles": {
+    "realm": [
+      { "name": "ROLE_ADMIN", "description": "Rol para administradores" },
+      { "name": "ROLE_STUDENT", "description": "Rol para estudiantes" }
+    ]
+  },
+
+  "clients": []
 }
