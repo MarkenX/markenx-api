@@ -1,4 +1,4 @@
-package com.udla.markenx.api.shared.infrastructure.security;
+package com.udla.markenx.api.auth.infrastructure.configuration;
 
 import java.util.List;
 
