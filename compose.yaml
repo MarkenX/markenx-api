@@ -1,6 +1,9 @@
-version: '3.8'
+version: "3.8"
 
 services:
+  # =========================
+  # Keycloak (DEV temporal)
+  # =========================
   keycloak:
     image: quay.io/keycloak/keycloak:25.0.5
     container_name: dev-keycloak
@@ -9,20 +12,36 @@ services:
     ports:
       - "8083:8080"
     environment:
+      # Credenciales admin
       KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN}
       KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
-      KC_HTTP_ENABLED: true
-      KC_METRICS_ENABLED: false
-      KC_HEALTH_ENABLED: true
-    volumes:
-      - ./.keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/realms/master || exit 1"]
-      interval: 5s
-      retries: 12
-      start_period: 30s
-    command: ["start-dev"]
 
+      # DEV: habilitamos health para poder hacer readiness simple
+      KC_HEALTH_ENABLED: "true"
+      # DEV: http sin TLS
+      KC_HTTP_ENABLED: "true"
+      # DEV: métricas no son necesarias
+      KC_METRICS_ENABLED: "false"
+    volumes:
+      # Import del realm al arrancar
+      - ./.keycloak/realm.json:/opt/keycloak/data/import/realm.json:ro
+    command:
+      # start-dev: modo desarrollo (rápido, sin necesidad de configuración TLS)
+      - "start-dev"
+      # --import-realm: importa automáticamente los realms dentro de /opt/keycloak/data/import
+      - "--import-realm"
+      # Por claridad, fija el puerto interno HTTP
+      - "--http-port=8080"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/health/ready || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30
+      start_period: 20s
+
+  # =========================
+  # MySQL para tu API (DEV)
+  # =========================
   mysql:
     image: mysql:8.0.36
     container_name: markenx-mysql
@@ -30,10 +49,16 @@ services:
     environment:
       MYSQL_DATABASE: ${DB_NAME}
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_TCP_PORT: 3306
     ports:
       - "3306:3306"
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 5s
-      timeout: 3s
+      timeout: 5s
       retries: 10
+      start_period: 30s
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
