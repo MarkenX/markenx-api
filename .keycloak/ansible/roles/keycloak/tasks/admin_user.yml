@@ -1,4 +1,5 @@
 ---
+# 1) Crear/asegurar usuario admin DEV
 - name: Ensure DEV admin user exists
   community.general.keycloak_user:
     auth_keycloak_url: "{{ keycloak_url }}"
@@ -8,11 +9,12 @@
     realm: "{{ realm_name }}"
     username: "{{ dev_admin_user.username }}"
     email: "{{ dev_admin_user.email }}"
-    firstName: "{{ dev_admin_user.firstName }}"
-    lastName: "{{ dev_admin_user.lastName }}"
+    first_name: "{{ dev_admin_user.firstName }}"
+    last_name: "{{ dev_admin_user.lastName }}"
     enabled: "{{ dev_admin_user.enabled }}"
     state: present
 
+# 2) Set password temporal (obliga cambio al primer login)
 - name: Set DEV admin user password (temporary)
   community.general.keycloak_user:
     auth_keycloak_url: "{{ keycloak_url }}"
@@ -27,13 +29,68 @@
         temporary: "{{ dev_admin_user.temporary_password }}"
     state: present
 
-- name: Assign realm roles to DEV admin user
-  community.general.keycloak_user_rolemapping:
-    auth_keycloak_url: "{{ keycloak_url }}"
-    auth_realm: "{{ keycloak_admin_realm }}"
-    auth_username: "{{ keycloak_admin_user }}"
-    auth_password: "{{ keycloak_admin_password }}"
-    realm: "{{ realm_name }}"
-    username: "{{ dev_admin_user.username }}"
-    roles: "{{ dev_admin_user.roles }}"
-    state: present
+# 3) Obtener token admin (admin-cli) para usar Admin REST API
+- name: Get admin access token (master realm)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/realms/{{ keycloak_admin_realm }}/protocol/openid-connect/token"
+    method: POST
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body_format: form-urlencoded
+    body:
+      grant_type: password
+      client_id: admin-cli
+      username: "{{ keycloak_admin_user }}"
+      password: "{{ keycloak_admin_password }}"
+    return_content: true
+  register: kc_token
+
+- name: Set token fact
+  ansible.builtin.set_fact:
+    kc_access_token: "{{ kc_token.json.access_token }}"
+
+# 4) Buscar el userId del usuario
+- name: Lookup admin user id
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/users?username={{ dev_admin_user.username | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_users
+
+- name: Fail if user not found (should not happen)
+  ansible.builtin.fail:
+    msg: "User {{ dev_admin_user.username }} was not found after creation."
+  when: kc_users.json | length == 0
+
+- name: Set admin user id fact
+  ansible.builtin.set_fact:
+    kc_admin_user_id: "{{ kc_users.json[0].id }}"
+
+# 5) Obtener la representación del rol del realm (ROLE_ADMIN)
+- name: Get realm role representation (ROLE_ADMIN)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/roles/{{ dev_admin_user.roles[0] | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_role
+
+# 6) Asignar el rol al usuario (idempotente: si ya lo tiene, Keycloak lo ignora)
+- name: Assign realm role to DEV admin user via Admin API
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/users/{{ kc_admin_user_id }}/role-mappings/realm"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      - id: "{{ kc_role.json.id }}"
+        name: "{{ kc_role.json.name }}"
+    # Keycloak suele responder 204 No Content en éxito
+    status_code: [204, 409]

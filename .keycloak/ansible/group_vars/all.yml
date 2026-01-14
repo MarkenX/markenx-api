@@ -1,6 +1,6 @@
 ---
 # Keycloak DEV endpoint
-keycloak_url: "http://localhost:8083"
+keycloak_url: "http://keycloak:8080"
 
 # Credenciales admin de Keycloak (master realm)
 keycloak_admin_user: "{{ lookup('env', 'KEYCLOAK_ADMIN') | default('admin', true) }}"
