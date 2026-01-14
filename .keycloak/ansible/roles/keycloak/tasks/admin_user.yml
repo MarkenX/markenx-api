@@ -1,0 +1,39 @@
+---
+- name: Ensure DEV admin user exists
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_realm: "{{ keycloak_admin_realm }}"
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ realm_name }}"
+    username: "{{ dev_admin_user.username }}"
+    email: "{{ dev_admin_user.email }}"
+    firstName: "{{ dev_admin_user.firstName }}"
+    lastName: "{{ dev_admin_user.lastName }}"
+    enabled: "{{ dev_admin_user.enabled }}"
+    state: present
+
+- name: Set DEV admin user password (temporary)
+  community.general.keycloak_user:
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_realm: "{{ keycloak_admin_realm }}"
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ realm_name }}"
+    username: "{{ dev_admin_user.username }}"
+    credentials:
+      - type: "password"
+        value: "{{ dev_admin_user.password }}"
+        temporary: "{{ dev_admin_user.temporary_password }}"
+    state: present
+
+- name: Assign realm roles to DEV admin user
+  community.general.keycloak_user_rolemapping:
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_realm: "{{ keycloak_admin_realm }}"
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ realm_name }}"
+    username: "{{ dev_admin_user.username }}"
+    roles: "{{ dev_admin_user.roles }}"
+    state: present

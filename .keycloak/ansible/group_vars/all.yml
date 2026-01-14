@@ -1,0 +1,41 @@
+---
+# Keycloak DEV endpoint
+keycloak_url: "http://localhost:8083"
+
+# Credenciales admin de Keycloak (master realm)
+keycloak_admin_user: "{{ lookup('env', 'KEYCLOAK_ADMIN') | default('admin', true) }}"
+keycloak_admin_password: "{{ lookup('env', 'KEYCLOAK_ADMIN_PASSWORD') | default('admin', true) }}"
+keycloak_admin_realm: "master"
+
+# Realm de negocio
+realm_name: "MarkenX"
+
+# Client BFF (OAuth2 Confidential)
+bff_client_id: "bff"
+bff_client_secret: "{{ lookup('env', 'KEYCLOAK_CLIENT_SECRET') | default('dev-secret', true) }}"
+
+# BFF callback (Spring Security)
+bff_redirect_uris:
+  - "http://localhost:8082/login/oauth2/code/keycloak"
+
+# Frontends permitidos (CORS/Web Origins)
+bff_web_origins:
+  - "http://localhost:3000"
+  - "http://localhost:3001"
+
+# Roles base del realm (deben existir)
+realm_roles:
+  - "ROLE_ADMIN"
+  - "ROLE_STUDENT"
+
+# Usuario Admin DEV (creado por Ansible)
+dev_admin_user:
+  username: "admin@markenx.dev"
+  email: "admin@markenx.dev"
+  firstName: "Admin"
+  lastName: "DEV"
+  enabled: true
+  password: "admin"
+  temporary_password: true
+  roles:
+    - "ROLE_ADMIN"
