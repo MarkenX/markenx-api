@@ -52,7 +52,7 @@ spring:
           keycloak:
             issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8083/realms/MarkenX}
 
-  # Sesión del BFF (DEV)
+  # Sesiï¿½n del BFF (DEV)
   session:
     timeout: 10m
 
@@ -66,5 +66,16 @@ server:
 logging:
   level:
     org.jooq: WARN
-    org.springframework.security: INFO
-    org.springframework.security.oauth2: INFO
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    com.udla.markenx.api.security.infrastructure.web: DEBUG
+
+keycloak:
+  admin:
+    base-url: ${KEYCLOAK_ADMIN_BASE_URL:http://localhost:8083}
+    realm: ${KEYCLOAK_ADMIN_REALM:MarkenX}
+    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:markenx-admin}
+    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:dev-admin-secret}
+
+identity:
+  default-temporary-password: ${IDENTITY_DEFAULT_TEMP_PASSWORD:password}

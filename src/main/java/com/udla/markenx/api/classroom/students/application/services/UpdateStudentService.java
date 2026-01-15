@@ -12,8 +12,8 @@ import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiv
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.models.valueobjects.StudentStatus;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
-import com.udla.markenx.api.classroom.users.domain.models.aggregates.User;
-import com.udla.markenx.api.classroom.users.domain.ports.outgoing.UserQueryRepository;
+import com.udla.markenx.api.security.domain.models.aggregates.User;
+import com.udla.markenx.api.security.domain.ports.outgoing.UserQueryRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -29,7 +29,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
     private final ApplicationEventPublisher events;
 
     @Override
-    public Student getById(GetStudentByIdQuery query) {
+    public Student getById(@NonNull GetStudentByIdQuery query) {
         return repository.findById(query.id());
     }
 
@@ -49,7 +49,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = repository.findById(studentId);
         student.markIdentityCreationFailed();
         student.disable();
-        repository.save(student);
+        repository.update(student);
 
         events.publishEvent(
                 new StudentIdentityFailedEvent(studentId)

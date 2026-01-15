@@ -1,10 +1,10 @@
 package com.udla.markenx.api.classroom.students.infrastructure.listeners;
 
 import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
-import com.udla.markenx.api.classroom.users.domain.events.UserCreatedEvent;
-import com.udla.markenx.api.classroom.users.domain.events.UserCreationFailedEvent;
-import com.udla.markenx.api.classroom.users.domain.events.UserDisableFailedEvent;
-import com.udla.markenx.api.classroom.users.domain.events.UserDisabledEvent;
+import com.udla.markenx.api.security.domain.events.UserCreatedEvent;
+import com.udla.markenx.api.security.domain.events.UserCreationFailedEvent;
+import com.udla.markenx.api.security.domain.events.UserDisableFailedEvent;
+import com.udla.markenx.api.security.domain.events.UserDisabledEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

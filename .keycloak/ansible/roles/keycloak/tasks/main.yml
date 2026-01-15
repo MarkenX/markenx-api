@@ -1,8 +1,8 @@
 ---
-# Orden importante:
-# 1) Roles del realm
-# 2) Client BFF
-# 3) Usuario admin y asignación de rol
+- import_tasks: auth_token.yml
 - import_tasks: realm_roles.yml
 - import_tasks: client_bff.yml
+- import_tasks: admin_client.yml
 - import_tasks: admin_user.yml
+- import_tasks: roles_scopes.yml
+
