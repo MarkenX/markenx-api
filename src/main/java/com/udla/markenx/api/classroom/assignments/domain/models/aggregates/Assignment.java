@@ -105,6 +105,17 @@ public abstract class Assignment extends Entity {
         return this.courseId;
     }
 
+    public boolean isCompleted() {
+        return this.status == AssignmentStatus.COMPLETED;
+    }
+
+    public boolean isFailed() {
+        return this.status == AssignmentStatus.FAILED;
+    }
+
+    public boolean isOutdated() {
+        return this.status == AssignmentStatus.OUTDATED;
+    }
     // endregion
 
     // region Setters
