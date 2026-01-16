@@ -147,6 +147,24 @@ public class DevSecurityConfig {
     }
 
     /**
+     * Logout federado OIDC:
+     * - Keycloak puede rechazar post_logout_redirect_uri si no está “whitelisted”.
+     * - Por eso usamos un bridge en el BFF: {baseUrl}/auth/post-logout
+     * - Luego el BFF redirige al frontend.
+     */
+    @Bean
+    LogoutSuccessHandler oidcLogoutSuccessHandler(@NonNull ClientRegistrationRepository clients) {
+        OidcClientInitiatedLogoutSuccessHandler handler =
+                new OidcClientInitiatedLogoutSuccessHandler(clients);
+
+        // Usa el host/puerto real con el que se accede al BFF (incluye context-path).
+        // En tu caso: http://localhost:8080/api/v1/auth/post-logout
+        handler.setPostLogoutRedirectUri("{baseUrl}" + BFF_POST_LOGOUT_ENDPOINT);
+
+        return handler;
+    }
+
+    /**
      * CORS:
      * - allowCredentials=true es obligatorio para enviar cookies.
      */
