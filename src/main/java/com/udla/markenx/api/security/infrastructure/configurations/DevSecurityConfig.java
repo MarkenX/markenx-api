@@ -166,15 +166,22 @@ public class DevSecurityConfig {
 
     /**
      * CORS:
-     * - allowCredentials=true es obligatorio para enviar cookies.
+     * allowCredentials=true es obligatorio para que el browser envíe/reciba JSESSIONID.
      */
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of("http://localhost:3000", "http://localhost:3001"));
+        config.setAllowedOrigins(DEV_ALLOWED_ORIGINS);
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
+
+        /**
+         * Si tu API expone paginación por header (React Admin / DataGrid),
+         * aquí debes exponer los headers a JS.
+         */
         config.setExposedHeaders(List.of("X-Total-Count"));
+
+        // Permite cookies cross-origin (solo con orígenes explícitos, no con "*")
         config.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
