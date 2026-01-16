@@ -1,5 +1,6 @@
 package com.udla.markenx.api.security.infrastructure.web;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -43,8 +44,8 @@ public class AuthController {
      * spring.security.oauth2.client.registration.keycloak
      */
     @GetMapping("/auth/login")
-    public void login(HttpServletResponse response) throws IOException {
-        response.sendRedirect("oauth2/authorization/keycloak");
+    public void login(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(request.getContextPath() + "/oauth2/authorization/keycloak");
     }
 
     /**
@@ -87,18 +88,13 @@ public class AuthController {
     }
 
     /**
-     * Logout is executed by Spring Security filter chain.
-     * This endpoint exists mainly to make it explicit for the frontend contract,
-     * but the real logout happens in the security config:
-     *   .logout(l -> l.logoutUrl("/auth/logout") ...)
-     * <p>
-     * If you want, you can also omit this method and let Spring handle POST /auth/logout directly.
+     * Bridge post logout:
+     * Keycloak redirige aquí luego del logout OIDC.
+     * Este endpoint NO valida sesión; su responsabilidad es regresar al SPA a una ruta pública.
      */
-    @PostMapping("/auth/logout")
-    public ResponseEntity<Void> logout() {
-        // If SecurityFilterChain is configured with logoutUrl("/auth/logout"),
-        // Spring will intercept this request before hitting the controller in most cases.
-        return ResponseEntity.noContent().build();
+    @GetMapping("/auth/post-logout")
+    public void postLogout(HttpServletResponse response) throws IOException {
+        response.sendRedirect("http://localhost:3000/logged-out");
     }
 
     private String attr(Object principal, String name) {
