@@ -31,33 +31,65 @@ public class TaskSeeder implements CommandLineRunner {
         log.info("Seeding tasks...");
 
         List<String> coursesIds = findAllCoursesIdsForAssignments.handle();
+        if (coursesIds.isEmpty()) {
+            log.warn("No courses found, skipping task seeding.");
+            return;
+        }
 
         try {
-            LocalDateTime upcomingDeadline = LocalDateTime.now().plusDays(10);
+            LocalDateTime deadline1 = LocalDateTime.now().plusDays(30);
+            LocalDateTime deadline2 = LocalDateTime.now().plusDays(60);
+            LocalDateTime deadline3 = LocalDateTime.now().plusDays(90);
             LocalDateTime historicalDeadline = LocalDateTime.now().minusDays(10);
 
             coursesIds.forEach(courseId -> {
-                Task upcoming = saveTaskUseCase.handle(new SaveTaskCommand(
-                        "Seed - Sin empezar",
-                        "Tarea seeded en estado NOT_STARTED",
-                        upcomingDeadline,
-                        0.8,
+                // Task 1: Simulacion de Lanzamiento
+                Task task1 = saveTaskUseCase.handle(new SaveTaskCommand(
+                        "Simulacion de Lanzamiento",
+                        "Realiza una simulacion de lanzamiento de producto y alcanza al menos 70% de aceptacion",
+                        deadline1,
+                        0.70,
                         courseId,
-                        5,
+                        3,
                         false
                 ));
-                log.info("Created upcoming task: {}", upcoming);
+                log.info("Created task: {} (id: {})", task1.getInfo().title(), task1.getId());
 
+                // Task 2: Estrategia de Pricing
+                Task task2 = saveTaskUseCase.handle(new SaveTaskCommand(
+                        "Estrategia de Pricing",
+                        "Desarrolla una estrategia de precios efectiva para maximizar la aceptacion",
+                        deadline2,
+                        0.65,
+                        courseId,
+                        3,
+                        false
+                ));
+                log.info("Created task: {} (id: {})", task2.getInfo().title(), task2.getId());
+
+                // Task 3: Campana de Marketing Digital
+                Task task3 = saveTaskUseCase.handle(new SaveTaskCommand(
+                        "Campana de Marketing Digital",
+                        "Disena y ejecuta una campana de marketing digital exitosa",
+                        deadline3,
+                        0.75,
+                        courseId,
+                        2,
+                        false
+                ));
+                log.info("Created task: {} (id: {})", task3.getInfo().title(), task3.getId());
+
+                // Task 4: Tarea vencida (para probar estado OUTDATED)
                 Task outdated = saveTaskUseCase.handle(new SaveTaskCommand(
-                        "Seed - Vencida",
-                        "Tarea seeded en estado OUTDATED",
+                        "Tarea Historica Vencida",
+                        "Tarea historica para pruebas de estado OUTDATED",
                         historicalDeadline,
-                        0.8,
+                        0.80,
                         courseId,
                         5,
                         true
                 ));
-                log.info("Created outdated task: {}", outdated);
+                log.info("Created outdated task: {} (id: {})", outdated.getInfo().title(), outdated.getId());
             });
 
             log.info("Tasks seeded successfully.");
