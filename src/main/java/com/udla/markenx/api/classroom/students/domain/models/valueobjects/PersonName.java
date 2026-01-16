@@ -30,9 +30,9 @@ public final class PersonName {
         if (value == null || value.isBlank()) {
             throw new PersonNameCannotBeEmptyException();
         }
-        if (!VALID_NAME_PATTERN.matcher(value.trim()).matches()) {
-            throw new InvalidPersonNameFormatException();
-        }
+//        if (!VALID_NAME_PATTERN.matcher(value.trim()).matches()) {
+//            throw new InvalidPersonNameFormatException();
+//        }
         return value;
     }
 
