@@ -11,7 +11,7 @@ public enum AssignmentStatus {
     NOT_STARTED("Sin empezar") {
         @Override
         public boolean canTransitionTo(AssignmentStatus next) {
-            return next == IN_PROGRESS || next == OUTDATED;
+            return next == IN_PROGRESS || next == OUTDATED || next == COMPLETED;
         }
     },
 
