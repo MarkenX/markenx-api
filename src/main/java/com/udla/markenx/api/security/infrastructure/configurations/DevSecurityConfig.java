@@ -230,4 +230,41 @@ public class DevSecurityConfig {
         return c.stream().map(Object::toString).toList();
     }
 
+    /**
+     * SuccessHandler:
+     * Orden recomendado:
+     * 1) redirect explícito y validado (?redirect=...)
+     * 2) SavedRequest (si Spring guardó una URL original)
+     * 3) fallback al frontend default
+     */
+    @Bean
+    AuthenticationSuccessHandler frontendRedirectSuccessHandler() {
+        return (HttpServletRequest request,
+                HttpServletResponse response,
+                Authentication authentication) -> {
+
+            String redirect = request.getParameter("redirect");
+            if (redirect != null && isAllowedRedirect(redirect)) {
+                response.sendRedirect(redirect);
+                return;
+            }
+
+            SavedRequest saved = new HttpSessionRequestCache().getRequest(request, response);
+            if (saved != null && isAllowedRedirect(saved.getRedirectUrl())) {
+                response.sendRedirect(saved.getRedirectUrl());
+                return;
+            }
+
+            response.sendRedirect(DEV_DEFAULT_FRONTEND);
+        };
+    }
+
+    /**
+     * Whitelist de redirects en DEV:
+     * Evita open redirect vulnerabilities desde parámetros manipulables.
+     */
+    private boolean isAllowedRedirect(@NonNull String url) {
+        return url.startsWith("http://localhost:3000/")
+                || url.startsWith("http://localhost:3001/");
+    }
 }
