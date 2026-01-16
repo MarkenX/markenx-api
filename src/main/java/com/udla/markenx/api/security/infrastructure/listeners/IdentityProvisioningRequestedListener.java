@@ -1,19 +1,23 @@
 package com.udla.markenx.api.security.infrastructure.listeners;
 
-import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.security.application.ports.incoming.UserIdentityUseCase;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
+/**
+ * Listens to identity provisioning requests from other modules
+ * (e.g., students module) and triggers user identity creation.
+ */
 @Component
 @RequiredArgsConstructor
-public class StudentRegisteredListener {
+public class IdentityProvisioningRequestedListener {
 
     private final UserIdentityUseCase userIdentityUseCase;
 
     @EventListener
-    public void on(StudentRegisteredEvent event) {
+    public void on(IdentityProvisioningRequestedEvent event) {
         userIdentityUseCase
                 .handle(event)
                 .subscribe();

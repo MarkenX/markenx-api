@@ -1,8 +1,12 @@
 package com.udla.markenx.api.security.application.ports.incoming;
 
-import com.udla.markenx.api.classroom.students.domain.events.StudentDisableRequestedEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import reactor.core.publisher.Mono;
 
+/**
+ * Use case for handling identity disable requests.
+ * Disables user identity in response to integration events.
+ */
 public interface DisableUserIdentityUseCase {
-    Mono<Void> handle(StudentDisableRequestedEvent event);
+    Mono<Void> handle(IdentityDisableRequestedEvent event);
 }

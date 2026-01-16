@@ -4,7 +4,8 @@ import com.udla.markenx.api.classroom.students.application.commands.DisableStude
 import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.queries.GetStudentByIdQuery;
-import com.udla.markenx.api.classroom.students.domain.events.StudentDisableRequestedEvent;
+import com.udla.markenx.api.classroom.students.application.ports.outgoing.UserDataPort;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyDisabledException;
@@ -12,8 +13,6 @@ import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiv
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.models.valueobjects.StudentStatus;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
-import com.udla.markenx.api.security.domain.models.aggregates.User;
-import com.udla.markenx.api.security.domain.ports.outgoing.UserQueryRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -25,7 +24,7 @@ import org.springframework.stereotype.Service;
 public class UpdateStudentService implements UpdateStudentUseCase {
 
     private final StudentCommandRepository repository;
-    private final UserQueryRepository userQueryRepository;
+    private final UserDataPort userDataPort;
     private final ApplicationEventPublisher events;
 
     @Override
@@ -75,7 +74,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         String email = getUserEmail(student.getUserId());
 
         events.publishEvent(
-                new StudentDisableRequestedEvent(
+                new IdentityDisableRequestedEvent(
                         student.getId(),
                         student.getUserId(),
                         email
@@ -117,8 +116,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
     }
 
     private String getUserEmail(String userId) {
-        return userQueryRepository.findById(userId)
-                .map(User::getEmail)
+        return userDataPort.findEmailByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException(
                         "User not found for userId: " + userId));
     }

@@ -5,6 +5,7 @@ import com.udla.markenx.api.classroom.students.application.ports.incoming.Ensure
 import com.udla.markenx.api.classroom.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -33,8 +34,22 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
 
         repository.save(newStudent);
 
+        // Domain event for internal CQRS projections
         events.publishEvent(
-                new StudentRegisteredEvent(newStudent.getId(), command.email(), newStudent.getFullName())
+                new StudentRegisteredEvent(
+                        newStudent.getId(),
+                        command.email(),
+                        newStudent.getFullName()
+                )
+        );
+
+        // Integration event for cross-module communication (identity provisioning)
+        events.publishEvent(
+                new IdentityProvisioningRequestedEvent(
+                        newStudent.getId(),
+                        command.email(),
+                        newStudent.getFullName()
+                )
         );
 
         return newStudent;

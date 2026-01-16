@@ -1,20 +1,24 @@
 package com.udla.markenx.api.security.application.services;
 
-import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.security.application.commands.CreateUserCommand;
 import com.udla.markenx.api.security.application.ports.incoming.CreateUserUseCase;
 import com.udla.markenx.api.security.application.ports.incoming.UserIdentityUseCase;
 import com.udla.markenx.api.security.application.ports.outgoing.ExternalIdentityPort;
-import com.udla.markenx.api.security.domain.events.UserCreatedEvent;
-import com.udla.markenx.api.security.domain.events.UserCreationFailedEvent;
 import com.udla.markenx.api.security.domain.events.UserIdentityRollbackEvent;
 import com.udla.markenx.api.security.domain.models.valueobjects.Role;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisionedEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningFailedEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
+/**
+ * Service that handles identity provisioning requests.
+ * Creates local user records and provisions external identity (Keycloak).
+ */
 @Component
 @RequiredArgsConstructor
 public class UserIdentityService implements UserIdentityUseCase {
@@ -24,7 +28,7 @@ public class UserIdentityService implements UserIdentityUseCase {
     private final ApplicationEventPublisher events;
 
     @Override
-    public Mono<Void> handle(StudentRegisteredEvent event) {
+    public Mono<Void> handle(IdentityProvisioningRequestedEvent event) {
 
         return createUser(event)
                 .flatMap(userId ->
@@ -33,13 +37,13 @@ public class UserIdentityService implements UserIdentityUseCase {
                 )
                 .doOnSuccess(userId ->
                         events.publishEvent(
-                                new UserCreatedEvent(event.studentId(), userId)
+                                new IdentityProvisionedEvent(event.sourceEntityId(), userId)
                         )
                 )
                 .onErrorResume(ex -> rollback(event, ex)).then();
     }
 
-    private @NonNull Mono<String> createUser(StudentRegisteredEvent event) {
+    private @NonNull Mono<String> createUser(IdentityProvisioningRequestedEvent event) {
         return Mono.fromCallable(() ->
                 createUserUseCase.handle(
                         new CreateUserCommand(
@@ -55,7 +59,7 @@ public class UserIdentityService implements UserIdentityUseCase {
     }
 
     private @NonNull Mono<? extends String> rollback(
-            @NonNull StudentRegisteredEvent event,
+            @NonNull IdentityProvisioningRequestedEvent event,
             @NonNull Throwable ex) {
 
         events.publishEvent(
@@ -66,8 +70,8 @@ public class UserIdentityService implements UserIdentityUseCase {
         );
 
         events.publishEvent(
-                new UserCreationFailedEvent(
-                        event.studentId(),
+                new IdentityProvisioningFailedEvent(
+                        event.sourceEntityId(),
                         ex.getMessage()
                 )
         );

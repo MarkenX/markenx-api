@@ -1,8 +1,12 @@
 package com.udla.markenx.api.security.application.ports.incoming;
 
-import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
 import reactor.core.publisher.Mono;
 
+/**
+ * Use case for handling identity provisioning requests.
+ * Creates user identity in response to integration events.
+ */
 public interface UserIdentityUseCase {
-    Mono<Void> handle(StudentRegisteredEvent event);
+    Mono<Void> handle(IdentityProvisioningRequestedEvent event);
 }
