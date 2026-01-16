@@ -1,19 +1,19 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.web;
 
+import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseAcademicTermCommand;
 import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseStatusCommand;
 import com.udla.markenx.api.classroom.courses.application.commands.SaveCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.dtos.*;
-import com.udla.markenx.api.classroom.courses.application.queries.GetAllCoursesPaginatedQuery;
-import com.udla.markenx.api.classroom.courses.application.queries.GetCourseByIdQuery;
-import com.udla.markenx.api.classroom.courses.application.commands.*;
-import com.udla.markenx.api.classroom.courses.application.dtos.*;
 import com.udla.markenx.api.classroom.courses.application.mappers.CourseDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.CourseQueryUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.UpdateCourseUseCase;
-import com.udla.markenx.api.classroom.courses.application.queries.*;
+import com.udla.markenx.api.classroom.courses.application.queries.GetAllCoursesPaginatedQuery;
+import com.udla.markenx.api.classroom.courses.application.queries.GetCourseByIdQuery;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -24,15 +24,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("courses")
 public class CourseController {
 
     private final CourseDTOMapper mapper;
+    private final TaskResponseDTOMapper taskMapper;
     private final SaveCourseUseCase saveCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
     private final CourseQueryUseCase courseQueryUseCase;
+    private final TaskQueryUseCase taskQueryUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
