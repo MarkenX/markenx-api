@@ -8,5 +8,6 @@ import java.util.Optional;
 public interface StudentSummaryReadRepository {
     void upsert(StudentSummaryReadModel model);
     Optional<StudentSummaryReadModel> findByStudentId(String studentId);
+    Optional<StudentSummaryReadModel> findByEmail(String email);
     List<StudentSummaryReadModel> findAll();
 }
