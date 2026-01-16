@@ -7,7 +7,6 @@ import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentEx
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -26,7 +25,6 @@ public class TaskSeeder implements CommandLineRunner {
 
     private final FindAllCoursesIdsForAssignmentsHandler findAllCoursesIdsForAssignments;
     private final SaveTaskUseCase saveTaskUseCase;
-    private final Flyway flyway;
 
     @Override
     public void run(String @NonNull ... args) {
@@ -35,22 +33,33 @@ public class TaskSeeder implements CommandLineRunner {
         List<String> coursesIds = findAllCoursesIdsForAssignments.handle();
 
         try {
-            String deadlineString = "2025-12-24T18:30:00";
-            LocalDateTime deadline = LocalDateTime.parse(deadlineString);
+            LocalDateTime upcomingDeadline = LocalDateTime.now().plusDays(10);
+            LocalDateTime historicalDeadline = LocalDateTime.now().minusDays(10);
 
             coursesIds.forEach(courseId -> {
-                var query = new SaveTaskCommand(
-                        "Test",
-                        "Tarea de prueba",
-                        deadline,
+                Task upcoming = saveTaskUseCase.handle(new SaveTaskCommand(
+                        "Seed - Sin empezar",
+                        "Tarea seeded en estado NOT_STARTED",
+                        upcomingDeadline,
+                        0.8,
+                        courseId,
+                        5,
+                        false
+                ));
+                log.info("Created upcoming task: {}", upcoming);
+
+                Task outdated = saveTaskUseCase.handle(new SaveTaskCommand(
+                        "Seed - Vencida",
+                        "Tarea seeded en estado OUTDATED",
+                        historicalDeadline,
                         0.8,
                         courseId,
                         5,
                         true
-                );
-                Task saved = saveTaskUseCase.handle(query);
-                log.info("The task {} was created", saved.toString());
+                ));
+                log.info("Created outdated task: {}", outdated);
             });
+
             log.info("Tasks seeded successfully.");
         } catch (AssignmentException e) {
             log.error(e.getMessage(), e);

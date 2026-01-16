@@ -29,14 +29,17 @@ public class AcademicTermSeeder implements CommandLineRunner {
     public void run(String @NotNull ... args) {
         log.info("Seeding academic terms...");
 
-        int year = 2025;
-        var startDate = LocalDate.of(year, 1, 1);
-        var endDate = LocalDate.of(year, 5, 30);
-
-        var query = new SaveAcademicTermCommand(startDate, endDate, year, true);
         try {
-            AcademicTerm saved = service.handle(query);
-            log.info("The term {} was created", saved.toString());
+            // Periodo académico activo: Feb 2026 - Jul 2026
+            var activeTerm = new SaveAcademicTermCommand(
+                    LocalDate.of(2026, 2, 1),
+                    LocalDate.of(2026, 6, 1),
+                    2025,
+                    true
+            );
+            AcademicTerm savedActive = service.handle(activeTerm);
+            log.info("Active term created: {}", savedActive.getId());
+
             log.info("Academic terms seeded successfully.");
         } catch (AcademicTermException e) {
             log.error(e.getMessage(), e);

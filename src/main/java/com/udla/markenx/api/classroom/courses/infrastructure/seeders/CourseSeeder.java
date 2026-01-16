@@ -27,6 +27,11 @@ public class CourseSeeder implements CommandLineRunner {
     private final SaveCourseUseCase saveCourseUseCase;
     private final Flyway flyway;
 
+    private static final List<String> COURSE_NAMES = List.of(
+            "Marketing Digital",
+            "Marketing Estratégico"
+    );
+
     @Override
     public void run(String @NonNull ... args) {
         log.info("Seeding courses...");
@@ -35,14 +40,16 @@ public class CourseSeeder implements CommandLineRunner {
 
         try {
             academicTermsIds.forEach(termId -> {
-                var query = new SaveCourseCommand("Test", termId, true);
-                Course saved = saveCourseUseCase.handle(query);
-                log.info("The course {} was created", saved.toString());
+                COURSE_NAMES.forEach(courseName -> {
+                    var command = new SaveCourseCommand(courseName, termId, true);
+                    Course saved = saveCourseUseCase.handle(command);
+                    log.info("Course created: {} (id: {})", saved.getName(), saved.getId());
+                });
             });
             log.info("Courses seeded successfully.");
         } catch (CourseException e) {
             log.error(e.getMessage(), e);
-            log.info("Academic terms seeding failed.");
+            log.info("Courses seeding failed.");
         }
     }
 }
