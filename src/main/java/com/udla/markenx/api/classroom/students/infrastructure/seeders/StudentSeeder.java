@@ -50,7 +50,7 @@ public class StudentSeeder implements CommandLineRunner {
         try {
             for (StudentData student : STUDENTS) {
                 // Distribute students across courses
-                String courseId = coursesIds.get(studentIndex % coursesIds.size());
+                String courseId = coursesIds.getFirst();
                 var command = new RegisterStudentCommand(
                         student.firstName(),
                         student.lastName(),
