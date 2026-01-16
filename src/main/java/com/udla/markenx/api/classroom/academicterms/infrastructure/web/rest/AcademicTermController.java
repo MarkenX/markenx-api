@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.academicterms.infrastructure.web;
+package com.udla.markenx.api.classroom.academicterms.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.academicterms.application.commands.ChangeAcademicTermStatusCommand;
 import com.udla.markenx.api.classroom.academicterms.application.commands.SaveAcademicTermCommand;

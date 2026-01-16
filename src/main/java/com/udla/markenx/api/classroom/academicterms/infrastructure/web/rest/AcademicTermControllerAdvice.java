@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.academicterms.infrastructure.web;
+package com.udla.markenx.api.classroom.academicterms.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.academicterms.domain.exceptions.AcademicTermException;
 import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
