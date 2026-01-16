@@ -6,21 +6,27 @@ import com.udla.markenx.api.game.attempts.application.ports.incoming.RegisterGam
 import com.udla.markenx.api.game.attempts.application.ports.incoming.TaskScoreProvider;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
+import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
 import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptCommandRepository;
+import com.udla.markenx.api.shared.domain.events.integration.AttemptResultRegisteredEvent;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RegisterGameSessionCommandHandler implements RegisterGameSessionUseCase {
 
     private final AttemptCommandRepository repository;
     private final TaskScoreProvider taskScoreProvider;
+    private final ApplicationEventPublisher eventPublisher;
 
     @Override
     @Transactional
@@ -69,8 +75,26 @@ public class RegisterGameSessionCommandHandler implements RegisterGameSessionUse
             }
         }
 
-        // 7. Map to response
+        // 7. Publish event to update task attempt counter and status
+        publishAttemptResultEvent(savedAttempt);
+
+        // 8. Map to response
         return mapToResponse(savedAttempt);
+    }
+
+    private void publishAttemptResultEvent(Attempt attempt) {
+        var event = new AttemptResultRegisteredEvent(
+                attempt.getId(),
+                attempt.getTaskId(),
+                attempt.getStudentId(),
+                attempt.getResult().profileScore(),
+                attempt.getStatus() == AttemptStatus.APPROVED
+        );
+
+        log.info("Publishing AttemptResultRegisteredEvent: attemptId={}, taskId={}, approved={}",
+                event.attemptId(), event.taskId(), event.isApproved());
+
+        eventPublisher.publishEvent(event);
     }
 
     private GameSessionResponse mapToResponse(Attempt attempt) {
