@@ -1,9 +1,13 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
+import com.udla.markenx.api.classroom.academicterms.application.dtos.AcademicTermResponseDTO;
+import com.udla.markenx.api.classroom.academicterms.application.queries.GetAcademicTermByIdQuery;
 import com.udla.markenx.api.classroom.assignments.application.commands.SaveTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.SaveTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.incoming.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
+import com.udla.markenx.api.classroom.assignments.application.queries.GetTaskByIdQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
@@ -29,6 +33,7 @@ public class TaskController {
     private final TaskResponseDTOMapper mapper;
     private final SaveTaskUseCase saveTaskUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
+    private final UpdateTaskUseCase updateTaskUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
 
     @PostMapping
@@ -48,6 +53,18 @@ public class TaskController {
                 false
         );
         return mapper.toDTO(saveTaskUseCase.handle(command));
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get a task by id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Task retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No task found")
+    })
+    public TaskResponseDTO getById(@PathVariable String id) {
+        var query = new GetTaskByIdQuery(id);
+        return mapper.toDTO(updateTaskUseCase.getById(query));
     }
 
     @GetMapping
