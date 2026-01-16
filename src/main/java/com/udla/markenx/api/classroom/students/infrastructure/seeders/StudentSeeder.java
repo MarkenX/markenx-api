@@ -27,20 +27,43 @@ public class StudentSeeder implements CommandLineRunner {
     private final RegisterStudentUseCase registerStudentUseCase;
     private final Flyway flyway;
 
+    private record StudentData(String firstName, String lastName, String email) {}
+
+    private static final List<StudentData> STUDENTS = List.of(
+            new StudentData("Christian", "Jácome", "christian.jacome.mora@udla.edu.ec"),
+            new StudentData("Ana", "Rodriguez", "ana.rodriguez@udla.edu.ec"),
+            new StudentData("Luis", "Garcia", "luis.garcia@udla.edu.ec"),
+            new StudentData("Sofia", "Martinez", "sofia.martinez@udla.edu.ec")
+    );
+
     @Override
     public void run(String @NonNull ... args) {
         log.info("Seeding students...");
 
         List<String> coursesIds = findAllCoursesIdsForStudents.handle();
+        if (coursesIds.isEmpty()) {
+            log.warn("No courses found, skipping student seeding.");
+            return;
+        }
 
+        int studentIndex = 0;
         try {
-            coursesIds.forEach(courseId -> {
-               var query = new RegisterStudentCommand(
-                       "Mateo David", "Guamán Mora", courseId, "dmora@udla.edu.ec", true);
-                Student saved = registerStudentUseCase.handle(query);
-                log.info("The student {} was created", saved.toString());
-            });
-            log.info("Students seeded successfully.");
+            for (StudentData student : STUDENTS) {
+                // Distribute students across courses
+                String courseId = coursesIds.get(studentIndex % coursesIds.size());
+                var command = new RegisterStudentCommand(
+                        student.firstName(),
+                        student.lastName(),
+                        courseId,
+                        student.email(),
+                        true
+                );
+                Student saved = registerStudentUseCase.handle(command);
+                log.info("Student created: {} {} (id: {})",
+                        student.firstName(), student.lastName(), saved.getId());
+                studentIndex++;
+            }
+            log.info("Students seeded successfully. Total: {}", STUDENTS.size());
         } catch (StudentException e) {
             log.error(e.getMessage(), e);
             log.info("Students seeding failed.");
