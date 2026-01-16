@@ -57,4 +57,9 @@ public class AttemptQueryService implements AttemptQueryUseCase {
                 historyResponses
         );
     }
+
+    @Override
+    public List<Attempt> getByTaskId(String taskId) {
+        return repository.findByTaskId(taskId);
+    }
 }

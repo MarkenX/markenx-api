@@ -5,8 +5,10 @@ import com.udla.markenx.api.classroom.assignments.application.ports.incoming.Sav
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
+import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -17,6 +19,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("tasks")
@@ -25,6 +29,7 @@ public class TaskController {
     private final TaskResponseDTOMapper mapper;
     private final SaveTaskUseCase saveTaskUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
+    private final AttemptQueryUseCase attemptQueryUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -64,5 +69,29 @@ public class TaskController {
         }
 
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/{taskId}/attempts")
+    @Operation(summary = "Get all attempts for a task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Attempts retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No attempts found for task")
+    })
+    public ResponseEntity<List<TaskAttemptResponseDTO>> getAttemptsByTaskId(@PathVariable String taskId) {
+        var attempts = attemptQueryUseCase.getByTaskId(taskId);
+        if (attempts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(attempts.stream()
+                .map(attempt -> new TaskAttemptResponseDTO(
+                        attempt.getId(),
+                        attempt.getTaskId(),
+                        attempt.getSessionDate(),
+                        attempt.getSessionDate(), // finishedAt - using sessionDate as placeholder
+                        attempt.getStatus().name(),
+                        attempt.getStatus().name().equals("FINISHED") ? "WIN" : "IN_PROGRESS",
+                        attempt.getResult().profileScore()
+                ))
+                .toList());
     }
 }
