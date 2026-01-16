@@ -24,6 +24,7 @@ public abstract class Assignment extends Entity {
 
     private long code;
     private AssignmentInfo info;
+    // TODO: Se debe validar que el deadline esté dentro del periodo académico activo
     protected AssignmentDeadline deadline;
     protected AssignmentScore minScoreToPass;
     protected AssignmentStatus status;

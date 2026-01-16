@@ -44,6 +44,7 @@ public class AcademicTermController {
         return mapper.toDTO(saveTermUseCase.handle(command));
     }
 
+    // TODO: Se debe devolver el periodo académico activo (Agregar un nuevo endpoint)
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get an academic term by id")
