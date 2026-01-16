@@ -34,4 +34,9 @@ public class TaskQueryService implements TaskQueryUseCase {
     public List<Task> getByStatuses(@NonNull List<AssignmentStatus> statuses) {
         return repository.findByStatuses(statuses);
     }
+
+    @Override
+    public List<Task> getByCourseId(String courseId) {
+        return repository.findByCourseId(courseId);
+    }
 }

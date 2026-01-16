@@ -11,4 +11,5 @@ public interface TaskQueryRepository {
     List<Task> findAll();
     Page<Task> findAllPaginated(Pageable pageable);
     List<Task> findByStatuses(List<AssignmentStatus> statuses);
+    List<Task> findByCourseId(String courseId);
 }

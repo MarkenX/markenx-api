@@ -68,4 +68,14 @@ public class JooqTaskRepository implements TaskQueryRepository {
                 .where(field("status").in(statusNames))
                 .fetch(mapper::toDomain);
     }
+
+    @Override
+    public List<Task> findByCourseId(String courseId) {
+        return dsl
+                .select()
+                .from(TABLE)
+                .where(field("course_id").eq(courseId))
+                .orderBy(field("deadline").asc())
+                .fetch(mapper::toDomain);
+    }
 }

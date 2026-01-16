@@ -4,6 +4,7 @@ import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQue
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.application.ports.incoming.RegisterGameSessionUseCase;
+import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.AttemptMetricsResponseDTO;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponseDTO;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.RegisterGameSessionRequestDTO;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.mappers.AttemptRequestMapper;
@@ -52,5 +53,27 @@ public class AttemptController {
         var query = new GetAttemptByIdQuery(id);
         GameSessionResponse response = attemptQueryUseCase.getById(query);
         return ResponseEntity.ok(responseMapper.toDTO(response));
+    }
+
+    @GetMapping("/{attemptId}/metrics")
+    @Operation(summary = "Get performance metrics for an attempt")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Metrics retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Attempt not found")
+    })
+    public ResponseEntity<AttemptMetricsResponseDTO> getMetrics(@PathVariable String attemptId) {
+        var query = new GetAttemptByIdQuery(attemptId);
+        GameSessionResponse response = attemptQueryUseCase.getById(query);
+
+        return ResponseEntity.ok(new AttemptMetricsResponseDTO(
+                response.id(),
+                response.taskId(),
+                response.profileDiscoveryPercentage(),
+                response.finalAcceptance(),
+                response.remainingBudget(),
+                response.totalTurnsUsed(),
+                response.finalOutcome(),
+                response.sessionDate()
+        ));
     }
 }

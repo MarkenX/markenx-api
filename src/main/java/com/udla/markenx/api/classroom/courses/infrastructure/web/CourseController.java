@@ -57,6 +57,20 @@ public class CourseController {
         return mapper.toDTO(updateCourseUseCase.getById(query));
     }
 
+    @GetMapping("/{courseId}/tasks")
+    @Operation(summary = "Get all tasks for a course")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No tasks found for course")
+    })
+    public ResponseEntity<List<TaskResponseDTO>> getTasksByCourseId(@PathVariable String courseId) {
+        var tasks = taskQueryUseCase.getByCourseId(courseId);
+        if (tasks.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(tasks.stream().map(taskMapper::toDTO).toList());
+    }
+
     @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Change course status")

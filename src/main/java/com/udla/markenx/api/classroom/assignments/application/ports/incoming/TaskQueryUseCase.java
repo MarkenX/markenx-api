@@ -11,4 +11,5 @@ public interface TaskQueryUseCase {
     List<Task> getAll();
     Page<Task> getAllPaginated(GetAllTasksPaginatedQuery query);
     List<Task> getByStatuses(List<AssignmentStatus> statuses);
+    List<Task> getByCourseId(String courseId);
 }
