@@ -57,6 +57,7 @@ public class AttemptSeeder implements CommandLineRunner {
             // Create attempts for first 2 tasks and first 2 students
             for (int i = 0; i < Math.min(2, tasks.size()); i++) {
                 Task task = tasks.get(i);
+                if (task.isOutdated()) continue;
 
                 for (int j = 0; j < Math.min(2, students.size()); j++) {
                     StudentSummaryReadModel student = students.get(j);
