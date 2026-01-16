@@ -8,11 +8,13 @@ import com.udla.markenx.api.classroom.students.application.ports.incoming.Studen
 import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentCourseResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentMeResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
+import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,6 +29,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("students")
@@ -37,6 +41,7 @@ public class StudentController {
     private final RegisterStudentUseCase registerStudentUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
+    private final AttemptQueryUseCase attemptQueryUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -102,6 +107,31 @@ public class StudentController {
                         )
                 ))
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/{studentId}/attempts")
+    @Operation(summary = "Get all attempts for a student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Attempts retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "No attempts found for student")
+    })
+    public ResponseEntity<List<StudentAttemptResponseDTO>> getAttemptsByStudentId(@PathVariable String studentId) {
+        var attempts = attemptQueryUseCase.getByStudentId(studentId);
+        if (attempts.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(attempts.stream()
+                .map(attempt -> new StudentAttemptResponseDTO(
+                        attempt.getId(),
+                        attempt.getTaskId(),
+                        attempt.getSessionDate(),
+                        attempt.getSessionDate(),
+                        attempt.getStatus().name(),
+                        attempt.getStatus().name().equals("APPROVED") ? "WIN" :
+                                attempt.getStatus().name().equals("DISAPPROVED") ? "LOSE" : "IN_PROGRESS",
+                        attempt.getResult() != null ? attempt.getResult().profileScore() : 0.0
+                ))
+                .toList());
     }
 
     @GetMapping
