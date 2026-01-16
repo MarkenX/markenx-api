@@ -138,6 +138,7 @@ public class Task extends Assignment {
     // endregion
 
     public void registerAttemptResult(@NonNull AssignmentScore score) {
+        if (isCompleted() || isFailed()) return;
 
         this.currentAttempt++;
 
