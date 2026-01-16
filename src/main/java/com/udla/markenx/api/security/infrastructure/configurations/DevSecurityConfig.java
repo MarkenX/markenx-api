@@ -182,6 +182,12 @@ public class DevSecurityConfig {
         return source;
     }
 
+    /**
+     * UserService OIDC:
+     * - añade realm roles desde claim realm_access.roles
+     * - normaliza a prefijo ROLE_
+     * - preserva authorities existentes (OIDC_USER, scopes, etc.)
+     */
     @Bean
     OAuth2UserService<OidcUserRequest, OidcUser> oidcUserService() {
         OidcUserService delegate = new OidcUserService();
@@ -189,23 +195,28 @@ public class DevSecurityConfig {
         return userRequest -> {
             OidcUser oidcUser = delegate.loadUser(userRequest);
 
-            Set<SimpleGrantedAuthority> mappedAuthorities = new HashSet<>();
+            Set<SimpleGrantedAuthority> mapped = new HashSet<>();
 
-            // 1) Mantener authorities existentes (scopes, etc.)
-            oidcUser.getAuthorities().forEach(a -> mappedAuthorities.add(new SimpleGrantedAuthority(a.getAuthority())));
+            // 1) Preservar authorities existentes
+            for (GrantedAuthority a : oidcUser.getAuthorities()) {
+                String authority = a.getAuthority();
+                if (authority != null && !authority.isBlank()) {
+                    mapped.add(new SimpleGrantedAuthority(authority));
+                }
+            }
 
             // 2) Agregar realm roles como ROLE_*
-            extractRealmRoles(oidcUser).forEach(role -> {
+            for (String role : extractRealmRoles(oidcUser)) {
                 String normalized = role.startsWith("ROLE_") ? role : "ROLE_" + role;
-                mappedAuthorities.add(new SimpleGrantedAuthority(normalized));
-            });
+                mapped.add(new SimpleGrantedAuthority(normalized));
+            }
 
             // Mantener token + claims
             OidcIdToken idToken = oidcUser.getIdToken();
             OidcUserInfo userInfo = oidcUser.getUserInfo();
 
-            // preferred_username como nameAttributeKey suele ser útil
-            return new DefaultOidcUser(mappedAuthorities, idToken, userInfo, "preferred_username");
+            // preferred_username suele ser la mejor clave para “name” en UI/logs
+            return new DefaultOidcUser(mapped, idToken, userInfo, "preferred_username");
         };
     }
 
