@@ -6,14 +6,18 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice(basePackages = "com.udla.markenx.api.assignments")
+@ControllerAdvice(basePackages = "com.udla.markenx.api.classroom.assignments")
 public class TaskControllerAdvice {
+
+    private static final String TASK_ERROR_CODE = "TASK_ERROR";
 
     @ExceptionHandler(AssignmentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
     public ErrorResponse handleDomainException(@NonNull AssignmentException ex) {
-        return new ErrorResponse(ex.getMessage());
+        return new ErrorResponse(TASK_ERROR_CODE, ex.getMessage());
     }
 }

@@ -5,14 +5,18 @@ import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundExceptio
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ControllerAdvice()
+@ControllerAdvice
 public class EntityControllerAdvice {
+
+    private static final String ENTITY_ERROR_CODE = "ENTITY_NOT_FOUND";
 
     @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ResponseBody
     public ErrorResponse handleDomainException(EntityNotFoundException ex) {
-        return new ErrorResponse(ex.getMessage());
+        return new ErrorResponse(ENTITY_ERROR_CODE, ex.getMessage());
     }
 }
