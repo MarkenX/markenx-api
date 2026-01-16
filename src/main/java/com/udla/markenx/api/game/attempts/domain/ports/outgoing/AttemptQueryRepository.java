@@ -11,4 +11,5 @@ public interface AttemptQueryRepository {
     List<TurnHistory> findTurnHistoriesByAttemptId(String attemptId);
     List<String> findActionIdsByTurnHistoryId(String turnHistoryId);
     List<Attempt> findByTaskId(String taskId);
+    List<Attempt> findByStudentId(String studentId);
 }

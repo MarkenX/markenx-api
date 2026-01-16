@@ -9,4 +9,5 @@ import java.util.List;
 public interface AttemptQueryUseCase {
     GameSessionResponse getById(GetAttemptByIdQuery query);
     List<Attempt> getByTaskId(String taskId);
+    List<Attempt> getByStudentId(String studentId);
 }

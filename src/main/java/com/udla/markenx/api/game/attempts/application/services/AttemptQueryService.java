@@ -62,4 +62,9 @@ public class AttemptQueryService implements AttemptQueryUseCase {
     public List<Attempt> getByTaskId(String taskId) {
         return repository.findByTaskId(taskId);
     }
+
+    @Override
+    public List<Attempt> getByStudentId(String studentId) {
+        return repository.findByStudentId(studentId);
+    }
 }
