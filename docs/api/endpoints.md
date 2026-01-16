@@ -504,7 +504,8 @@ proceso asíncrono via Saga).
 GET /api/students/me
 ```
 
-**Descripción:** Obtiene los datos del estudiante autenticado basándose en el email de la sesión OIDC. Este endpoint es utilizado por el BFF para identificar al estudiante actual.
+**Descripción:** Obtiene los datos del estudiante autenticado basándose en el email de la sesión OIDC. Este endpoint es
+utilizado por el BFF para identificar al estudiante actual.
 
 **Autenticación:** Requiere sesión OIDC válida (JSESSIONID)
 
@@ -555,6 +556,41 @@ GET /api/students/{studentId}/course
 
 - `404 Not Found` - `STUDENT_NOT_FOUND`: El estudiante no existe
 - `404 Not Found` - `COURSE_NOT_FOUND`: El curso asociado al estudiante no existe
+
+---
+
+### Obtener Intentos de un Estudiante
+
+```
+GET /api/students/{studentId}/attempts
+```
+
+**Descripcion:** Obtiene todos los intentos (attempts) registrados para un estudiante especifico.
+
+**Parametros de ruta:**
+| Parametro | Tipo | Descripcion |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "attemptId": "string (UUID)",
+    "taskId": "string (UUID)",
+    "startedAt": "YYYY-MM-DDTHH:mm:ss",
+    "finishedAt": "YYYY-MM-DDTHH:mm:ss",
+    "status": "UNKNOWN | APPROVED | DISAPPROVED",
+    "outcome": "WIN | LOSE | IN_PROGRESS",
+    "score": "number (0.0-1.0)"
+  }
+]
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - No se encontraron intentos para el estudiante (respuesta vacia)
 
 ---
 
@@ -997,7 +1033,9 @@ Base path: `/api/v1/attempts`
 POST /api/v1/attempts
 ```
 
-**Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El campo `finalOutcome` se calcula automáticamente comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea.
+**Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El
+campo `finalOutcome` se calcula automáticamente comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la
+tarea.
 
 **Request Body:**
 
@@ -1036,26 +1074,26 @@ POST /api/v1/attempts
 
 **Campos del Request:**
 
-| Campo | Tipo | Requerido | Descripción |
-|-------|------|-----------|-------------|
-| taskId | string (UUID) | Sí | ID de la tarea asociada |
-| studentId | string (UUID) | Sí | ID del estudiante |
-| sessionDate | datetime | Sí | Fecha y hora de la sesión de juego |
-| finalAcceptance | number (0.0-1.0) | Sí | Tasa de aceptación final del consumidor |
-| remainingBudget | number | Sí | Presupuesto restante al final de la partida |
-| totalTurnsUsed | integer | Sí | Número total de turnos utilizados |
-| profileDiscoveryPercentage | number (0.0-1.0) | Sí | Porcentaje de descubrimiento del perfil del consumidor |
-| history | array | No | Lista de registros por turno |
+| Campo                      | Tipo             | Requerido | Descripción                                            |
+|----------------------------|------------------|-----------|--------------------------------------------------------|
+| taskId                     | string (UUID)    | Sí        | ID de la tarea asociada                                |
+| studentId                  | string (UUID)    | Sí        | ID del estudiante                                      |
+| sessionDate                | datetime         | Sí        | Fecha y hora de la sesión de juego                     |
+| finalAcceptance            | number (0.0-1.0) | Sí        | Tasa de aceptación final del consumidor                |
+| remainingBudget            | number           | Sí        | Presupuesto restante al final de la partida            |
+| totalTurnsUsed             | integer          | Sí        | Número total de turnos utilizados                      |
+| profileDiscoveryPercentage | number (0.0-1.0) | Sí        | Porcentaje de descubrimiento del perfil del consumidor |
+| history                    | array            | No        | Lista de registros por turno                           |
 
 **Campos de TurnHistory:**
 
-| Campo | Tipo | Requerido | Descripción |
-|-------|------|-----------|-------------|
-| turnNumber | integer | Sí | Número del turno (1, 2, 3...) |
-| acceptanceAtEnd | number (0.0-1.0) | Sí | Tasa de aceptación al final del turno |
-| budgetAtEnd | number | Sí | Presupuesto restante al final del turno |
-| eventOccurredTitle | string | No | Título del evento ocurrido en el turno (vacío si no hubo) |
-| actionsTakenIds | array[string] | No | IDs de las acciones ejecutadas en el turno |
+| Campo              | Tipo             | Requerido | Descripción                                               |
+|--------------------|------------------|-----------|-----------------------------------------------------------|
+| turnNumber         | integer          | Sí        | Número del turno (1, 2, 3...)                             |
+| acceptanceAtEnd    | number (0.0-1.0) | Sí        | Tasa de aceptación al final del turno                     |
+| budgetAtEnd        | number           | Sí        | Presupuesto restante al final del turno                   |
+| eventOccurredTitle | string           | No        | Título del evento ocurrido en el turno (vacío si no hubo) |
+| actionsTakenIds    | array[string]    | No        | IDs de las acciones ejecutadas en el turno                |
 
 **Response:** `201 Created`
 
@@ -1076,13 +1114,17 @@ POST /api/v1/attempts
       "acceptanceAtEnd": 0.60,
       "budgetAtEnd": 180.00,
       "eventOccurredTitle": "",
-      "actionsTakenIds": ["..."]
+      "actionsTakenIds": [
+        "..."
+      ]
     }
   ]
 }
 ```
 
-**Nota sobre `finalOutcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request. Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea:
+**Nota sobre `finalOutcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request.
+Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea:
+
 - Si `profileDiscoveryPercentage >= minScoreToPass` → `APPROVED`
 - Si `profileDiscoveryPercentage < minScoreToPass` → `DISAPPROVED`
 
@@ -1103,9 +1145,9 @@ GET /api/v1/attempts/{id}
 
 **Parámetros de ruta:**
 
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| id | string | UUID del attempt (resultado de partida) |
+| Parámetro | Tipo   | Descripción                             |
+|-----------|--------|-----------------------------------------|
+| id        | string | UUID del attempt (resultado de partida) |
 
 **Response:** `200 OK`
 
@@ -1155,7 +1197,8 @@ GET /api/v1/attempts/{id}
 GET /api/attempts/{attemptId}/metrics
 ```
 
-**Descripción:** Obtiene las métricas de rendimiento de un intento específico. Este endpoint proporciona un resumen consolidado del desempeño del estudiante en la sesión de juego.
+**Descripción:** Obtiene las métricas de rendimiento de un intento específico. Este endpoint proporciona un resumen
+consolidado del desempeño del estudiante en la sesión de juego.
 
 **Parámetros de ruta:**
 | Parámetro | Tipo | Descripción |
@@ -1210,23 +1253,23 @@ Todos los errores de la API siguen un formato estandarizado con códigos de erro
 }
 ```
 
-| Campo | Tipo | Descripción |
-|-------|------|-------------|
-| code | string | Código de error específico del módulo (ej: `STUDENT_NOT_FOUND`) |
-| message | string | Mensaje descriptivo del error |
-| details | object \| null | Información adicional sobre el error (opcional) |
+| Campo   | Tipo           | Descripción                                                     |
+|---------|----------------|-----------------------------------------------------------------|
+| code    | string         | Código de error específico del módulo (ej: `STUDENT_NOT_FOUND`) |
+| message | string         | Mensaje descriptivo del error                                   |
+| details | object \| null | Información adicional sobre el error (opcional)                 |
 
 ### Códigos de Error por Módulo
 
-| Módulo | Código de Error | Código Not Found | HTTP Status |
-|--------|----------------|------------------|-------------|
-| Entity (shared) | - | `ENTITY_NOT_FOUND` | 404 |
-| Student | `STUDENT_ERROR` | `STUDENT_NOT_FOUND` | 400 / 404 |
-| Course | `COURSE_ERROR` | `COURSE_NOT_FOUND` | 400 / 404 |
-| Task | `TASK_ERROR` | - | 400 |
-| Academic Term | `ACADEMIC_TERM_ERROR` | - | 400 |
-| Scenario | `SCENARIO_ERROR` | `SCENARIO_NOT_FOUND` | 400 / 404 |
-| Attempt | `ATTEMPT_ERROR` | `ATTEMPT_NOT_FOUND` | 400 / 404 |
+| Módulo          | Código de Error       | Código Not Found     | HTTP Status |
+|-----------------|-----------------------|----------------------|-------------|
+| Entity (shared) | -                     | `ENTITY_NOT_FOUND`   | 404         |
+| Student         | `STUDENT_ERROR`       | `STUDENT_NOT_FOUND`  | 400 / 404   |
+| Course          | `COURSE_ERROR`        | `COURSE_NOT_FOUND`   | 400 / 404   |
+| Task            | `TASK_ERROR`          | -                    | 400         |
+| Academic Term   | `ACADEMIC_TERM_ERROR` | -                    | 400         |
+| Scenario        | `SCENARIO_ERROR`      | `SCENARIO_NOT_FOUND` | 400 / 404   |
+| Attempt         | `ATTEMPT_ERROR`       | `ATTEMPT_NOT_FOUND`  | 400 / 404   |
 
 ### Ejemplos de Respuestas de Error
 
@@ -1293,19 +1336,19 @@ Todos los errores de la API siguen un formato estandarizado con códigos de erro
 
 ### Módulo Attempts
 
-| Excepción                              | Descripción                                              |
-|----------------------------------------|----------------------------------------------------------|
-| `AttemptNotFoundException`             | El resultado de partida solicitado no existe             |
-| `InvalidTaskIdException`               | El ID de tarea es inválido (nulo o vacío)                |
-| `InvalidStudentIdException`            | El ID de estudiante es inválido (nulo o vacío)           |
-| `InvalidSessionDateException`          | La fecha de sesión es inválida (nula)                    |
-| `ApprovalRateOutOfRangeException`      | La tasa de aceptación está fuera del rango [0.0, 1.0]    |
-| `ProfileScoreOutOfRangeException`      | El puntaje de perfil está fuera del rango [0.0, 1.0]     |
-| `BudgetCannotBeNegativeException`      | El presupuesto no puede ser negativo                     |
-| `CurrentTurnMustBePositiveException`   | El número de turnos debe ser positivo                    |
-| `InvalidTurnNumberException`           | El número de turno debe ser positivo                     |
-| `ResultsAlreadyRegisteredException`    | Los resultados ya fueron registrados para este intento   |
-| `InvalidAttemptStatusTransitionException` | Transición de estado no permitida                     |
+| Excepción                                 | Descripción                                            |
+|-------------------------------------------|--------------------------------------------------------|
+| `AttemptNotFoundException`                | El resultado de partida solicitado no existe           |
+| `InvalidTaskIdException`                  | El ID de tarea es inválido (nulo o vacío)              |
+| `InvalidStudentIdException`               | El ID de estudiante es inválido (nulo o vacío)         |
+| `InvalidSessionDateException`             | La fecha de sesión es inválida (nula)                  |
+| `ApprovalRateOutOfRangeException`         | La tasa de aceptación está fuera del rango [0.0, 1.0]  |
+| `ProfileScoreOutOfRangeException`         | El puntaje de perfil está fuera del rango [0.0, 1.0]   |
+| `BudgetCannotBeNegativeException`         | El presupuesto no puede ser negativo                   |
+| `CurrentTurnMustBePositiveException`      | El número de turnos debe ser positivo                  |
+| `InvalidTurnNumberException`              | El número de turno debe ser positivo                   |
+| `ResultsAlreadyRegisteredException`       | Los resultados ya fueron registrados para este intento |
+| `InvalidAttemptStatusTransitionException` | Transición de estado no permitida                      |
 
 ---
 
