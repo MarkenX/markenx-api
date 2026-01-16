@@ -53,6 +53,24 @@ public class JdbcStudentSummaryReadRepository
     }
 
     @Override
+    public Optional<StudentSummaryReadModel> findByEmail(String email) {
+        return jdbc.query("""
+            SELECT student_id, email, full_name
+            FROM student_summary_read_model
+            WHERE email = ?
+        """,
+                rs -> rs.next()
+                        ? Optional.of(new StudentSummaryReadModel(
+                        rs.getString("student_id"),
+                        rs.getString("email"),
+                        rs.getString("full_name")
+                ))
+                        : Optional.empty(),
+                email
+        );
+    }
+
+    @Override
     public List<StudentSummaryReadModel> findAll() {
         return jdbc.query("""
             SELECT student_id, email, full_name

@@ -3,15 +3,17 @@ package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
 import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.StudentQueryUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentCourseResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentMeResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,6 +23,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -44,6 +48,60 @@ public class StudentController {
         var command = new RegisterStudentCommand(
                 dto.firstName(), dto.lastName(), dto.courseId(), dto.email(), false);
         return responseDTOMapper.toDTO(registerStudentUseCase.handle(command), dto.email());
+    }
+
+    @GetMapping("/me")
+    @Operation(summary = "Get current authenticated student profile")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Student profile retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated"),
+            @ApiResponse(responseCode = "404", description = "Student not found for authenticated user")
+    })
+    public ResponseEntity<StudentMeResponseDTO> getMe(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = extractEmail(authentication);
+        if (email == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        return studentQueryUseCase.findByEmail(email)
+                .map(student -> ResponseEntity.ok(
+                        new StudentMeResponseDTO(
+                                student.studentId(),
+                                student.email(),
+                                student.fullName()
+                        )
+                ))
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    private String extractEmail(Authentication authentication) {
+        if (authentication.getPrincipal() instanceof OidcUser oidcUser) {
+            return oidcUser.getEmail();
+        }
+        return null;
+    }
+
+    @GetMapping("/{studentId}/course")
+    @Operation(summary = "Get course information for a student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Course information retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Student or course not found")
+    })
+    public ResponseEntity<StudentCourseResponseDTO> getStudentCourse(@PathVariable String studentId) {
+        return studentQueryUseCase.findCourseByStudentId(studentId)
+                .map(courseInfo -> ResponseEntity.ok(
+                        new StudentCourseResponseDTO(
+                                courseInfo.courseId(),
+                                courseInfo.courseName(),
+                                courseInfo.term(),
+                                courseInfo.teacherName()
+                        )
+                ))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping
