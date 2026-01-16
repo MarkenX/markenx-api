@@ -12,6 +12,10 @@ Esta documentación describe todos los endpoints expuestos por la API de MarkenX
 4. [Módulo Assignments (Tasks)](#módulo-assignments-tasks)
 5. [Módulo Scenarios](#módulo-scenarios)
 6. [Módulo Attempts](#módulo-attempts)
+7. [Códigos de Estado HTTP](#códigos-de-estado-http)
+8. [Formato de Respuesta de Error](#formato-de-respuesta-de-error)
+9. [Excepciones de Dominio](#excepciones-de-dominio)
+10. [Patrones de Integración](#patrones-de-integración)
 
 ---
 
@@ -407,6 +411,39 @@ GET /api/courses
 
 ---
 
+### Obtener Tareas de un Curso
+
+```
+GET /api/courses/{courseId}/tasks
+```
+
+**Descripción:** Obtiene todas las tareas (assignments) asociadas a un curso específico.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|--------------------|
+| courseId | string | UUID del curso |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "taskId": "string (UUID)",
+    "title": "string",
+    "summary": "string",
+    "deadline": "YYYY-MM-DDTHH:mm:ss",
+    "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+  }
+]
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `COURSE_NOT_FOUND`: El curso no existe
+
+---
+
 ## Módulo Students
 
 Base path: `/api/students`
@@ -458,6 +495,66 @@ proceso asíncrono via Saga).
 - `404 Not Found` - `CourseNotFoundException`: El curso no existe
 - `400 Bad Request` - `CourseNotInUpcomingTermException`: El curso no pertenece a un periodo académico con estado
   UPCOMING
+
+---
+
+### Obtener Estudiante Actual (Sesión OIDC)
+
+```
+GET /api/students/me
+```
+
+**Descripción:** Obtiene los datos del estudiante autenticado basándose en el email de la sesión OIDC. Este endpoint es utilizado por el BFF para identificar al estudiante actual.
+
+**Autenticación:** Requiere sesión OIDC válida (JSESSIONID)
+
+**Response:** `200 OK`
+
+```json
+{
+  "studentId": "string (UUID)",
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "courseId": "string (UUID)",
+  "status": "PENDING_IDENTITY | ACTIVE | DISABLED"
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `STUDENT_NOT_FOUND`: No existe un estudiante registrado con el email de la sesión OIDC
+
+---
+
+### Obtener Curso del Estudiante
+
+```
+GET /api/students/{studentId}/course
+```
+
+**Descripción:** Obtiene la información del curso al que está inscrito un estudiante específico.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+{
+  "courseId": "string (UUID)",
+  "courseName": "string",
+  "term": "string",
+  "teacherName": "string"
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `STUDENT_NOT_FOUND`: El estudiante no existe
+- `404 Not Found` - `COURSE_NOT_FOUND`: El curso asociado al estudiante no existe
 
 ---
 
@@ -620,24 +717,71 @@ periodo académico con estado UPCOMING.
 GET /api/tasks
 ```
 
-**Descripción:** Obtiene la lista de todas las tareas registradas.
+**Descripción:** Obtiene la lista de todas las tareas registradas con paginación.
+
+**Parámetros de query:**
+| Parámetro | Tipo | Default | Descripción |
+|-----------|--------|---------|---------------------------|
+| page | number | 0 | Número de página (0-indexed) |
+| size | number | 10 | Cantidad de elementos por página |
+
+**Response:** `200 OK`
+
+```json
+{
+  "content": [
+    {
+      "id": "string (UUID)",
+      "title": "string",
+      "summary": "string",
+      "deadline": "YYYY-MM-DDTHH:mm:ss",
+      "minScoreToPass": "number",
+      "maxAttempts": "number",
+      "courseId": "string (UUID)",
+      "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+    }
+  ],
+  "totalElements": "number",
+  "totalPages": "number",
+  "size": "number",
+  "number": "number"
+}
+```
+
+---
+
+### Obtener Intentos de una Tarea
+
+```
+GET /api/tasks/{taskId}/attempts
+```
+
+**Descripción:** Obtiene todos los intentos (attempts) registrados para una tarea específica.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|--------------------|
+| taskId | string | UUID de la tarea |
 
 **Response:** `200 OK`
 
 ```json
 [
   {
-    "id": "string (UUID)",
-    "title": "string",
-    "summary": "string",
-    "deadline": "YYYY-MM-DDTHH:mm:ss",
-    "minScoreToPass": "number",
-    "maxAttempts": "number",
-    "courseId": "string (UUID)",
-    "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+    "attemptId": "string (UUID)",
+    "taskId": "string (UUID)",
+    "startedAt": "YYYY-MM-DDTHH:mm:ss",
+    "finishedAt": "YYYY-MM-DDTHH:mm:ss",
+    "status": "IN_PROGRESS | FINISHED",
+    "outcome": "WIN | IN_PROGRESS",
+    "score": "number (0.0-1.0)"
   }
 ]
 ```
+
+**Errores posibles:**
+
+- `404 Not Found` - No se encontraron intentos para la tarea (respuesta vacía)
 
 ---
 
@@ -1001,7 +1145,41 @@ GET /api/v1/attempts/{id}
 
 **Errores posibles:**
 
-- `404 Not Found` - `AttemptNotFoundException`: El resultado de partida con ID especificado no existe
+- `404 Not Found` - `ATTEMPT_NOT_FOUND`: El resultado de partida con ID especificado no existe
+
+---
+
+### Obtener Métricas de un Intento
+
+```
+GET /api/attempts/{attemptId}/metrics
+```
+
+**Descripción:** Obtiene las métricas de rendimiento de un intento específico. Este endpoint proporciona un resumen consolidado del desempeño del estudiante en la sesión de juego.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|------------------------|
+| attemptId | string | UUID del intento |
+
+**Response:** `200 OK`
+
+```json
+{
+  "attemptId": "string (UUID)",
+  "taskId": "string (UUID)",
+  "profileDiscoveryPercentage": "number (0.0-1.0)",
+  "finalAcceptance": "number (0.0-1.0)",
+  "remainingBudget": "number (BigDecimal)",
+  "totalTurnsUsed": "number (integer)",
+  "finalOutcome": "APPROVED | DISAPPROVED",
+  "evaluatedAt": "YYYY-MM-DDTHH:mm:ss"
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `ATTEMPT_NOT_FOUND`: El intento con ID especificado no existe
 
 ---
 
@@ -1015,6 +1193,62 @@ GET /api/v1/attempts/{id}
 | 400    | Bad Request - Error de validación o regla de negocio       |
 | 404    | Not Found - Recurso no encontrado                          |
 | 500    | Internal Server Error - Error interno del servidor         |
+
+---
+
+## Formato de Respuesta de Error
+
+Todos los errores de la API siguen un formato estandarizado con códigos de error por módulo.
+
+### Estructura
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "details": "object | null"
+}
+```
+
+| Campo | Tipo | Descripción |
+|-------|------|-------------|
+| code | string | Código de error específico del módulo (ej: `STUDENT_NOT_FOUND`) |
+| message | string | Mensaje descriptivo del error |
+| details | object \| null | Información adicional sobre el error (opcional) |
+
+### Códigos de Error por Módulo
+
+| Módulo | Código de Error | Código Not Found | HTTP Status |
+|--------|----------------|------------------|-------------|
+| Entity (shared) | - | `ENTITY_NOT_FOUND` | 404 |
+| Student | `STUDENT_ERROR` | `STUDENT_NOT_FOUND` | 400 / 404 |
+| Course | `COURSE_ERROR` | `COURSE_NOT_FOUND` | 400 / 404 |
+| Task | `TASK_ERROR` | - | 400 |
+| Academic Term | `ACADEMIC_TERM_ERROR` | - | 400 |
+| Scenario | `SCENARIO_ERROR` | `SCENARIO_NOT_FOUND` | 400 / 404 |
+| Attempt | `ATTEMPT_ERROR` | `ATTEMPT_NOT_FOUND` | 400 / 404 |
+
+### Ejemplos de Respuestas de Error
+
+**Error 404 - Recurso no encontrado:**
+
+```json
+{
+  "code": "STUDENT_NOT_FOUND",
+  "message": "Student not found with email: student@example.com",
+  "details": null
+}
+```
+
+**Error 400 - Validación de negocio:**
+
+```json
+{
+  "code": "COURSE_ERROR",
+  "message": "Course must belong to an UPCOMING academic term",
+  "details": null
+}
+```
 
 ---
 
