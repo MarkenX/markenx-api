@@ -1,7 +1,5 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.academicterms.application.dtos.AcademicTermResponseDTO;
-import com.udla.markenx.api.classroom.academicterms.application.queries.GetAcademicTermByIdQuery;
 import com.udla.markenx.api.classroom.assignments.application.commands.SaveTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.SaveTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;

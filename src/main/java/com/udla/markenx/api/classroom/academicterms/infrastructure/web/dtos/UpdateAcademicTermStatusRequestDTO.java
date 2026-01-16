@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.academicterms.application.dtos;
+package com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos;
 
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 
