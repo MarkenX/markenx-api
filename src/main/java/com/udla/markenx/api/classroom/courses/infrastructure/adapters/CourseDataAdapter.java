@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.adapters;
 
-import com.udla.markenx.api.classroom.academicterms.application.ports.out.TermCommandRepository;
+import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.courses.domain.ports.outgoing.CourseCommandRepository;
 import com.udla.markenx.api.classroom.students.application.ports.outgoing.CourseDataPort;
 import lombok.RequiredArgsConstructor;

@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.academicterms.application.ports.in.dtos.TermPortDTO;
-import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.ListTermsUseCase;
+import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.ListTermsUseCase;
 import com.udla.markenx.api.classroom.courses.application.commands.SaveCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;

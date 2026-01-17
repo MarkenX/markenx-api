@@ -7,7 +7,7 @@
                 "shared::dtos",
                 "classroom.students::ports-incoming",
                 "classroom.assignments::ports-incoming",
-                "classroom.academicterms::public"
+                "classroom.terms::public"
         }
 )
 package com.udla.markenx.api.classroom.courses;

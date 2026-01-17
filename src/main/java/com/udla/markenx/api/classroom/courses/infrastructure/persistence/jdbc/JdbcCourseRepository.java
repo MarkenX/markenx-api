@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.TermStatus;
+import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
