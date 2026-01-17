@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CourseQueryUseCase;
-import com.udla.markenx.api.classroom.courses.application.queries.GetAllCoursesPaginatedQuery;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetAllCoursesPaginatedQuery;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
 import lombok.RequiredArgsConstructor;

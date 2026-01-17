@@ -1,11 +1,11 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
-import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseAcademicTermCommand;
-import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseStatusCommand;
-import com.udla.markenx.api.classroom.courses.application.commands.UpdateCourseCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeCourseAcademicTermCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeCourseStatusCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureAcademicTermExists;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
-import com.udla.markenx.api.classroom.courses.application.queries.GetCourseByIdQuery;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetCourseByIdQuery;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;

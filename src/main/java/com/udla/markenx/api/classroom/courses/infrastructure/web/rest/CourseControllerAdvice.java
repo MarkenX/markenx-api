@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.courses.infrastructure.web;
+package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
