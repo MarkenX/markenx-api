@@ -1,11 +1,15 @@
 package com.udla.markenx.api.classroom.academicterms.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
-import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
-import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.UpdateAcademicTermUseCase;
-import com.udla.markenx.api.classroom.academicterms.application.queries.GetAcademicTermByIdQuery;
-import com.udla.markenx.api.classroom.academicterms.application.queries.GetAllAcademicTermsPaginatedQuery;
-import com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos.AcademicTermResponseDTO;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.commands.ChangeTermStatusCommand;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.commands.CreateTermCommand;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.commands.UpdateTermCommand;
+import com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos.*;
+import com.udla.markenx.api.classroom.academicterms.infrastructure.web.mappers.TermControllerMapper;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.ListTermsUseCase;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.CreateTermUseCase;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.UpdateTermUseCase;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.queries.TermIdQueryCriteria;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.queries.TermPageQueryCriteria;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,6 +25,10 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("academic-terms")
 public class TermController {
 
+    private final ListTermsUseCase query;
+    private final CreateTermUseCase createTerm;
+    private final UpdateTermUseCase updateTerm;
+    private final TermControllerMapper mapper = new TermControllerMapper();
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -28,10 +36,17 @@ public class TermController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Academic term created successfully")
     })
-        return mapper.toDTO(saveTermUseCase.handle(command));
+    public TermDetailResponseDTO create(@RequestBody CreateTermRequestDTO dto) {
+        var command = new CreateTermCommand(dto.startDate(), dto.endDate(), dto.year(), false);
+        return mapper.toDetailResponseDTO(createTerm.handle(command));
     }
 
-    // TODO: Se debe devolver el periodo académico activo (Agregar un nuevo endpoint)
+    @GetMapping("/active")
+    @Operation(summary = "obtain the current academic term")
+    public TermResponseDTO getActiveTerm() {
+        return mapper.toResponseDTO(query.getActiveTerm());
+    }
+
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get an academic term by id")
@@ -39,6 +54,9 @@ public class TermController {
             @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
+    public TermDetailResponseDTO getById(@PathVariable String id) {
+        var query = new TermIdQueryCriteria(id);
+        return mapper.toDetailResponseDTO(updateTerm.getById(query));
     }
 
     @PatchMapping("/{id}/status")
@@ -50,10 +68,10 @@ public class TermController {
     })
     public TermDetailResponseDTO changeStatus(
             @PathVariable String id,
-            @RequestBody UpdateAcademicTermStatusRequestDTO request
+            @RequestBody UpdateTermStatusRequestDTO request
     ) {
-        var command = new ChangeAcademicTermStatusCommand(id, request.status());
-        return mapper.toDTO(updateTermUseCase.changeStatus(command));
+        var command = new ChangeTermStatusCommand(id, request.status());
+        return mapper.toDetailResponseDTO(updateTerm.changeStatus(command));
     }
 
     @PutMapping("/{id}")
@@ -65,10 +83,10 @@ public class TermController {
     })
     public TermDetailResponseDTO update(
             @PathVariable String id,
-            @RequestBody UpdateAcademicTermRequestDTO request
+            @RequestBody UpdateTermRequestDTO request
     ) {
-        var command = new UpdateAcademicTermCommand(id, request.startDate(), request.endDate(), request.year());
-        return mapper.toDTO(updateTermUseCase.update(command));
+        var command = new UpdateTermCommand(id, request.startDate(), request.endDate(), request.year());
+        return mapper.toDetailResponseDTO(updateTerm.update(command));
     }
 
     @GetMapping
@@ -77,18 +95,17 @@ public class TermController {
             @ApiResponse(responseCode = "200", description = "Academic terms retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No academic terms found")
     })
-    public ResponseEntity<@NotNull Page<@NotNull AcademicTermResponseDTO>> getAll(
+    public ResponseEntity<@NotNull Page<@NotNull TermDetailResponseDTO>> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var query = new GetAllAcademicTermsPaginatedQuery(page, size);
-        Page<@NotNull AcademicTermResponseDTO> result =
-                termQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
+        var criteria = new TermPageQueryCriteria(page, size);
+        Page<TermDetailResponseDTO> terms = query.listTermsPage(criteria).map(mapper::toDetailResponseDTO);
 
-        if (result.isEmpty()) {
+        if (terms.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(result);
+        return ResponseEntity.ok(terms);
     }
 }
