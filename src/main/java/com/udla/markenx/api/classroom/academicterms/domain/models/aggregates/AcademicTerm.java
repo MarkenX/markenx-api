@@ -1,8 +1,7 @@
 package com.udla.markenx.api.classroom.academicterms.domain.models.aggregates;
 
 import com.udla.markenx.api.classroom.academicterms.domain.exceptions.*;
-import com.udla.markenx.api.classroom.academicterms.domain.exceptions.*;
-import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.academicterms.domain.utils.DateUtils;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
@@ -33,7 +32,7 @@ public class AcademicTerm extends Entity {
     @Getter(AccessLevel.NONE)
     private DateInterval dateInterval;
 
-    private AcademicTermStatus status;
+    private TermStatus status;
 
     // region Constructors
 
@@ -51,7 +50,7 @@ public class AcademicTerm extends Entity {
             DateInterval dateInterval,
             int year,
             int sequence,
-            AcademicTermStatus status) {
+            TermStatus status) {
         super();
         this.id = id;
         this.year = validateYear(year);
@@ -79,7 +78,7 @@ public class AcademicTerm extends Entity {
             LocalDate endDate,
             int year,
             int sequence,
-            AcademicTermStatus status) {
+            TermStatus status) {
         super(lifecycleStatus);
         this.id = new AcademicTermId(id);
         this.year = validateYear(year);
@@ -184,7 +183,7 @@ public class AcademicTerm extends Entity {
     private static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
         validateMonthLength(dateInterval);
-        validateCrossYearMonths(dateInterval);
+//        validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
         return new AcademicTerm(id, dateInterval, year, sequence, calculateStatus(dateInterval));
@@ -378,36 +377,36 @@ public class AcademicTerm extends Entity {
 
     @Override
     public boolean isActive() {
-        return this.status == AcademicTermStatus.ACTIVE;
+        return this.status == TermStatus.ACTIVE;
     }
 
     public boolean isUpcoming() {
-        return this.status == AcademicTermStatus.UPCOMING;
+        return this.status == TermStatus.UPCOMING;
     }
 
     public boolean hasEnded() {
-        return this.status == AcademicTermStatus.ENDED;
+        return this.status == TermStatus.ENDED;
     }
 
     public void refreshStatus() {
-        AcademicTermStatus newStatus = calculateStatus(dateInterval);
+        TermStatus newStatus = calculateStatus(dateInterval);
         if (this.status != newStatus) {
             this.status = newStatus;
         }
     }
 
-    private static AcademicTermStatus calculateStatus(@NotNull DateInterval dateInterval) {
+    private static TermStatus calculateStatus(@NotNull DateInterval dateInterval) {
         LocalDate today = LocalDate.now();
         LocalDate startDate = dateInterval.getStartDate();
         LocalDate endDate = dateInterval.getEndDate();
 
         if (today.isAfter(startDate) && today.isBefore(endDate)) {
-            return AcademicTermStatus.ACTIVE;
+            return TermStatus.ACTIVE;
         }
         if (today.isBefore(startDate)) {
-            return AcademicTermStatus.UPCOMING;
+            return TermStatus.UPCOMING;
         }
-        return AcademicTermStatus.ENDED;
+        return TermStatus.ENDED;
     }
 
     public boolean containsDate(LocalDate date) {
@@ -434,7 +433,7 @@ public class AcademicTerm extends Entity {
             validateSingleYear(interval);
         } else {
             validateCrossYears(interval);
-            validateCrossYearMonths(interval);
+//            validateCrossYearMonths(interval);
         }
 
         this.dateInterval = interval;

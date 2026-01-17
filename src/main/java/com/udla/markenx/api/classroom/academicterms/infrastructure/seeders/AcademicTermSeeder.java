@@ -2,10 +2,9 @@ package com.udla.markenx.api.classroom.academicterms.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.CreateTermUseCase;
 import com.udla.markenx.api.classroom.academicterms.domain.exceptions.AcademicTermException;
-import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.academicterms.infrastructure.seeders.factories.TermSeedFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -13,6 +12,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @Component
@@ -21,28 +21,37 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AcademicTermSeeder implements CommandLineRunner {
 
-    private final SaveAcademicTermUseCase service;
-    private final Flyway flyway;
+    private final CreateTermUseCase service;
 
     @Override
     public void run(String @NotNull ... args) {
+        final long startMs = System.currentTimeMillis();
+
         log.info("Seeding academic terms...");
 
         try {
-            // Periodo académico activo: Feb 2026 - Jul 2026
-            var activeTerm = new SaveAcademicTermCommand(
-                    LocalDate.of(2026, 2, 1),
-                    LocalDate.of(2026, 6, 1),
-                    2025,
-                    true
-            );
-            AcademicTerm savedActive = service.handle(activeTerm);
-            log.info("Active term created: {}", savedActive.getId());
+            LocalDate today = LocalDate.now();
 
-            log.info("Academic terms seeded successfully.");
+            var commands = List.of(
+                    TermSeedFactory.past(today),
+                    TermSeedFactory.current(today),
+                    TermSeedFactory.future(today)
+            );
+
+            log.debug("Creating {} academic terms...", commands.size());
+
+            var created = commands.stream()
+                    .map(service::handle)
+                    .toList();
+
+            created.forEach(term -> log.debug("Created {}", term));
+
+            long tookMs = System.currentTimeMillis() - startMs;
+            log.info("Seed completed. created={}, tookMs={}", created.size(), tookMs);
+
         } catch (AcademicTermException e) {
-            log.error(e.getMessage(), e);
-            log.info("Academic terms seeding failed.");
+            long tookMs = System.currentTimeMillis() - startMs;
+            log.error("Seed failed. tookMs={}, reason={}", tookMs, e.getMessage(), e);
         }
     }
 }
