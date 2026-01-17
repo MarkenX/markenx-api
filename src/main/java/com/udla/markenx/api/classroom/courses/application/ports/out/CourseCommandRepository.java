@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.courses.domain.ports.outgoing;
+package com.udla.markenx.api.classroom.courses.application.ports.out;
 
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 

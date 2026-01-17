@@ -4,7 +4,7 @@ import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatu
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
-import com.udla.markenx.api.classroom.courses.domain.ports.outgoing.CourseCommandRepository;
+import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.CourseValidation;
 import com.udla.markenx.api.classroom.students.application.ports.incoming.EnsureCourseHasUpcomingTerm;
 import com.udla.markenx.api.classroom.students.domain.exceptions.CourseNotInUpcomingTermException;

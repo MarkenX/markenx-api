@@ -1,10 +1,10 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
 import com.udla.markenx.api.classroom.courses.application.commands.SaveCourseCommand;
-import com.udla.markenx.api.classroom.courses.application.ports.incoming.EnsureAcademicTermIsUpcoming;
-import com.udla.markenx.api.classroom.courses.application.ports.incoming.SaveCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.EnsureAcademicTermIsUpcoming;
+import com.udla.markenx.api.classroom.courses.application.ports.in.SaveCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
-import com.udla.markenx.api.classroom.courses.domain.ports.outgoing.CourseCommandRepository;
+import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
