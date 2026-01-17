@@ -1,13 +1,13 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.dtos.TermPortDTO;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.ListTermsUseCase;
 import com.udla.markenx.api.classroom.courses.application.commands.SaveCourseCommand;
-import com.udla.markenx.api.classroom.courses.application.ports.incoming.FindAllAcademicTermIds;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.SaveCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -23,9 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseSeeder implements CommandLineRunner {
 
-    private final FindAllAcademicTermIds findAllAcademicTermIds;
     private final SaveCourseUseCase saveCourseUseCase;
-    private final Flyway flyway;
+    private final ListTermsUseCase listTermsUseCase;
 
     private static final List<String> COURSE_NAMES = List.of(
             "Marketing Digital",
@@ -36,12 +35,13 @@ public class CourseSeeder implements CommandLineRunner {
     public void run(String @NonNull ... args) {
         log.info("Seeding courses...");
 
-        List<String> academicTermsIds = findAllAcademicTermIds.findAllIds();
+        List<TermPortDTO> academicTermsIds = listTermsUseCase.listTerms();
 
         try {
-            academicTermsIds.forEach(termId -> {
+            academicTermsIds.forEach(term -> {
+                if (!term.isUpcoming()) return;
                 COURSE_NAMES.forEach(courseName -> {
-                    var command = new SaveCourseCommand(courseName, termId, true);
+                    var command = new SaveCourseCommand(courseName, term.id(), true);
                     Course saved = saveCourseUseCase.handle(command);
                     log.info("Course created: {} (id: {})", saved.getName(), saved.getId());
                 });
