@@ -1,12 +1,11 @@
 package com.udla.markenx.api.classroom.academicterms.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.classroom.academicterms.application.exceptions.AcademicTermNotFoundException;
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
-import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
-import com.udla.markenx.api.classroom.academicterms.domain.ports.outgoing.AcademicTermCommandRepository;
+import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.TermStatus;
+import com.udla.markenx.api.classroom.academicterms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.EnsureAcademicTermExists;
 import com.udla.markenx.api.classroom.courses.application.ports.incoming.EnsureAcademicTermIsUpcoming;
-import com.udla.markenx.api.classroom.courses.domain.exceptions.AcademicTermNotUpcomingException;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -25,10 +24,17 @@ public class JdbcTermRepository implements
     @Override
     public AcademicTerm save(@NonNull AcademicTerm term) {
         jdbcTemplate.update("""
-            INSERT INTO academic_terms
-            (id, lifecycle_status, start_date, end_date, academic_year, sequence, status)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+        INSERT INTO academic_terms
+        (id, lifecycle_status, start_date, end_date, academic_year, sequence, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            lifecycle_status = VALUES(lifecycle_status),
+            start_date      = VALUES(start_date),
+            end_date        = VALUES(end_date),
+            academic_year   = VALUES(academic_year),
+            sequence        = VALUES(sequence),
+            status          = VALUES(status)
+        """,
                 term.getId().value(),
                 term.getLifecycleStatus().name(),
                 term.getStartDate(),
@@ -37,6 +43,7 @@ public class JdbcTermRepository implements
                 term.getSequence(),
                 term.getStatus().name()
         );
+
         return term;
     }
 
@@ -57,7 +64,7 @@ public class JdbcTermRepository implements
     }
 
     @Override
-    public void ensureExists(String academicTermId) {
+    public void ensureExists(String id) {
         Boolean exists = jdbcTemplate.queryForObject("""
         SELECT EXISTS (
             SELECT 1
@@ -66,17 +73,17 @@ public class JdbcTermRepository implements
         )
         """,
             Boolean.class,
-            academicTermId
+            id
         );
 
         if (Boolean.FALSE.equals(exists)) {
-            throw new AcademicTermNotFoundException(academicTermId);
+            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
         }
     }
 
     @Override
-    public void ensureIsUpcoming(String academicTermId) {
-        ensureExists(academicTermId);
+    public void ensureIsUpcoming(String id) {
+        ensureExists(id);
 
         String status = jdbcTemplate.queryForObject("""
             SELECT status
@@ -84,11 +91,11 @@ public class JdbcTermRepository implements
             WHERE id = ?
             """,
                 String.class,
-                academicTermId
+                id
         );
 
-        if (!AcademicTermStatus.UPCOMING.name().equals(status)) {
-            throw new AcademicTermNotUpcomingException(academicTermId);
+        if (!TermStatus.UPCOMING.name().equals(status)) {
+            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
         }
     }
 }

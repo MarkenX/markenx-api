@@ -18,7 +18,7 @@ public class AcademicTermRecordMapper {
                 r.get("end_date", LocalDate.class),
                 r.get("academic_year", Integer.class),
                 r.get("sequence", Integer.class),
-                AcademicTermStatus.valueOf(r.get("status", String.class))
+                TermStatus.valueOf(r.get("status", String.class))
         );
     }
 }

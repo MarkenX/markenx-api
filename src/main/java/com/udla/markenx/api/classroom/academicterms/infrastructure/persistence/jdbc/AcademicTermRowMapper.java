@@ -20,7 +20,7 @@ public class AcademicTermRowMapper implements RowMapper<AcademicTerm> {
                 rs.getDate("end_date").toLocalDate(),
                 rs.getInt("academic_year"),
                 rs.getInt("sequence"),
-                AcademicTermStatus.valueOf(rs.getString("status"))
+                TermStatus.valueOf(rs.getString("status"))
         );
     }
 }
