@@ -3,8 +3,8 @@ package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jdbc;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureAcademicTermExists;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureAcademicTermIsUpcoming;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureTermExistsUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureTermIsUpcomingUseCase;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcTermRepository implements
-        TermCommandRepository, EnsureAcademicTermExists, EnsureAcademicTermIsUpcoming {
+public class JdbcTermRepositoryUseCaseUseCase implements
+        TermCommandRepository, EnsureTermExistsUseCase, EnsureTermIsUpcomingUseCase {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<AcademicTerm> rowMapper = new AcademicTermRowMapper();
@@ -64,7 +64,7 @@ public class JdbcTermRepository implements
     }
 
     @Override
-    public void ensureExists(String id) {
+    public void handle(String termId) {
         Boolean exists = jdbcTemplate.queryForObject("""
         SELECT EXISTS (
             SELECT 1
@@ -73,17 +73,17 @@ public class JdbcTermRepository implements
         )
         """,
             Boolean.class,
-            id
+                termId
         );
 
         if (Boolean.FALSE.equals(exists)) {
-            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
+            throw new EntityNotFoundException("Periodo académico no encontrado: " + termId);
         }
     }
 
     @Override
-    public void ensureIsUpcoming(String id) {
-        ensureExists(id);
+    public void handle(String id) {
+        this.handle(id);
 
         String status = jdbcTemplate.queryForObject("""
             SELECT status
