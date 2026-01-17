@@ -1,4 +1,5 @@
 package com.udla.markenx.api.classroom.academicterms.application.queries;
 
-public record GetAcademicTermByIdQuery(String id) {
+public enum FilterMode {
+    INCLUDE, EXCLUDE
 }
