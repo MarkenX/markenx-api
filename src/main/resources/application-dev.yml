@@ -70,6 +70,7 @@ logging:
     org.springframework.security: DEBUG
     org.springframework.security.oauth2: DEBUG
     com.udla.markenx.api.security.infrastructure.web: DEBUG
+    com.udla.markenx.api.classroom.academicterms.infrastructure.seeders: DEBUG
 
 keycloak:
   admin:
