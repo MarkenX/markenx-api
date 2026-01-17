@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos;
 
 import java.time.LocalDate;
 
-public record CreateAcademicTermRequestDTO(
+public record UpdateTermRequestDTO(
         LocalDate startDate,
         LocalDate endDate,
         int year

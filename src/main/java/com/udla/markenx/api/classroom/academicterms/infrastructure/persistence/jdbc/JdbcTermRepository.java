@@ -16,8 +16,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcAcademicTermRepository implements
-        AcademicTermCommandRepository, EnsureAcademicTermExists, EnsureAcademicTermIsUpcoming {
+public class JdbcTermRepository implements
+        TermCommandRepository, EnsureAcademicTermExists, EnsureAcademicTermIsUpcoming {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<AcademicTerm> rowMapper = new AcademicTermRowMapper();
@@ -52,7 +52,7 @@ public class JdbcAcademicTermRepository implements
                 id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new AcademicTermNotFoundException(id);
+            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
         }
     }
 

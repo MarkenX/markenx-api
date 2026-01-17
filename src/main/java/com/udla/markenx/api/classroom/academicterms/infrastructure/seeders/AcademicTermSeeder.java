@@ -1,7 +1,6 @@
 package com.udla.markenx.api.classroom.academicterms.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.academicterms.application.commands.SaveAcademicTermCommand;
-import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.CreateTermUseCase;
 import com.udla.markenx.api.classroom.academicterms.domain.exceptions.AcademicTermException;
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
 import lombok.RequiredArgsConstructor;

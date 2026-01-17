@@ -1,11 +1,13 @@
-package com.udla.markenx.api.classroom.academicterms.application.services;
+package com.udla.markenx.api.classroom.academicterms.application.handlers;
 
-import com.udla.markenx.api.classroom.academicterms.application.commands.SaveAcademicTermCommand;
-import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.commands.CreateTermCommand;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.dtos.TermPortDTO;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.mappers.TermPortMapper;
+import com.udla.markenx.api.classroom.academicterms.application.ports.in.usecases.CreateTermUseCase;
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.DateInterval;
-import com.udla.markenx.api.classroom.academicterms.domain.ports.outgoing.AcademicTermCommandRepository;
-import com.udla.markenx.api.classroom.academicterms.domain.ports.outgoing.AcademicTermQueryRepository;
+import com.udla.markenx.api.classroom.academicterms.application.ports.out.TermCommandRepository;
+import com.udla.markenx.api.classroom.academicterms.application.ports.out.TermQueryRepository;
 import com.udla.markenx.api.classroom.academicterms.domain.services.AcademicTermDomainService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
@@ -15,13 +17,14 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SaveAcademicTermService implements SaveAcademicTermUseCase {
+public class CreateTermHandler implements CreateTermUseCase {
 
-    private final AcademicTermCommandRepository commandRepository;
-    private final AcademicTermQueryRepository queryRepository;
+    private final TermCommandRepository commandRepository;
+    private final TermQueryRepository queryRepository;
+    private final TermPortMapper mapper = new TermPortMapper();
 
     @Override
-    public AcademicTerm handle(@NotNull SaveAcademicTermCommand command) {
+    public TermPortDTO handle(@NotNull CreateTermCommand command) {
         List<AcademicTerm> terms = queryRepository.findAllByYear(command.year());
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
@@ -34,6 +37,6 @@ public class SaveAcademicTermService implements SaveAcademicTermUseCase {
         }
 
         AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
-        return commandRepository.save(newTerm);
+        return mapper.toDTO(commandRepository.save(newTerm));
     }
 }

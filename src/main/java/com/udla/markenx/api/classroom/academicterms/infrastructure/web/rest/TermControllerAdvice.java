@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice(basePackages = "com.udla.markenx.api.classroom.academicterms")
-public class AcademicTermControllerAdvice {
+public class TermControllerAdvice {
 
     private static final String ACADEMIC_TERM_ERROR_CODE = "ACADEMIC_TERM_ERROR";
 

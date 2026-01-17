@@ -18,8 +18,6 @@ import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqAcademicTermRepository implements
-        AcademicTermQueryRepository, FindAllAcademicTermIds {
 
     private final DSLContext dsl;
 

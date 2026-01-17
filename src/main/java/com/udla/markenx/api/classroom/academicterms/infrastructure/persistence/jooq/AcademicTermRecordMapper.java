@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.academicterms.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.classroom.academicterms.domain.models.aggregates.AcademicTerm;
-import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.AcademicTermStatus;
+import com.udla.markenx.api.classroom.academicterms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jooq.Record;
 

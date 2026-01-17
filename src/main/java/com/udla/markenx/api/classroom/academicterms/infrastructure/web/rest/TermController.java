@@ -1,12 +1,5 @@
 package com.udla.markenx.api.classroom.academicterms.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.academicterms.application.commands.ChangeAcademicTermStatusCommand;
-import com.udla.markenx.api.classroom.academicterms.application.commands.SaveAcademicTermCommand;
-import com.udla.markenx.api.classroom.academicterms.application.commands.UpdateAcademicTermCommand;
-import com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos.UpdateAcademicTermStatusRequestDTO;
-import com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos.CreateAcademicTermRequestDTO;
-import com.udla.markenx.api.classroom.academicterms.infrastructure.web.dtos.UpdateAcademicTermRequestDTO;
-import com.udla.markenx.api.classroom.academicterms.infrastructure.web.mappers.AcademicTermDTOMapper;
 import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.AcademicTermQueryUseCase;
 import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.SaveAcademicTermUseCase;
 import com.udla.markenx.api.classroom.academicterms.application.ports.incoming.UpdateAcademicTermUseCase;
@@ -26,12 +19,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("academic-terms")
-public class AcademicTermController {
+public class TermController {
 
-    private final AcademicTermQueryUseCase termQueryUseCase;
-    private final SaveAcademicTermUseCase saveTermUseCase;
-    private final UpdateAcademicTermUseCase updateTermUseCase;
-    private final AcademicTermDTOMapper mapper;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -39,8 +28,6 @@ public class AcademicTermController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Academic term created successfully")
     })
-    public AcademicTermResponseDTO create(@RequestBody CreateAcademicTermRequestDTO dto) {
-        var command = new SaveAcademicTermCommand(dto.startDate(), dto.endDate(), dto.year(), false);
         return mapper.toDTO(saveTermUseCase.handle(command));
     }
 
@@ -52,9 +39,6 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
-    public AcademicTermResponseDTO getById(@PathVariable String id) {
-        var query = new GetAcademicTermByIdQuery(id);
-        return mapper.toDTO(updateTermUseCase.getById(query));
     }
 
     @PatchMapping("/{id}/status")
@@ -64,7 +48,7 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic term disabled successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
-    public AcademicTermResponseDTO changeStatus(
+    public TermDetailResponseDTO changeStatus(
             @PathVariable String id,
             @RequestBody UpdateAcademicTermStatusRequestDTO request
     ) {
@@ -79,7 +63,7 @@ public class AcademicTermController {
             @ApiResponse(responseCode = "200", description = "Academic term updated successfully"),
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
-    public AcademicTermResponseDTO update(
+    public TermDetailResponseDTO update(
             @PathVariable String id,
             @RequestBody UpdateAcademicTermRequestDTO request
     ) {

@@ -14,14 +14,14 @@ import lombok.Getter;
  * in the form of a string, primarily for display or localization purposes.
  */
 @Getter
-public enum AcademicTermStatus {
+public enum TermStatus {
     ACTIVE("En curso"),
     ENDED("Finalizado"),
     UPCOMING("Próximo");
 
     private final String label;
 
-    AcademicTermStatus(String label) {
+    TermStatus(String label) {
         this.label = label;
     }
 }
