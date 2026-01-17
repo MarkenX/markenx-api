@@ -41,12 +41,6 @@ public class TermController {
         return mapper.toDetailResponseDTO(createTerm.handle(command));
     }
 
-    @GetMapping("/active")
-    @Operation(summary = "obtain the current academic term")
-    public TermResponseDTO getActiveTerm() {
-        return mapper.toResponseDTO(query.getActiveTerm());
-    }
-
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get an academic term by id")
