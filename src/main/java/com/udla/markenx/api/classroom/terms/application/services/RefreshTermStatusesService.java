@@ -18,7 +18,7 @@ public class RefreshTermStatusesService {
     private final TermCommandRepository commandRepository;
 
     public void handle() {
-        List<AcademicTerm> terms = queryRepository.findByStatus(Set.of(TermStatus.ENDED.name()), true);
+        List<AcademicTerm> terms = queryRepository.findAllByStatus(Set.of(TermStatus.ENDED.name()), true);
         for (AcademicTerm term: terms) {
             term.refreshStatus();
             commandRepository.save(term);

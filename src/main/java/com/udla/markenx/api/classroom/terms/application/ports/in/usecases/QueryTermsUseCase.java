@@ -7,9 +7,10 @@ import org.springframework.data.domain.Page;
 
 import java.util.List;
 
-public interface ListTermsUseCase {
-    List<TermPortDTO> listTerms();
+public interface QueryTermsUseCase {
     TermPortDTO getActiveTerm();
-    List<TermPortDTO> listTermsByStatus(TermStatusQueryCriteria criteria);
+    TermPortDTO getTermById(String id);
+    List<TermPortDTO> listTerms();
     Page<TermPortDTO> listTermsPage(TermPageQueryCriteria criteria);
+    List<TermPortDTO> listTermsByStatus(TermStatusQueryCriteria criteria);
 }

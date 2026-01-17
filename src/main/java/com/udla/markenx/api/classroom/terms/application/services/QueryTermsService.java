@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.terms.application.services;
 
-import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.ListTermsUseCase;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.FilterMode;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermPageQueryCriteria;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermStatusQueryCriteria;
@@ -18,7 +18,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class ListTermsService implements ListTermsUseCase {
+public class QueryTermsService implements QueryTermsUseCase {
 
     private final TermQueryRepository repository;
     private final TermPortMapper mapper = new TermPortMapper();
@@ -36,10 +36,15 @@ public class ListTermsService implements ListTermsUseCase {
     }
 
     @Override
+    public TermPortDTO getTermById(String id) {
+        return mapper.toDTO(repository.);
+    }
+
+    @Override
     public List<TermPortDTO> listTermsByStatus(@NonNull TermStatusQueryCriteria criteria) {
         boolean exclude = criteria.mode() == FilterMode.EXCLUDE;
 
-        return repository.findByStatus(criteria.statuses(), exclude).stream()
+        return repository.findAllByStatus(criteria.statuses(), exclude).stream()
                 .map(mapper::toDTO)
                 .toList();
     }

@@ -5,7 +5,7 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.commands.Create
 import com.udla.markenx.api.classroom.terms.application.ports.in.commands.UpdateTermCommand;
 import com.udla.markenx.api.classroom.terms.infrastructure.web.dtos.*;
 import com.udla.markenx.api.classroom.terms.infrastructure.web.mappers.TermControllerMapper;
-import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.ListTermsUseCase;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.CreateTermUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.UpdateTermUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQueryCriteria;
@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("academic-terms")
 public class TermController {
 
-    private final ListTermsUseCase query;
+    private final QueryTermsUseCase query;
     private final CreateTermUseCase createTerm;
     private final UpdateTermUseCase updateTerm;
     private final TermControllerMapper mapper = new TermControllerMapper();

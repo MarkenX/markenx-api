@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CourseQueryUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetAllCoursesPaginatedQuery;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CourseQueryService implements CourseQueryUseCase {
+public class ListCoursesService implements ListCoursesUseCase {
 
     private final CourseQueryRepository repository;
 

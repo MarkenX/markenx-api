@@ -3,8 +3,6 @@ package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jdbc;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureTermExistsUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.EnsureTermIsUpcomingUseCase;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -15,8 +13,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcTermRepositoryUseCaseUseCase implements
-        TermCommandRepository, EnsureTermExistsUseCase, EnsureTermIsUpcomingUseCase {
+public class JdbcTermRepository implements TermCommandRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<AcademicTerm> rowMapper = new AcademicTermRowMapper();
@@ -64,7 +61,7 @@ public class JdbcTermRepositoryUseCaseUseCase implements
     }
 
     @Override
-    public void handle(String termId) {
+    public void ensureExists(String id) {
         Boolean exists = jdbcTemplate.queryForObject("""
         SELECT EXISTS (
             SELECT 1
@@ -73,17 +70,17 @@ public class JdbcTermRepositoryUseCaseUseCase implements
         )
         """,
             Boolean.class,
-                termId
+                id
         );
 
         if (Boolean.FALSE.equals(exists)) {
-            throw new EntityNotFoundException("Periodo académico no encontrado: " + termId);
+            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
         }
     }
 
     @Override
-    public void handle(String id) {
-        this.handle(id);
+    public void ensureIsUpcoming(String id) {
+        this.ensureExists(id);
 
         String status = jdbcTemplate.queryForObject("""
             SELECT status

@@ -1,9 +1,9 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
-import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.ListTermsUseCase;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.SaveCourseCommand;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.SaveCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CourseSeeder implements CommandLineRunner {
 
-    private final SaveCourseUseCase saveCourseUseCase;
-    private final ListTermsUseCase listTermsUseCase;
+    private final CreateCourseUseCase createCourseUseCase;
+    private final QueryTermsUseCase queryTermsUseCase;
 
     private static final List<String> COURSE_NAMES = List.of(
             "Marketing Digital",
@@ -35,14 +35,14 @@ public class CourseSeeder implements CommandLineRunner {
     public void run(String @NonNull ... args) {
         log.info("Seeding courses...");
 
-        List<TermPortDTO> academicTermsIds = listTermsUseCase.listTerms();
+        List<TermPortDTO> academicTermsIds = queryTermsUseCase.listTerms();
 
         try {
             academicTermsIds.forEach(term -> {
                 if (!term.isUpcoming()) return;
                 COURSE_NAMES.forEach(courseName -> {
                     var command = new SaveCourseCommand(courseName, term.id(), true);
-                    Course saved = saveCourseUseCase.handle(command);
+                    Course saved = createCourseUseCase.handle(command);
                     log.info("Course created: {} (id: {})", saved.getName(), saved.getId());
                 });
             });

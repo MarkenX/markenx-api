@@ -8,8 +8,8 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.commands.Chan
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.SaveCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.infrastructure.web.mappers.CourseDTOMapper;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CourseQueryUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.SaveCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetAllCoursesPaginatedQuery;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetCourseByIdQuery;
@@ -33,9 +33,9 @@ public class CourseController {
 
     private final CourseDTOMapper mapper;
     private final TaskResponseDTOMapper taskMapper;
-    private final SaveCourseUseCase saveCourseUseCase;
+    private final CreateCourseUseCase createCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
-    private final CourseQueryUseCase courseQueryUseCase;
+    private final ListCoursesUseCase courseQueryUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
 
     @PostMapping
@@ -46,7 +46,7 @@ public class CourseController {
     })
     public CourseResponseDTO create(@RequestBody CreateCourseRequestDTO dto) {
         var command = new SaveCourseCommand(dto.name(), dto.academicTermId(), false);
-        return mapper.toDTO(saveCourseUseCase.handle(command));
+        return mapper.toDTO(createCourseUseCase.handle(command));
     }
 
     @GetMapping("/{id}")
