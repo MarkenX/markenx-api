@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.adapters;
 
-import com.udla.markenx.api.classroom.academicterms.domain.ports.outgoing.AcademicTermCommandRepository;
+import com.udla.markenx.api.classroom.academicterms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.courses.domain.ports.outgoing.CourseCommandRepository;
 import com.udla.markenx.api.classroom.students.application.ports.outgoing.CourseDataPort;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ import java.util.Optional;
 public class CourseDataAdapter implements CourseDataPort {
 
     private final CourseCommandRepository courseRepository;
-    private final AcademicTermCommandRepository academicTermRepository;
+    private final TermCommandRepository academicTermRepository;
 
     @Override
     public Optional<CourseInfo> findCourseById(String courseId) {
