@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jooq;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
-import com.udla.markenx.api.classroom.courses.application.ports.in.FindAllAcademicTermIds;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.FindAllAcademicTermIds;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;

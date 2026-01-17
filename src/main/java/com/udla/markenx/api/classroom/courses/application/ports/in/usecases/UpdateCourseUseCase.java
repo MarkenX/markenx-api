@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.courses.application.ports.in;
+package com.udla.markenx.api.classroom.courses.application.ports.in.usecases;
 
 import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseAcademicTermCommand;
 import com.udla.markenx.api.classroom.courses.application.commands.ChangeCourseStatusCommand;

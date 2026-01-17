@@ -9,9 +9,9 @@ import com.udla.markenx.api.classroom.courses.application.commands.SaveCourseCom
 import com.udla.markenx.api.classroom.courses.application.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.dtos.*;
 import com.udla.markenx.api.classroom.courses.application.mappers.CourseDTOMapper;
-import com.udla.markenx.api.classroom.courses.application.ports.in.CourseQueryUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.SaveCourseUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.UpdateCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CourseQueryUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.SaveCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.queries.GetAllCoursesPaginatedQuery;
 import com.udla.markenx.api.classroom.courses.application.queries.GetCourseByIdQuery;
 import io.swagger.v3.oas.annotations.Operation;
