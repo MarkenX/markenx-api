@@ -7,7 +7,7 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.queries.Cours
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 
 public interface UpdateCourseUseCase {
-    Course changeAcademicTerm(ChangeTermCommand command);
+    Course changeTerm(ChangeTermCommand command);
     Course changeStatus(ChangeStatusCommand command);
     Course update(UpdateCourseCommand command);
     Course getById(CourseIdQueryCriteria query);

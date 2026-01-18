@@ -26,7 +26,7 @@ public class UpdateCourseService implements UpdateCourseUseCase {
     }
 
     @Override
-    public Course changeAcademicTerm(@NonNull ChangeTermCommand command) {
+    public Course changeTerm(@NonNull ChangeTermCommand command) {
         termValidationPort.ensureExists(command.academicTermId());
         Course course = repository.findById(command.id());
         course.changeAcademicTerm(command.academicTermId());

@@ -102,7 +102,7 @@ public class CourseController {
             @RequestBody UpdateCourseAcademicTermRequestDTO request
     ) {
         var command = new ChangeTermCommand(id, request.academicTermId());
-        return mapper.toDTO(updateCourseUseCase.changeAcademicTerm(command));
+        return mapper.toDTO(updateCourseUseCase.changeTerm(command));
     }
 
     @PutMapping("/{id}")
