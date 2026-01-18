@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetAllCoursesPaginatedQuery;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class ListCoursesService implements ListCoursesUseCase {
     private final CourseQueryRepository repository;
 
     @Override
-    public Page<Course> getAllPaginated(@NonNull GetAllCoursesPaginatedQuery query) {
+    public Page<Course> getAllPaginated(@NonNull CoursePageQueryCriteria query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return repository.findAllPaginated(pageable);
     }
