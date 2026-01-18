@@ -11,9 +11,7 @@ import java.util.Set;
 
 public interface TermQueryRepository {
     List<AcademicTerm> findAll();
-
     Optional<AcademicTerm> findById(@NonNull String id);
-
     List<AcademicTerm> findAllByYear(int year);
     List<AcademicTerm> findAllByStatus(@NonNull Set<String> statuses, boolean exclude);
     Page<AcademicTerm> findAllPaginated(Pageable pageable);
