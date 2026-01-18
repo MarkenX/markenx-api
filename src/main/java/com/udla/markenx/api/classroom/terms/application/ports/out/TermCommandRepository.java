@@ -4,5 +4,4 @@ import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTer
 
 public interface TermCommandRepository {
     AcademicTerm save(AcademicTerm term);
-    void ensureExists(String id);
 }

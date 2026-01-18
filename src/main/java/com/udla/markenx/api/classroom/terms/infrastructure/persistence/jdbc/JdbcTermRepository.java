@@ -2,7 +2,6 @@ package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -38,23 +37,5 @@ public class JdbcTermRepository implements TermCommandRepository {
         );
 
         return term;
-    }
-
-    @Override
-    public void ensureExists(String id) {
-        Boolean exists = jdbcTemplate.queryForObject("""
-        SELECT EXISTS (
-            SELECT 1
-            FROM academic_terms
-            WHERE id = ?
-        )
-        """,
-            Boolean.class,
-                id
-        );
-
-        if (Boolean.FALSE.equals(exists)) {
-            throw new EntityNotFoundException("Periodo académico no encontrado: " + id);
-        }
     }
 }
