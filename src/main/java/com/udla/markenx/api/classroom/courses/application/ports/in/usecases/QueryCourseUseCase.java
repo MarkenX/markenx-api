@@ -4,6 +4,6 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.queries.Cours
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import org.springframework.data.domain.Page;
 
-public interface ListCoursesUseCase {
-    Page<Course> getAllPaginated(CoursePageQueryCriteria query);
+public interface QueryCourseUseCase {
+    Page<Course> listCoursesPage(CoursePageQueryCriteria criteria);
 }

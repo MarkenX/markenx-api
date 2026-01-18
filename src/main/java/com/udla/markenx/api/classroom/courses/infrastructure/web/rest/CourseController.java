@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.commands.Chan
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.infrastructure.web.mappers.CourseDTOMapper;
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
@@ -35,7 +35,7 @@ public class CourseController {
     private final TaskResponseDTOMapper taskMapper;
     private final CreateCourseUseCase createCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
-    private final ListCoursesUseCase courseQueryUseCase;
+    private final QueryCourseUseCase courseQueryUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
 
     @PostMapping
@@ -132,7 +132,7 @@ public class CourseController {
     ) {
         var query = new CoursePageQueryCriteria(page, size);
         Page<@NotNull CourseResponseDTO> result =
-                courseQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
+                courseQueryUseCase.listCoursesPage(query).map(mapper::toDTO);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();

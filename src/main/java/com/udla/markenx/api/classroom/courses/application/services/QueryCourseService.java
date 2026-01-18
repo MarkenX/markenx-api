@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
-import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
@@ -12,13 +12,13 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class ListCoursesService implements ListCoursesUseCase {
+public class QueryCourseService implements QueryCourseUseCase {
 
     private final CourseQueryRepository repository;
 
     @Override
-    public Page<Course> getAllPaginated(@NonNull CoursePageQueryCriteria query) {
-        var pageable = PageRequest.of(query.page(), query.size());
+    public Page<Course> listCoursesPage(@NonNull CoursePageQueryCriteria criteria) {
+        var pageable = PageRequest.of(criteria.page(), criteria.size());
         return repository.findAllPaginated(pageable);
     }
 }
