@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.commands.SaveCourseCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
@@ -41,7 +41,7 @@ public class CourseSeeder implements CommandLineRunner {
             academicTermsIds.forEach(term -> {
                 if (!term.isUpcoming()) return;
                 COURSE_NAMES.forEach(courseName -> {
-                    var command = new SaveCourseCommand(courseName, term.id(), true);
+                    var command = new CreateCourseCommand(courseName, term.id(), true);
                     Course saved = createCourseUseCase.handle(command);
                     log.info("Course created: {} (id: {})", saved.getName(), saved.getId());
                 });

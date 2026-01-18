@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.application.services;
 
-import com.udla.markenx.api.classroom.courses.application.ports.in.commands.SaveCourseCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
@@ -16,7 +16,7 @@ public class CreateCourseService implements CreateCourseUseCase {
     private final CourseCommandRepository repository;
 
     @Override
-    public Course handle(@NonNull SaveCourseCommand command) {
+    public Course handle(@NonNull CreateCourseCommand command) {
         if (!command.isHistorical()) {
             ensureTermIsUpcoming.handle(command.academicTermId());
         }

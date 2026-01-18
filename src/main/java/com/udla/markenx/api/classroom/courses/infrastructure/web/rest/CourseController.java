@@ -3,16 +3,16 @@ package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
-import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeCourseAcademicTermCommand;
-import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeCourseStatusCommand;
-import com.udla.markenx.api.classroom.courses.application.ports.in.commands.SaveCourseCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeTermCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeStatusCommand;
+import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.infrastructure.web.mappers.CourseDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ListCoursesUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetAllCoursesPaginatedQuery;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.GetCourseByIdQuery;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQueryCriteria;
 import com.udla.markenx.api.classroom.courses.infrastructure.web.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -45,7 +45,7 @@ public class CourseController {
             @ApiResponse(responseCode = "201", description = "Course created successfully")
     })
     public CourseResponseDTO create(@RequestBody CreateCourseRequestDTO dto) {
-        var command = new SaveCourseCommand(dto.name(), dto.academicTermId(), false);
+        var command = new CreateCourseCommand(dto.name(), dto.academicTermId(), false);
         return mapper.toDTO(createCourseUseCase.handle(command));
     }
 
@@ -57,7 +57,7 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "No course found")
     })
     public CourseResponseDTO getById(@PathVariable String id) {
-        var query = new GetCourseByIdQuery(id);
+        var query = new CourseIdQueryCriteria(id);
         return mapper.toDTO(updateCourseUseCase.getById(query));
     }
 
@@ -86,7 +86,7 @@ public class CourseController {
             @PathVariable String id,
             @RequestBody UpdateCourseStatusRequestDTO request
     ) {
-        var command = new ChangeCourseStatusCommand(id, request.status());
+        var command = new ChangeStatusCommand(id, request.status());
         return mapper.toDTO(updateCourseUseCase.changeStatus(command));
     }
 
@@ -101,7 +101,7 @@ public class CourseController {
             @PathVariable String id,
             @RequestBody UpdateCourseAcademicTermRequestDTO request
     ) {
-        var command = new ChangeCourseAcademicTermCommand(id, request.academicTermId());
+        var command = new ChangeTermCommand(id, request.academicTermId());
         return mapper.toDTO(updateCourseUseCase.changeAcademicTerm(command));
     }
 
@@ -130,7 +130,7 @@ public class CourseController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var query = new GetAllCoursesPaginatedQuery(page, size);
+        var query = new CoursePageQueryCriteria(page, size);
         Page<@NotNull CourseResponseDTO> result =
                 courseQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
 
