@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.terms.infrastructure.web.mappers.TermContr
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.CreateTermUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.UpdateTermUseCase;
-import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQueryCriteria;
+import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermPageQueryCriteria;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -49,7 +49,7 @@ public class TermController {
             @ApiResponse(responseCode = "404", description = "No academic term found")
     })
     public TermDetailResponseDTO getById(@PathVariable String id) {
-        var query = new TermIdQueryCriteria(id);
+        var query = new TermIdQuery(id);
         return mapper.toDetailResponseDTO(updateTerm.getById(query));
     }
 

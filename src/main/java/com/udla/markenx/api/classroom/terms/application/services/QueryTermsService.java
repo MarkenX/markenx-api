@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.terms.application.services;
 
-import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQueryCriteria;
+import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.FilterMode;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermPageQueryCriteria;
@@ -42,11 +42,11 @@ public class QueryTermsService implements QueryTermsUseCase {
     }
 
     @Override
-    public TermPortDTO getTermById(@NonNull TermIdQueryCriteria criteria) {
-        return repository.findById(criteria.id())
+    public TermPortDTO getTermById(@NonNull TermIdQuery query) {
+        return repository.findById(query.id())
                 .map(mapper::toDTO)
                 .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontró un periodo académico con el id: " + criteria.id()
+                        "No se encontró un periodo académico con el id: " + query.id()
                 ));
     }
 

@@ -5,7 +5,7 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.commands.Update
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.mappers.TermPortMapper;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.UpdateTermUseCase;
-import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQueryCriteria;
+import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
@@ -39,7 +39,7 @@ public class UpdateTermService implements UpdateTermUseCase {
     }
 
     @Override
-    public TermPortDTO getById(@NotNull TermIdQueryCriteria query) {
+    public TermPortDTO getById(@NotNull TermIdQuery query) {
         return mapper.toDTO(repository.findById(query.id()));
     }
 }
