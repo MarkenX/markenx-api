@@ -1,6 +1,5 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
-import com.udla.markenx.api.classroom.students.application.exceptions.StudentNotFoundException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
 import lombok.RequiredArgsConstructor;
