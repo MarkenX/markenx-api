@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.assignments.application.commands.SaveTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.SaveTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;

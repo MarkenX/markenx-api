@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.application.commands;
+package com.udla.markenx.api.classroom.assignments.application.ports.in.commands;
 
 /**
  * Command to register an attempt result for a task.

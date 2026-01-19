@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.tasks;
 
-import com.udla.markenx.api.classroom.assignments.application.commands.MarkTaskAsFailedIfOverdueCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;

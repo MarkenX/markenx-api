@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.application.services;
 
-import com.udla.markenx.api.classroom.assignments.application.commands.SaveTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.SaveTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
