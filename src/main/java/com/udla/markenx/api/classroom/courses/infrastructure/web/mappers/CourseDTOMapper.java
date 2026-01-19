@@ -11,7 +11,7 @@ public class CourseDTOMapper {
         return new CourseResponseDTO(
                 domain.getId().toString(),
                 domain.toString(),
-                domain.getAcademicTermId()
+                domain.getTermId()
         );
     }
 }

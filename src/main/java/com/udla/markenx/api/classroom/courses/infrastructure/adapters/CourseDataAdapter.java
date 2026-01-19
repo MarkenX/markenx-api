@@ -1,41 +1,36 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.adapters;
 
-import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
+import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
+import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
+import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
 import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataPort;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-/**
- * Adapter that implements the CourseDataPort from the students module.
- * This acts as an Anti-Corruption Layer, exposing course data
- * without coupling to internal course module types.
- */
 @Component
 @RequiredArgsConstructor
 public class CourseDataAdapter implements CourseDataPort {
 
+    private final QueryTermsUseCase queryTermsUseCase;
     private final CourseCommandRepository courseRepository;
-    private final TermCommandRepository academicTermRepository;
 
     @Override
-    public Optional<CourseInfo> findCourseById(String courseId) {
+    public @NonNull Optional<CourseInfo> findCourseById(@NonNull String courseId) {
         try {
-            var course = courseRepository.findById(courseId);
-            if (course == null) {
-                return Optional.empty();
-            }
+            Course course = courseRepository.findById(courseId);
 
-            var academicTerm = academicTermRepository.findById(course.getAcademicTermId());
-            String term = academicTerm != null ? academicTerm.toString() : null;
+            var query = new TermIdQuery(course.getTermId());
+            TermPortDTO term = queryTermsUseCase.getTermById(query);
 
             return Optional.of(new CourseInfo(
                     course.getId().value(),
                     course.getName(),
-                    term,
-                    null // teacherName - placeholder for future implementation
+                    term.label()
             ));
         } catch (Exception e) {
             return Optional.empty();

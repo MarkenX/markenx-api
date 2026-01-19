@@ -32,7 +32,7 @@ public class JdbcCourseRepository
             course.getId().value(),
             course.getLifecycleStatus().name(),
             course.getName(),
-            course.getAcademicTermId()
+            course.getTermId()
         );
 
         return jdbcTemplate.queryForObject("""

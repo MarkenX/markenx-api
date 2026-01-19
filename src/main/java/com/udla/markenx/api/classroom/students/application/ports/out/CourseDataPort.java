@@ -22,7 +22,6 @@ public interface CourseDataPort {
     record CourseInfo(
             String courseId,
             String courseName,
-            String term,
-            String teacherName
+            String term
     ) {}
 }
