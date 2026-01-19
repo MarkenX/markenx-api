@@ -26,7 +26,7 @@ public class Course extends Entity {
      * @param name the name of the course
      * @param termId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
     private Course(CourseId id, String name, String termId) {
         this.id = id;
@@ -44,7 +44,7 @@ public class Course extends Entity {
      * @param termId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
      * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
     public Course(String id, String name, long code, String termId) {
         this.id = new CourseId(id);
@@ -84,7 +84,7 @@ public class Course extends Entity {
      * @param academicTermId the identifier of the associated academic term
      * @return a new {@code Course} instance
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
     public static @NonNull Course create(String name, String academicTermId) {
         var id = CourseId.generate();
