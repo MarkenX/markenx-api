@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.FindAllCoursesIdsForAssignmentsHandler;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
@@ -44,7 +44,7 @@ public class TaskSeeder implements CommandLineRunner {
 
             coursesIds.forEach(courseId -> {
                 // Task 1: Simulacion de Lanzamiento
-                Task task1 = createTaskUseCase.handle(new SaveTaskCommand(
+                Task task1 = createTaskUseCase.handle(new CreateTaskCommand(
                         "Simulacion de Lanzamiento",
                         "Realiza una simulacion de lanzamiento de producto y alcanza al menos 70% de aceptacion",
                         deadline1,
@@ -56,7 +56,7 @@ public class TaskSeeder implements CommandLineRunner {
                 log.info("Created task: {} (id: {})", task1.getInfo().title(), task1.getId());
 
                 // Task 2: Estrategia de Pricing
-                Task task2 = createTaskUseCase.handle(new SaveTaskCommand(
+                Task task2 = createTaskUseCase.handle(new CreateTaskCommand(
                         "Estrategia de Pricing",
                         "Desarrolla una estrategia de precios efectiva para maximizar la aceptacion",
                         deadline2,
@@ -68,7 +68,7 @@ public class TaskSeeder implements CommandLineRunner {
                 log.info("Created task: {} (id: {})", task2.getInfo().title(), task2.getId());
 
                 // Task 3: Campana de Marketing Digital
-                Task task3 = createTaskUseCase.handle(new SaveTaskCommand(
+                Task task3 = createTaskUseCase.handle(new CreateTaskCommand(
                         "Campana de Marketing Digital",
                         "Disena y ejecuta una campana de marketing digital exitosa",
                         deadline3,
@@ -80,7 +80,7 @@ public class TaskSeeder implements CommandLineRunner {
                 log.info("Created task: {} (id: {})", task3.getInfo().title(), task3.getId());
 
                 // Task 4: Tarea vencida (para probar estado OUTDATED)
-                Task outdated = createTaskUseCase.handle(new SaveTaskCommand(
+                Task outdated = createTaskUseCase.handle(new CreateTaskCommand(
                         "Tarea Historica Vencida",
                         "Tarea historica para pruebas de estado OUTDATED",
                         historicalDeadline,

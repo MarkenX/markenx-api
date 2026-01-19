@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.assignments.application.ports.in.commands
 
 import java.time.LocalDateTime;
 
-public record SaveTaskCommand(
+public record CreateTaskCommand(
         String title,
         String summary,
         LocalDateTime deadline,

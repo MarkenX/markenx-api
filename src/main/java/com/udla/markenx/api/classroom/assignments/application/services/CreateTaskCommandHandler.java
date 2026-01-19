@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.application.services;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
@@ -19,7 +19,7 @@ public class CreateTaskCommandHandler implements CreateTaskUseCase {
     private final TaskCommandRepository repository;
 
     @Override
-    public Task handle(@NonNull SaveTaskCommand command) {
+    public Task handle(@NonNull CreateTaskCommand command) {
         if (!command.isHistorical()) {
             ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
         }

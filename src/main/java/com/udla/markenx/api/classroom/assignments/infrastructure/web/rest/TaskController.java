@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
@@ -41,7 +41,7 @@ public class TaskController {
             @ApiResponse(responseCode = "201", description = "Task created successfully")
     })
     public TaskResponseDTO create(@RequestBody CreateTaskRequestDTO dto) {
-        var command = new SaveTaskCommand(
+        var command = new CreateTaskCommand(
                 dto.title(),
                 dto.summary(),
                 dto.deadline(),
