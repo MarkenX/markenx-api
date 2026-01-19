@@ -1,5 +1,7 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskCourseIdQueryCriteria;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
@@ -69,7 +71,8 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "No tasks found for course")
     })
     public ResponseEntity<List<TaskResponseDTO>> getTasksByCourseId(@PathVariable String courseId) {
-        var tasks = queryTasksUseCase.listTasksByCourseId(courseId);
+        var criteria = new TaskCourseIdQueryCriteria(courseId);
+        var tasks = queryTasksUseCase.listTasksByCourseId(criteria);
         if (tasks.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
