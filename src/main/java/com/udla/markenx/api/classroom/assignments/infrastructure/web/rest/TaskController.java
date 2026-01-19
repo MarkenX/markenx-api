@@ -28,11 +28,12 @@ import java.util.List;
 @RequestMapping("tasks")
 public class TaskController {
 
-    private final TaskResponseDTOMapper mapper;
     private final CreateTaskUseCase createTaskUseCase;
     private final QueryTasksUseCase queryTasksUseCase;
     private final UpdateTaskUseCase updateTaskUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
+
+    private final TaskResponseDTOMapper mapper = new TaskResponseDTOMapper();
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

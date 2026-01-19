@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers;
 
+import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import org.jspecify.annotations.NonNull;
@@ -8,18 +9,18 @@ import org.springframework.stereotype.Component;
 @Component
 public class TaskResponseDTOMapper {
 
-    public TaskResponseDTO toDTO(@NonNull Task task) {
+    public TaskResponseDTO toDTO(@NonNull TaskPortDTO query) {
         return new TaskResponseDTO(
-                task.getId(),
-                task.toString(),
-                task.getInfo().title(),
-                task.getInfo().summary(),
-                task.getDeadline().value(),
-                task.getMinScoreToPass().value(),
-                task.getStatus().name(),
-                task.getMaxAttempts(),
-                task.getCurrentAttempt(),
-                task.getCourseId()
+                query.id(),
+                query.toString(),
+                query.title(),
+                query.summary(),
+                query.deadline(),
+                query.minScoreToPass(),
+                query.status(),
+                query.maxAttempts(),
+                query.currentAttempt(),
+                query.courseId()
         );
     }
 }
