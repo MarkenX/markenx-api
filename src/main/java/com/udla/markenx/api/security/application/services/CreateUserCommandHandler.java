@@ -1,7 +1,7 @@
 package com.udla.markenx.api.security.application.services;
 
 import com.udla.markenx.api.security.application.commands.CreateUserCommand;
-import com.udla.markenx.api.security.application.ports.in.CreateUserUseCase;
+import com.udla.markenx.api.security.application.ports.in.usecases.CreateUserUseCase;
 import com.udla.markenx.api.security.application.ports.out.ExternalIdentityPort;
 import com.udla.markenx.api.security.domain.models.aggregates.User;
 import com.udla.markenx.api.security.domain.models.valueobjects.Email;

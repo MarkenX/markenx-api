@@ -1,6 +1,6 @@
 package com.udla.markenx.api.security.infrastructure.listeners;
 
-import com.udla.markenx.api.security.application.ports.in.UserIdentityUseCase;
+import com.udla.markenx.api.security.application.ports.in.usecases.UserIdentityUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
