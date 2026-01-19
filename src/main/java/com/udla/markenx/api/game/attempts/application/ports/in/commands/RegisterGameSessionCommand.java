@@ -1,4 +1,4 @@
-package com.udla.markenx.api.game.attempts.application.commands;
+package com.udla.markenx.api.game.attempts.application.ports.in.commands;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
