@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.application.services;
+package com.udla.markenx.api.classroom.students.application.handlers;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
