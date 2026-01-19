@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.ports.outgoing;
+package com.udla.markenx.api.security.application.ports.out;
 
 import reactor.core.publisher.Mono;
 

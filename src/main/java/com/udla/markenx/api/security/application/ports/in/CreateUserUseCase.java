@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.ports.incoming;
+package com.udla.markenx.api.security.application.ports.in;
 
 import com.udla.markenx.api.security.application.commands.CreateUserCommand;
 

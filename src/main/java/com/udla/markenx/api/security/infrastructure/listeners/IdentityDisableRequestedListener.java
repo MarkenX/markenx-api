@@ -1,6 +1,6 @@
 package com.udla.markenx.api.security.infrastructure.listeners;
 
-import com.udla.markenx.api.security.application.ports.incoming.DisableUserIdentityUseCase;
+import com.udla.markenx.api.security.application.ports.in.DisableUserIdentityUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.ports.incoming;
+package com.udla.markenx.api.security.application.ports.in;
 
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import reactor.core.publisher.Mono;

@@ -1,6 +1,6 @@
 package com.udla.markenx.api.security.infrastructure.keycloak;
 
-import com.udla.markenx.api.security.application.ports.outgoing.ExternalIdentityPort;
+import com.udla.markenx.api.security.application.ports.out.ExternalIdentityPort;
 import com.udla.markenx.api.security.domain.exceptions.EmailAlreadyExistsException;
 import com.udla.markenx.api.security.domain.exceptions.UserNotFoundInIdentityProviderException;
 import com.udla.markenx.api.security.infrastructure.keycloak.dtos.KeycloakUserResponse;

@@ -1,9 +1,9 @@
 package com.udla.markenx.api.security.application.services;
 
 import com.udla.markenx.api.security.application.commands.CreateUserCommand;
-import com.udla.markenx.api.security.application.ports.incoming.CreateUserUseCase;
-import com.udla.markenx.api.security.application.ports.incoming.UserIdentityUseCase;
-import com.udla.markenx.api.security.application.ports.outgoing.ExternalIdentityPort;
+import com.udla.markenx.api.security.application.ports.in.CreateUserUseCase;
+import com.udla.markenx.api.security.application.ports.in.UserIdentityUseCase;
+import com.udla.markenx.api.security.application.ports.out.ExternalIdentityPort;
 import com.udla.markenx.api.security.domain.events.UserIdentityRollbackEvent;
 import com.udla.markenx.api.security.domain.models.valueobjects.Role;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisionedEvent;

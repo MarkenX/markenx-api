@@ -1,7 +1,7 @@
 package com.udla.markenx.api.security.application.services;
 
-import com.udla.markenx.api.security.application.ports.incoming.DisableUserIdentityUseCase;
-import com.udla.markenx.api.security.application.ports.outgoing.ExternalIdentityPort;
+import com.udla.markenx.api.security.application.ports.in.DisableUserIdentityUseCase;
+import com.udla.markenx.api.security.application.ports.out.ExternalIdentityPort;
 import com.udla.markenx.api.security.domain.ports.outgoing.UserCommandRepository;
 import com.udla.markenx.api.security.domain.ports.outgoing.UserQueryRepository;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableFailedEvent;
