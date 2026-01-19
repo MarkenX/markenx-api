@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateTaskCommandHandler implements CreateTaskUseCase {
+public class CreateTaskHandler implements CreateTaskUseCase {
 
     private final EnsureCourseHasUpcomingTermForAssignment ensureCourseHasUpcomingTerm;
     private final TaskCommandRepository repository;
