@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.FindAllCoursesIdsForAssignmentsHandler;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.SaveTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.FindAllCoursesIdsForAssignmentsHandler;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.SaveTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import lombok.RequiredArgsConstructor;

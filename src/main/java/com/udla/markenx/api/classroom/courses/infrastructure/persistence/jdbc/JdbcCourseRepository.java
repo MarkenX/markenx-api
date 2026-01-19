@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.EnsureCourseHasUpcomingTermForAssignment;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.application.ports.in;
+package com.udla.markenx.api.classroom.assignments.application.ports.in.usecases;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.RegisterTaskAttemptResultCommand;

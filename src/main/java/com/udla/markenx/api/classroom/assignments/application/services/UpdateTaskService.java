@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.RegisterTaskAttemptResultCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetTaskByIdQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;

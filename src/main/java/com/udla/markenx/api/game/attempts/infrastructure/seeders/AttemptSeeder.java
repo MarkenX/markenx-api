@@ -1,6 +1,6 @@
 package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;

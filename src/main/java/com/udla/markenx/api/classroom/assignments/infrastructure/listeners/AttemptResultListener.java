@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.listeners;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.RegisterTaskAttemptResultCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.AttemptResultRegisteredEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
