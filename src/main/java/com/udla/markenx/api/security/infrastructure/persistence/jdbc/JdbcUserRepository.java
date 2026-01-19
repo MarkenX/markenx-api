@@ -2,7 +2,7 @@ package com.udla.markenx.api.security.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import com.udla.markenx.api.security.domain.models.aggregates.User;
-import com.udla.markenx.api.security.domain.ports.outgoing.UserCommandRepository;
+import com.udla.markenx.api.security.application.ports.out.UserCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;

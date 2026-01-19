@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.domain.ports.outgoing;
+package com.udla.markenx.api.security.application.ports.out;
 
 import com.udla.markenx.api.security.domain.models.aggregates.User;
 

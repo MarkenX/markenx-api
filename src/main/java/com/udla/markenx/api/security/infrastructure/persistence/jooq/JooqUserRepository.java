@@ -1,7 +1,7 @@
 package com.udla.markenx.api.security.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.security.domain.models.aggregates.User;
-import com.udla.markenx.api.security.domain.ports.outgoing.UserQueryRepository;
+import com.udla.markenx.api.security.application.ports.out.UserQueryRepository;
 import com.udla.markenx.api.security.infrastructure.persistence.jdbc.UserRowMapper;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;

@@ -6,7 +6,7 @@ import com.udla.markenx.api.security.application.ports.out.ExternalIdentityPort;
 import com.udla.markenx.api.security.domain.models.aggregates.User;
 import com.udla.markenx.api.security.domain.models.valueobjects.Email;
 import com.udla.markenx.api.security.domain.models.valueobjects.Role;
-import com.udla.markenx.api.security.domain.ports.outgoing.UserCommandRepository;
+import com.udla.markenx.api.security.application.ports.out.UserCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
