@@ -7,7 +7,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetA
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand.TurnHistoryDTO;
-import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
+import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.RegisterGameSessionUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptException;
 import lombok.RequiredArgsConstructor;

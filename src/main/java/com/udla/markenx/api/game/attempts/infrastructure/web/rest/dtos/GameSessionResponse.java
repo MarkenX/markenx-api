@@ -1,4 +1,4 @@
-package com.udla.markenx.api.game.attempts.application.dtos;
+package com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
