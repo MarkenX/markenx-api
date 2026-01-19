@@ -1,8 +1,7 @@
 @ApplicationModule(
     displayName = "Security Access",
     allowedDependencies = {
-            "shared::aggregates",
-            "shared::valueobjects",
+            "shared::public",
             "classroom.students::events"
 })
 package com.udla.markenx.api.security;
