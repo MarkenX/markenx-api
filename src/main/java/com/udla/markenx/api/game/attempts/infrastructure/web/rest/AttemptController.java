@@ -2,8 +2,8 @@ package com.udla.markenx.api.game.attempts.infrastructure.web.rest;
 
 import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQuery;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.in.AttemptQueryUseCase;
-import com.udla.markenx.api.game.attempts.application.ports.in.RegisterGameSessionUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.RegisterGameSessionUseCase;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.AttemptMetricsResponseDTO;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponseDTO;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.RegisterGameSessionRequestDTO;

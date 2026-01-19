@@ -14,7 +14,7 @@ import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.Stud
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
-import com.udla.markenx.api.game.attempts.application.ports.in.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;

@@ -2,7 +2,7 @@ package com.udla.markenx.api.game.attempts.application.services;
 
 import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQuery;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.in.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;

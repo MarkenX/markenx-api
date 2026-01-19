@@ -2,8 +2,8 @@ package com.udla.markenx.api.game.attempts.application.services;
 
 import com.udla.markenx.api.game.attempts.application.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.in.RegisterGameSessionUseCase;
-import com.udla.markenx.api.game.attempts.application.ports.in.TaskScoreProvider;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.RegisterGameSessionUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.TaskScoreProvider;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;

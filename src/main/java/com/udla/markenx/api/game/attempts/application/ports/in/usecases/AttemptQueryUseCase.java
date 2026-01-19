@@ -1,4 +1,4 @@
-package com.udla.markenx.api.game.attempts.application.ports.in;
+package com.udla.markenx.api.game.attempts.application.ports.in.usecases;
 
 import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQuery;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;

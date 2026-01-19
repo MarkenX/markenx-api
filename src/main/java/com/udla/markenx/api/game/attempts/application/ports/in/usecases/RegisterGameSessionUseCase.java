@@ -1,4 +1,4 @@
-package com.udla.markenx.api.game.attempts.application.ports.in;
+package com.udla.markenx.api.game.attempts.application.ports.in.usecases;
 
 import com.udla.markenx.api.game.attempts.application.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
