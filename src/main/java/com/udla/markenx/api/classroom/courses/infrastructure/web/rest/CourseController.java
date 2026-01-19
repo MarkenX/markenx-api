@@ -12,7 +12,7 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.Quer
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQueryCriteria;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQuery;
 import com.udla.markenx.api.classroom.courses.infrastructure.web.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -57,7 +57,7 @@ public class CourseController {
             @ApiResponse(responseCode = "404", description = "No course found")
     })
     public CourseResponseDTO getById(@PathVariable String id) {
-        var query = new CourseIdQueryCriteria(id);
+        var query = new CourseIdQuery(id);
         return mapper.toDTO(updateCourseUseCase.getById(query));
     }
 

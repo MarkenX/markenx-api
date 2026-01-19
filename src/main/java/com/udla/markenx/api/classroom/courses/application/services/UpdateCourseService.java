@@ -6,7 +6,7 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.commands.Upda
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
 import com.udla.markenx.api.classroom.courses.application.ports.in.mappers.CoursePortMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQueryCriteria;
+import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.TermNotUpcomingException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
@@ -22,7 +22,8 @@ import org.springframework.stereotype.Service;
 public class UpdateCourseService implements UpdateCourseUseCase {
 
     private final ValidateTermUseCase validateTermUseCase;
-    private final CourseCommandRepository repository;
+    private final CourseCommandRepository commandRepository;
+    private final CourseQueryRepository queryRepository;
     private final CoursePortMapper mapper = new CoursePortMapper();
 
     private void ensureTermIsUpcoming(@NonNull ChangeTermCommand command) {
@@ -33,33 +34,28 @@ public class UpdateCourseService implements UpdateCourseUseCase {
     }
 
     @Override
-    public CoursePortDTO getById(@NonNull CourseIdQueryCriteria query) {
-        return mapper.toDTO(repository.findById(query.id()));
-    }
-
-    @Override
     public CoursePortDTO changeTerm(@NonNull ChangeTermCommand command) {
         ensureTermIsUpcoming(command);
-        Course course = repository.findById(command.id());
+        Course course = queryRepository.findByIdOrThrow(command.id());
         course.changeAcademicTerm(command.termId());
-        return mapper.toDTO(repository.save(course));
+        return mapper.toDTO(commandRepository.save(course));
     }
 
     @Override
     public CoursePortDTO changeStatus(@NonNull ChangeStatusCommand command) {
-        Course course = repository.findById(command.id());
+        Course course = queryRepository.findByIdOrThrow(command.id());
         if (command.targetStatus() == LifecycleStatus.ACTIVE) {
             course.enable();
         } else {
             course.disable();
         }
-        return mapper.toDTO(repository.save(course));
+        return mapper.toDTO(commandRepository.save(course));
     }
 
     @Override
     public CoursePortDTO update(@NonNull UpdateCourseCommand command) {
-        Course course = repository.findById(command.id());
+        Course course = queryRepository.findByIdOrThrow(command.id());
         course.update(command.name());
-        return mapper.toDTO(repository.save(course));
+        return mapper.toDTO(commandRepository.save(course));
     }
 }

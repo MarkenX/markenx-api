@@ -4,12 +4,10 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.commands.Chan
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeStatusCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
-import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQueryCriteria;
-import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQuery;
 
 public interface UpdateCourseUseCase {
     CoursePortDTO changeTerm(ChangeTermCommand command);
     CoursePortDTO changeStatus(ChangeStatusCommand command);
     CoursePortDTO update(UpdateCourseCommand command);
-    CoursePortDTO getById(CourseIdQueryCriteria query);
 }

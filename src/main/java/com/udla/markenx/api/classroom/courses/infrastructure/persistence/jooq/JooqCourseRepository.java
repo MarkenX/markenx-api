@@ -4,8 +4,11 @@ import com.udla.markenx.api.classroom.assignments.application.ports.incoming.Fin
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.FindAllCoursesIdsForStudentsHandler;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -13,20 +16,38 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqCourseRepository implements
-        CourseQueryRepository,
+public class JooqCourseRepository implements CourseQueryRepository,
         FindAllCoursesIdsForStudentsHandler,
         FindAllCoursesIdsForAssignmentsHandler {
+
+    private static final Field<String> COURSE_ID_FIELD = field("id", String.class);
 
     private final DSLContext dsl;
     private final CourseRecordMapper mapper = new CourseRecordMapper();
 
     private static final String TABLE = "courses";
+
+    @Override
+    public Optional<Course> findById(String id) {
+        return Optional.ofNullable(
+                dsl.select()
+                        .from(TABLE)
+                        .where(COURSE_ID_FIELD.eq(id))
+                        .fetchOne(mapper::toDomain)
+        );
+    }
+
+    @Override
+    public Course findByIdOrThrow(String id) {
+        return findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Course.class.getName(), id));
+    }
 
     @Override
     public Page<Course> findAllPaginated(@NonNull Pageable pageable) {

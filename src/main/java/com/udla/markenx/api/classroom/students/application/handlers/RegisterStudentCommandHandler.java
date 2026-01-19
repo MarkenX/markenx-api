@@ -1,5 +1,7 @@
 package com.udla.markenx.api.classroom.students.application.handlers;
 
+import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
@@ -19,10 +21,12 @@ import org.springframework.stereotype.Service;
 public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
 
     private final ValidateTermUseCase validateTermUseCase;
+    private final QueryCourseUseCase queryCourseUseCase;
     private final StudentCommandRepository repository;
     private final ApplicationEventPublisher events;
 
     private void ensureCourseTermIsUpcoming(@NonNull RegisterStudentCommand command) {
+        CoursePortDTO course = queryCourseUseCase.
         var query = new IsUpcomingTermQuery(command.termId());
         if (!validateTermUseCase.isUpcoming(query)) {
             throw new CourseNotInUpcomingTermException(command.courseId());
