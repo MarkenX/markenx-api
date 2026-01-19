@@ -3,8 +3,10 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jo
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -20,19 +22,27 @@ import static org.jooq.impl.DSL.field;
 @RequiredArgsConstructor
 public class JooqTaskRepository implements TaskQueryRepository {
 
+    private static final String TABLE = "tasks";
+    private static final Field<String> TERM_ID_FIELD
+            = field("id", String.class);
+
     private final DSLContext dsl;
     private final TaskRecordMapper mapper = new TaskRecordMapper();
 
-    private static final String TABLE = "tasks";
-
     @Override
     public Optional<Task> findById(String id) {
-        return Optional.empty();
+        return Optional.ofNullable(
+                dsl.select()
+                        .from(TABLE)
+                        .where(TERM_ID_FIELD.eq(id))
+                        .fetchOne(mapper::toDomain)
+        );
     }
 
     @Override
     public Task findByIdOrThrow(String id) {
-        return null;
+        return findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Task.class.getName(), id));
     }
 
     @Override
