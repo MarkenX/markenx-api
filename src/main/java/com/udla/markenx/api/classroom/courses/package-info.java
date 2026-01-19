@@ -3,7 +3,7 @@
         allowedDependencies = {
                 "shared::public",
                 "classroom.terms::public",
-                "in"
+                "classroom.assignments::public",
         })
 package com.udla.markenx.api.classroom.courses;
 
