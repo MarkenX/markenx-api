@@ -30,7 +30,7 @@ public class StudentSummaryProjection {
 //    public void on(UserEmailChangedEvent event) {
 //        repository.upsert(
 //                new StudentSummaryReadModel(
-//                        event.studentId(),
+//                        event.id(),
 //                        event.newEmail(),
 //                        event.fullName()
 //                )

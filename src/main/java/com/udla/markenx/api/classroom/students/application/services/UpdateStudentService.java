@@ -67,7 +67,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public void disable(@NonNull DisableStudentCommand command) {
-        Student student = repository.findById(command.studentId());
+        Student student = repository.findById(command.id());
 
         validateCanDisable(student);
 
@@ -84,7 +84,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public Student update(@NonNull UpdateStudentCommand command) {
-        Student student = repository.findById(command.studentId());
+        Student student = repository.findById(command.id());
 
         student.update(command.firstName(), command.lastName());
         student.changeCourse(command.courseId());

@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Response DTO for student attempts.
- * Used by GET /students/{studentId}/attempts endpoint.
+ * Used by GET /students/{id}/attempts endpoint.
  */
 public record StudentAttemptResponseDTO(
         String attemptId,
