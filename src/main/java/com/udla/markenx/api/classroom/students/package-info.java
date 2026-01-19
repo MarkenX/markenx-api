@@ -2,7 +2,7 @@
         displayName = "Student Management",
         allowedDependencies = {
                 "shared::public",
-                "security::events",
+                "security::public",
                 "classroom.terms::public",
         })
 package com.udla.markenx.api.classroom.students;
