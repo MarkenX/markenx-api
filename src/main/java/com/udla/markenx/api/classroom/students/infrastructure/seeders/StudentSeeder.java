@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.in.FindAllCoursesIdsForStudentsHandler;
-import com.udla.markenx.api.classroom.students.application.ports.in.RegisterStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.FindAllCoursesIdsForStudentsHandler;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import lombok.RequiredArgsConstructor;

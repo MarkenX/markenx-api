@@ -1,12 +1,12 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
-import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
-import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.in.RegisterStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.StudentQueryUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.UpdateStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentCourseResponseDTO;

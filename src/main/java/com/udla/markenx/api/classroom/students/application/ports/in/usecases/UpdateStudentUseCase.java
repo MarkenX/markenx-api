@@ -1,8 +1,8 @@
-package com.udla.markenx.api.classroom.students.application.ports.in;
+package com.udla.markenx.api.classroom.students.application.ports.in.usecases;
 
-import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
-import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.application.queries.GetStudentByIdQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetStudentByIdQuery;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 
 public interface UpdateStudentUseCase {

@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.StudentQueryUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataPort;
-import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryPagedReadRepository;
