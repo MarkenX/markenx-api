@@ -25,15 +25,4 @@ public class StudentSummaryProjection {
                 )
         );
     }
-
-//    @EventListener
-//    public void on(UserEmailChangedEvent event) {
-//        repository.upsert(
-//                new StudentSummaryReadModel(
-//                        event.id(),
-//                        event.newEmail(),
-//                        event.fullName()
-//                )
-//        );
-//    }
 }
