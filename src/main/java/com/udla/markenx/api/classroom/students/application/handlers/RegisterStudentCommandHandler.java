@@ -1,6 +1,7 @@
 package com.udla.markenx.api.classroom.students.application.handlers;
 
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseIdQuery;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
@@ -26,9 +27,10 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
     private final ApplicationEventPublisher events;
 
     private void ensureCourseTermIsUpcoming(@NonNull RegisterStudentCommand command) {
-        CoursePortDTO course = queryCourseUseCase.
-        var query = new IsUpcomingTermQuery(command.termId());
-        if (!validateTermUseCase.isUpcoming(query)) {
+        var query = new CourseIdQuery(command.courseId());
+        CoursePortDTO course = queryCourseUseCase.getCourseById(query);
+        var validationQuery = new IsUpcomingTermQuery(course.termId());
+        if (!validateTermUseCase.isUpcoming(validationQuery)) {
             throw new CourseNotInUpcomingTermException(command.courseId());
         }
     }
