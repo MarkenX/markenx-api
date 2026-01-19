@@ -7,7 +7,6 @@ package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
 public record StudentCourseResponseDTO(
         String courseId,
         String courseName,
-        String term,
-        String teacherName
+        String term
 ) {
 }

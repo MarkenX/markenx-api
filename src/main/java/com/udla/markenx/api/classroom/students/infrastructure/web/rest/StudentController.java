@@ -102,8 +102,7 @@ public class StudentController {
                         new StudentCourseResponseDTO(
                                 courseInfo.courseId(),
                                 courseInfo.courseName(),
-                                courseInfo.term(),
-                                courseInfo.teacherName()
+                                courseInfo.term()
                         )
                 ))
                 .orElse(ResponseEntity.notFound().build());
