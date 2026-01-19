@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
-import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskCommandRepository;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;

@@ -1,10 +1,10 @@
 package com.udla.markenx.api.classroom.assignments.application.services;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
-import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskQueryRepository;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;

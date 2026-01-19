@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.application.ports.incoming;
+package com.udla.markenx.api.classroom.assignments.application.ports.in;
 
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;

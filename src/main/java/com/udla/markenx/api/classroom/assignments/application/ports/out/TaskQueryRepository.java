@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.domain.ports.outgoing;
+package com.udla.markenx.api.classroom.assignments.application.ports.out;
 
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;

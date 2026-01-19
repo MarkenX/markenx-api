@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jo
 
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
-import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskQueryRepository;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;

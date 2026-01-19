@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeTermCommand;

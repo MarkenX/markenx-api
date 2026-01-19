@@ -1,9 +1,9 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.application.commands.SaveTaskCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.SaveTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.TaskQueryUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.UpdateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.SaveTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetTaskByIdQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;

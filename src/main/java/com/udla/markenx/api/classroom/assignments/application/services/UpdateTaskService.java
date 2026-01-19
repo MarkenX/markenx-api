@@ -2,11 +2,11 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 
 import com.udla.markenx.api.classroom.assignments.application.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.commands.RegisterTaskAttemptResultCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.incoming.UpdateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.queries.GetTaskByIdQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
-import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskCommandRepository;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
