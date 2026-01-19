@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.SaveTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetAllTasksPaginatedQuery;
@@ -29,7 +29,7 @@ import java.util.List;
 public class TaskController {
 
     private final TaskResponseDTOMapper mapper;
-    private final SaveTaskUseCase saveTaskUseCase;
+    private final CreateTaskUseCase createTaskUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
     private final UpdateTaskUseCase updateTaskUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
@@ -50,7 +50,7 @@ public class TaskController {
                 dto.maxAttempts(),
                 false
         );
-        return mapper.toDTO(saveTaskUseCase.handle(command));
+        return mapper.toDTO(createTaskUseCase.handle(command));
     }
 
     @GetMapping("/{id}")

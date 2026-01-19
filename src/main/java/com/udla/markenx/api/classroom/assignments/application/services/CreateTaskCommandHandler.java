@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.SaveTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.EnsureCourseHasUpcomingTermForAssignment;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.SaveTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class SaveTaskCommandHandler implements SaveTaskUseCase {
+public class CreateTaskCommandHandler implements CreateTaskUseCase {
 
     private final EnsureCourseHasUpcomingTermForAssignment ensureCourseHasUpcomingTerm;
     private final TaskCommandRepository repository;
