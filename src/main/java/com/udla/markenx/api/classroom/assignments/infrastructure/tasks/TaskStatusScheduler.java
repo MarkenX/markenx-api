@@ -1,9 +1,10 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.tasks;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskStatusQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -25,9 +26,10 @@ public class TaskStatusScheduler {
 
     @Scheduled(cron = "0 * * * * *")
     public void checkAndUpdateTaskStatuses() {
-        List<Task> tasks = queryTasksUseCase.listTasksByStatuses(PROCESSABLE_STATUSES);
-        for (Task task : tasks) {
-            var command = new MarkTaskAsFailedIfOverdueCommand(task.getId());
+        TaskStatusQueryCriteria criteria = new TaskStatusQueryCriteria(PROCESSABLE_STATUSES);
+        List<TaskPortDTO> tasks = queryTasksUseCase.listTasksByStatuses(criteria);
+        for (TaskPortDTO task : tasks) {
+            var command = new MarkTaskAsFailedIfOverdueCommand(task.id());
             updateTaskUseCase.markTaskAsFailedIfOverdue(command);
         }
     }
