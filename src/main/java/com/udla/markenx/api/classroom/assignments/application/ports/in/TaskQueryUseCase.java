@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.application.ports.in;
 
-import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import org.springframework.data.domain.Page;

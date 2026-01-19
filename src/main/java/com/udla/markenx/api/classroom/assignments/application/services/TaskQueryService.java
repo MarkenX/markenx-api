@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.application.services;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.TaskQueryUseCase;
-import com.udla.markenx.api.classroom.assignments.application.queries.GetAllTasksPaginatedQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetAllTasksPaginatedQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
