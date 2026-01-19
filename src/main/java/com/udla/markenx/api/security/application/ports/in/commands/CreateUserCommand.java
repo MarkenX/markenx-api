@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.commands;
+package com.udla.markenx.api.security.application.ports.in.commands;
 
 public record CreateUserCommand(
     String email,
