@@ -5,7 +5,6 @@ import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskComm
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -20,7 +19,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
     public Task save(@NonNull Task task) {
         jdbcTemplate.update("""
         INSERT INTO tasks
-        (id, lifecycle_status, status, title, summary, deadline, course_id, 
+        (id, lifecycle_status, status, title, summary, deadline, course_id,
          min_score_to_pass, max_attempts, current_attempt)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
@@ -43,24 +42,6 @@ public class JdbcTaskRepository implements TaskCommandRepository {
                 """,
                 rowMapper,
                 task.getId());
-    }
-
-    @Override
-    public Task findById(String id) {
-        try {
-            return jdbcTemplate.queryForObject("""
-            SELECT *
-            FROM tasks
-            WHERE id = ?
-            """,
-                rowMapper,
-                id
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                "No se encontró la tarea con el identificador:" + id
-            );
-        }
     }
 
     @Override
@@ -92,9 +73,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         );
 
         if (updatedRows == 0) {
-            throw new EntityNotFoundException(
-                "No se encontró la tarea con el identificador:" + task.getId()
-            );
+            throw new EntityNotFoundException(Task.class.getName(), task.getId());
         }
 
         return jdbcTemplate.queryForObject("""
