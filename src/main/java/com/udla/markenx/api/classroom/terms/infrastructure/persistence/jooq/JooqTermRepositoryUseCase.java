@@ -24,10 +24,14 @@ import static org.jooq.impl.DSL.field;
 public class JooqTermRepositoryUseCase implements TermQueryRepository {
 
     private static final String TERM_TABLE = "academic_terms";
-    private static final Field<String> TERM_ID_FIELD = field("id", String.class);
-    private static final Field<String> TERM_STATUS_FIELD = field("status", String.class);
-    private static final Field<Integer> TERM_SEQUENCE_FIELD = field("sequence", Integer.class);
-    private static final Field<Integer> TERM_YEAR_FIELD = field("academic_year", Integer.class);
+    private static final Field<String> TERM_ID_FIELD
+            = field("id", String.class);
+    private static final Field<String> TERM_STATUS_FIELD
+            = field("status", String.class);
+    private static final Field<Integer> TERM_SEQUENCE_FIELD
+            = field("sequence", Integer.class);
+    private static final Field<Integer> TERM_YEAR_FIELD
+            = field("academic_year", Integer.class);
 
     private final DSLContext dsl;
     private final AcademicTermRecordMapper mapper = new AcademicTermRecordMapper();
@@ -58,7 +62,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
                 .orElseThrow(() -> new EntityNotFoundException(Term.class.getName(), id));
     }
 
-    @OverrideSE
+    @Override
     public List<Term> findAll() {
         return dsl
                 .select()
