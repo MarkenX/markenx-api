@@ -4,7 +4,6 @@ public record RegisterStudentCommand(
         String firstName,
         String lastName,
         String courseId,
-        String termId,
         String email,
         boolean isHistorical
 ) {
