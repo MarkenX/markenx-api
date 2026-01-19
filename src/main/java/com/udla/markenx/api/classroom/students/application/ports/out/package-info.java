@@ -4,4 +4,4 @@
  * enabling loose coupling with other bounded contexts.
  */
 @org.jspecify.annotations.NullMarked
-package com.udla.markenx.api.classroom.students.application.ports.outgoing;
+package com.udla.markenx.api.classroom.students.application.ports.out;

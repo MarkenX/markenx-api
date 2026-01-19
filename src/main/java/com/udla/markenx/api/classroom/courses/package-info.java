@@ -5,7 +5,7 @@
                 "shared::valueobjects",
                 "shared::exceptions",
                 "shared::dtos",
-                "classroom.students::ports-incoming",
+                "in",
                 "classroom.assignments::ports-incoming",
                 "classroom.terms::public"
         }

@@ -2,9 +2,9 @@ package com.udla.markenx.api.classroom.students.application.services;
 
 import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
 import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.queries.GetStudentByIdQuery;
-import com.udla.markenx.api.classroom.students.application.ports.outgoing.UserDataPort;
+import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;

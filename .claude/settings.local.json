@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(xargs cat:*)",
+      "Bash(git mv:*)",
+      "Bash(./mvnw compile:*)"
+    ]
+  }
+}

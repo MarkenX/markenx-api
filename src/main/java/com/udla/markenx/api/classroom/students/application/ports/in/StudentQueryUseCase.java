@@ -1,6 +1,6 @@
-package com.udla.markenx.api.classroom.students.application.ports.incoming;
+package com.udla.markenx.api.classroom.students.application.ports.in;
 
-import com.udla.markenx.api.classroom.students.application.ports.outgoing.CourseDataPort;
+import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataPort;
 import com.udla.markenx.api.classroom.students.application.queries.GetAllStudentsPaginatedQuery;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import org.springframework.data.domain.Page;

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.application.ports.outgoing;
+package com.udla.markenx.api.classroom.students.application.ports.out;
 
 import java.util.Optional;
 

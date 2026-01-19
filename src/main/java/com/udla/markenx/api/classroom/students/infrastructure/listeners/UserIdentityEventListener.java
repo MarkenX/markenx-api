@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.infrastructure.listeners;
 
-import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.UpdateStudentUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableFailedEvent;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisabledEvent;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisionedEvent;

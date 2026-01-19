@@ -1,6 +1,6 @@
 package com.udla.markenx.api.security.infrastructure.adapters;
 
-import com.udla.markenx.api.classroom.students.application.ports.outgoing.UserDataPort;
+import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
 import com.udla.markenx.api.security.domain.models.aggregates.User;
 import com.udla.markenx.api.security.domain.ports.outgoing.UserQueryRepository;
 import lombok.RequiredArgsConstructor;

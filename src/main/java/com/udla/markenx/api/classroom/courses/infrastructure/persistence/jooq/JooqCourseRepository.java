@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jooq;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.FindAllCoursesIdsForAssignmentsHandler;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.FindAllCoursesIdsForStudentsHandler;
+import com.udla.markenx.api.classroom.students.application.ports.in.FindAllCoursesIdsForStudentsHandler;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;

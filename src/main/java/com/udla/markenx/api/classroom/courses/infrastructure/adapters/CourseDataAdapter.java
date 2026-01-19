@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.courses.infrastructure.adapters;
 
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
-import com.udla.markenx.api.classroom.students.application.ports.outgoing.CourseDataPort;
+import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
 import com.udla.markenx.api.classroom.students.application.commands.RegisterStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.EnsureCourseHasUpcomingTerm;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.RegisterStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.EnsureCourseHasUpcomingTerm;
+import com.udla.markenx.api.classroom.students.application.ports.in.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
