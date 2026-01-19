@@ -2,10 +2,10 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetAllTasksPaginatedQuery;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetTaskByIdQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
@@ -30,7 +30,7 @@ public class TaskController {
 
     private final TaskResponseDTOMapper mapper;
     private final CreateTaskUseCase createTaskUseCase;
-    private final TaskQueryUseCase taskQueryUseCase;
+    private final QueryTasksUseCase queryTasksUseCase;
     private final UpdateTaskUseCase updateTaskUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
 
@@ -61,7 +61,7 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "No task found")
     })
     public TaskResponseDTO getById(@PathVariable String id) {
-        var query = new GetTaskByIdQuery(id);
+        var query = new TaskIdQuery(id);
         return mapper.toDTO(updateTaskUseCase.getById(query));
     }
 
@@ -75,9 +75,9 @@ public class TaskController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var query = new GetAllTasksPaginatedQuery(page, size);
+        var query = new TaskPageQueryCriteria(page, size);
         Page<@NotNull TaskResponseDTO> result =
-                taskQueryUseCase.getAllPaginated(query).map(mapper::toDTO);
+                queryTasksUseCase.listTasksPage(query).map(mapper::toDTO);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();

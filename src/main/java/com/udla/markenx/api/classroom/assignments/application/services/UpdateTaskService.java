@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.RegisterTaskAttemptResultCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.GetTaskByIdQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
@@ -28,7 +28,7 @@ public class UpdateTaskService implements UpdateTaskUseCase {
     }
 
     @Override
-    public Task getById(@NonNull GetTaskByIdQuery query) {
+    public Task getById(@NonNull TaskIdQuery query) {
         return repository.findById(query.id());
     }
 

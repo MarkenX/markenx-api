@@ -1,6 +1,6 @@
 package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;
@@ -33,14 +33,14 @@ import java.util.List;
 public class AttemptSeeder implements CommandLineRunner {
 
     private final RegisterGameSessionUseCase registerGameSessionUseCase;
-    private final TaskQueryUseCase taskQueryUseCase;
+    private final QueryTasksUseCase queryTasksUseCase;
     private final StudentQueryUseCase studentQueryUseCase;
 
     @Override
     public void run(String @NonNull ... args) {
         log.info("Seeding attempts...");
 
-        List<Task> tasks = taskQueryUseCase.getAll();
+        List<Task> tasks = queryTasksUseCase.listTasks();
         Page<StudentSummaryReadModel> studentsPage = studentQueryUseCase.getAllPaginated(
                 new GetAllStudentsPaginatedQuery(0, 100)
         );

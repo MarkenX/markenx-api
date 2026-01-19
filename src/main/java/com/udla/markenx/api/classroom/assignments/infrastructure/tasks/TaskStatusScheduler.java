@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.tasks;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.TaskQueryUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
@@ -20,12 +20,12 @@ public class TaskStatusScheduler {
             AssignmentStatus.IN_PROGRESS
     );
 
-    private final TaskQueryUseCase taskQueryUseCase;
+    private final QueryTasksUseCase queryTasksUseCase;
     private final UpdateTaskUseCase updateTaskUseCase;
 
     @Scheduled(cron = "0 * * * * *")
     public void checkAndUpdateTaskStatuses() {
-        List<Task> tasks = taskQueryUseCase.getByStatuses(PROCESSABLE_STATUSES);
+        List<Task> tasks = queryTasksUseCase.listTasksByStatuses(PROCESSABLE_STATUSES);
         for (Task task : tasks) {
             var command = new MarkTaskAsFailedIfOverdueCommand(task.getId());
             updateTaskUseCase.markTaskAsFailedIfOverdue(command);
