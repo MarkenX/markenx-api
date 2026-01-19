@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.services;
+package com.udla.markenx.api.security.application.handlers;
 
 import com.udla.markenx.api.security.application.ports.in.commands.CreateUserCommand;
 import com.udla.markenx.api.security.application.ports.in.usecases.CreateUserUseCase;
@@ -21,7 +21,7 @@ import reactor.core.publisher.Mono;
  */
 @Component
 @RequiredArgsConstructor
-public class UserIdentityService implements UserIdentityUseCase {
+public class UserIdentityhandler implements UserIdentityUseCase {
 
     private final CreateUserUseCase createUserUseCase;
     private final ExternalIdentityPort identityPort;

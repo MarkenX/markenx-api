@@ -1,4 +1,4 @@
-package com.udla.markenx.api.security.application.services;
+package com.udla.markenx.api.security.application.handlers;
 
 import com.udla.markenx.api.security.application.ports.in.commands.CreateUserCommand;
 import com.udla.markenx.api.security.application.ports.in.usecases.CreateUserUseCase;
