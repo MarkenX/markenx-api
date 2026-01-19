@@ -1,12 +1,9 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.assignments.application.ports.incoming.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseCommandRepository;
-import com.udla.markenx.api.classroom.students.application.ports.in.CourseValidation;
-import com.udla.markenx.api.classroom.students.application.ports.in.EnsureCourseHasUpcomingTerm;
-import com.udla.markenx.api.classroom.students.domain.exceptions.CourseNotInUpcomingTermException;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -15,9 +12,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
-public class JdbcCourseRepository
-        implements CourseCommandRepository, CourseValidation,
-                   EnsureCourseHasUpcomingTerm, EnsureCourseHasUpcomingTermForAssignment {
+public class JdbcCourseRepository implements CourseCommandRepository,
+        EnsureCourseHasUpcomingTermForAssignment {
 
     private final CourseRowMapper rowMapper = new CourseRowMapper();
     private final JdbcTemplate jdbcTemplate;
@@ -57,44 +53,12 @@ public class JdbcCourseRepository
                 id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new CourseNotFoundException(id);
-        }
-    }
-
-    @Override
-    public void ensureCourseExists(String courseId) {
-        Boolean exists = jdbcTemplate.queryForObject("""
-        SELECT EXISTS (
-            SELECT 1
-            FROM courses
-            WHERE id = ?
-        )
-        """,
-                Boolean.class,
-                courseId
-        );
-
-        if (Boolean.FALSE.equals(exists)) {
-            throw new CourseNotFoundException(courseId);
+            throw new EntityNotFoundException("Curso", id);
         }
     }
 
     @Override
     public void ensureCourseHasUpcomingTerm(String courseId) {
-        ensureCourseExists(courseId);
 
-        String status = jdbcTemplate.queryForObject("""
-            SELECT at.status
-            FROM courses c
-            JOIN academic_terms at ON c.academic_term_id = at.id
-            WHERE c.id = ?
-            """,
-                String.class,
-                courseId
-        );
-
-        if (!TermStatus.UPCOMING.name().equals(status)) {
-            throw new CourseNotInUpcomingTermException(courseId);
-        }
     }
 }
