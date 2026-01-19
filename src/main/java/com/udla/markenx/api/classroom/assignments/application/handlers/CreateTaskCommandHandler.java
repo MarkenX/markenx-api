@@ -1,6 +1,8 @@
-package com.udla.markenx.api.classroom.assignments.application.services;
+package com.udla.markenx.api.classroom.assignments.application.handlers;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.mappers.TaskPortMapper;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
@@ -18,8 +20,10 @@ public class CreateTaskCommandHandler implements CreateTaskUseCase {
     private final EnsureCourseHasUpcomingTermForAssignment ensureCourseHasUpcomingTerm;
     private final TaskCommandRepository repository;
 
+    private final TaskPortMapper mapper = new TaskPortMapper();
+
     @Override
-    public Task handle(@NonNull CreateTaskCommand command) {
+    public TaskPortDTO handle(@NonNull CreateTaskCommand command) {
         if (!command.isHistorical()) {
             ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
         }
@@ -46,6 +50,6 @@ public class CreateTaskCommandHandler implements CreateTaskUseCase {
             );
         }
 
-        return repository.save(newTask);
+        return mapper.toDTO(repository.save(newTask));
     }
 }
