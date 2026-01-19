@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jdbc;
 
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -14,7 +14,7 @@ public class JdbcTermRepository implements TermCommandRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public AcademicTerm save(@NonNull AcademicTerm term) {
+    public Term save(@NonNull Term term) {
         jdbcTemplate.update("""
         INSERT INTO academic_terms
         (id, lifecycle_status, start_date, end_date, academic_year, sequence, status)

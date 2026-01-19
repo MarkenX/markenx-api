@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
 import java.time.LocalDate;
 
 @Getter
-public class AcademicTerm extends Entity {
+public class Term extends Entity {
 
     // region Constants
 
@@ -45,7 +45,7 @@ public class AcademicTerm extends Entity {
      * @param sequence the sequence number of the term within the academic year
      * @param status the current status of the academic term
      */
-    private AcademicTerm(
+    private Term(
             AcademicTermId id,
             DateInterval dateInterval,
             int year,
@@ -71,7 +71,7 @@ public class AcademicTerm extends Entity {
      * @param sequence The sequence number indicating the term's order within the year.
      * @param status The status of the academic term (e.g., active, inactive).
      */
-    public AcademicTerm(
+    public Term(
             String id,
             LifecycleStatus lifecycleStatus,
             LocalDate startDate,
@@ -101,7 +101,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date range of the term
      * @return an instance of AcademicTerm representing the created term
      */
-    public static @NotNull AcademicTerm createTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull Term createTerm(int year, int sequence, DateInterval dateInterval) {
         validateStartDateInFuture(dateInterval);
         validateEndDateNotTooFar(dateInterval);
 
@@ -116,7 +116,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date range during which the term occurs
      * @return an AcademicTerm object representing the historical term
      */
-    public static @NotNull AcademicTerm createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
+    public static @NotNull Term createHistoricalTerm(int year, int sequence, DateInterval dateInterval) {
         return initializeAcademicTerm(year, sequence, dateInterval);
     }
 
@@ -130,7 +130,7 @@ public class AcademicTerm extends Entity {
      * @param dateInterval the date interval defining the start and end dates of the term
      * @return the initialized AcademicTerm object, not null
      */
-    private static @NotNull AcademicTerm initializeAcademicTerm(int year, int sequence, @NotNull DateInterval dateInterval) {
+    private static @NotNull Term initializeAcademicTerm(int year, int sequence, @NotNull DateInterval dateInterval) {
         if (dateInterval.spansOneYear()) {
             return createSingleYearTerm(year, sequence, dateInterval);
         }
@@ -152,12 +152,12 @@ public class AcademicTerm extends Entity {
      * @throws InvalidTermLengthException                 if the length of the term is less than the minimum or greater than the maximum allowed
      */
     @Contract("_, _, _ -> new")
-    private static @NotNull AcademicTerm createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull Term createSingleYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateSingleYear(dateInterval);
         validateMonthLength(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence, calculateStatus(dateInterval));
+        return new Term(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
 
@@ -180,13 +180,13 @@ public class AcademicTerm extends Entity {
      * @throws InsufficientMonthsAfterYearStartException  if there are insufficient months from the year's start to the interval's end
      */
     @Contract("_, _, _ -> new")
-    private static @NotNull AcademicTerm createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
+    private static @NotNull Term createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
         validateMonthLength(dateInterval);
 //        validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
-        return new AcademicTerm(id, dateInterval, year, sequence, calculateStatus(dateInterval));
+        return new Term(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
     // endregion
@@ -368,7 +368,7 @@ public class AcademicTerm extends Entity {
 
     //endregion
 
-    public boolean overlapsWith(AcademicTerm other) {
+    public boolean overlapsWith(Term other) {
         if (other == null) {
             return false;
         }
@@ -443,7 +443,7 @@ public class AcademicTerm extends Entity {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof AcademicTerm that)) return false;
+        if (!(o instanceof Term that)) return false;
         return id.equals(that.id);
     }
 

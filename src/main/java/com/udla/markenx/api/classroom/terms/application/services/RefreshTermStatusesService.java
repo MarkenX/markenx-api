@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.terms.application.services;
 
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,8 @@ public class RefreshTermStatusesService {
     private final TermCommandRepository commandRepository;
 
     public void handle() {
-        List<AcademicTerm> terms = queryRepository.findAllByStatus(Set.of(TermStatus.ENDED.name()), true);
-        for (AcademicTerm term: terms) {
+        List<Term> terms = queryRepository.findAllByStatus(Set.of(TermStatus.ENDED.name()), true);
+        for (Term term: terms) {
             term.refreshStatus();
             commandRepository.save(term);
         }

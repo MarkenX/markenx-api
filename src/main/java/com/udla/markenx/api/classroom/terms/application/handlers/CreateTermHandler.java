@@ -4,7 +4,7 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.commands.Create
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.mappers.TermPortMapper;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.CreateTermUseCase;
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.DateInterval;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
@@ -25,15 +25,15 @@ public class CreateTermHandler implements CreateTermUseCase {
 
     @Override
     public TermPortDTO handle(@NotNull CreateTermCommand command) {
-        List<AcademicTerm> terms = queryRepository.findAllByYear(command.year());
+        List<Term> terms = queryRepository.findAllByYear(command.year());
         int sequence = AcademicTermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
 
-        AcademicTerm newTerm;
+        Term newTerm;
         if (command.isHistorical()) {
-            newTerm = AcademicTerm.createHistoricalTerm(command.year(), sequence, dateInterval);
+            newTerm = Term.createHistoricalTerm(command.year(), sequence, dateInterval);
         } else {
-            newTerm = AcademicTerm.createTerm(command.year(), sequence, dateInterval);
+            newTerm = Term.createTerm(command.year(), sequence, dateInterval);
         }
 
         AcademicTermDomainService.validateNoOverlaps(terms, newTerm);

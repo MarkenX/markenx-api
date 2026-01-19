@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.terms.application.ports.out;
 
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 
 public interface TermCommandRepository {
-    AcademicTerm save(AcademicTerm term);
+    Term save(Term term);
 }

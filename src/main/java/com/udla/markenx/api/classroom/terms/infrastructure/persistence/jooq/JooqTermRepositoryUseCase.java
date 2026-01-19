@@ -1,8 +1,9 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jooq;
 
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -32,7 +33,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     private final AcademicTermRecordMapper mapper = new AcademicTermRecordMapper();
 
     @Override
-    public Optional<AcademicTerm> findById(@NonNull String id) {
+    public Optional<Term> findById(@NonNull String id) {
         return Optional.ofNullable(
                 dsl.select()
                         .from(TERM_TABLE)
@@ -42,7 +43,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     }
 
     @Override
-    public Optional<AcademicTerm> findActiveTerm() {
+    public Optional<Term> findActiveTerm() {
         return Optional.ofNullable(
                 dsl.select()
                         .from(TERM_TABLE)
@@ -52,7 +53,13 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     }
 
     @Override
-    public List<AcademicTerm> findAll() {
+    public Term findByIdOrThrow(@NonNull String id) {
+        return findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Term.class.getName(), id));
+    }
+
+    @OverrideSE
+    public List<Term> findAll() {
         return dsl
                 .select()
                 .from(TERM_TABLE)
@@ -60,7 +67,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     }
 
     @Override
-    public List<AcademicTerm> findAllByStatus(@NonNull Set<String> statuses, boolean exclude) {
+    public List<Term> findAllByStatus(@NonNull Set<String> statuses, boolean exclude) {
         if (statuses.isEmpty()) return exclude ? findAll() : List.of();
 
         var values = statuses.stream().toList();
@@ -75,7 +82,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     }
 
     @Override
-    public List<AcademicTerm> findAllByYear(int year) {
+    public List<Term> findAllByYear(int year) {
         return dsl
                 .select()
                 .from(TERM_TABLE)
@@ -84,7 +91,7 @@ public class JooqTermRepositoryUseCase implements TermQueryRepository {
     }
 
     @Override
-    public Page<AcademicTerm> findAllPaginated(@NonNull Pageable pageable) {
+    public Page<Term> findAllPaginated(@NonNull Pageable pageable) {
 
         var records = dsl
                 .select()

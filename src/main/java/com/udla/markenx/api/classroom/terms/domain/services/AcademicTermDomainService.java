@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.terms.domain.services;
 
 import com.udla.markenx.api.classroom.terms.domain.exceptions.TermsOverlapException;
-import com.udla.markenx.api.classroom.terms.domain.models.aggregates.AcademicTerm;
+import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 
 import java.util.Collection;
 import java.util.List;
@@ -20,7 +20,7 @@ public class AcademicTermDomainService {
      * @return the sequence number of the academic term, or, if the academic term is not found or is null,
      *         the sequence number as the size of the list plus one
      */
-    public static int calculateSequence(List<AcademicTerm> terms, AcademicTerm term) {
+    public static int calculateSequence(List<Term> terms, Term term) {
         if (terms.isEmpty()) return 1;
         if (!terms.contains(term) || term == null) {
             return terms.size() + 1;
@@ -36,7 +36,7 @@ public class AcademicTermDomainService {
      * @param term the academic term to validate for overlaps
      * @throws TermsOverlapException if the provided term overlaps with any term in the collection
      */
-    public static void validateNoOverlaps(Collection<AcademicTerm> terms, AcademicTerm term) {
+    public static void validateNoOverlaps(Collection<Term> terms, Term term) {
         terms.forEach(t -> {
             if (t.overlapsWith(term)) {
                 throw new TermsOverlapException(t, term);
