@@ -47,7 +47,7 @@ public class QueryTasksService implements QueryTasksUseCase {
     }
 
     @Override
-    public List<TaskPortDTO> listTasksByCourseId(TaskCourseIdQueryCriteria criteria) {
+    public List<TaskPortDTO> listTasksByCourseId(@NonNull TaskCourseIdQueryCriteria criteria) {
         return repository.findByCourseId(criteria.courseId()).stream().map(mapper::toDTO).toList();
     }
 }

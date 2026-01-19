@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
 
@@ -23,6 +24,16 @@ public class JooqTaskRepository implements TaskQueryRepository {
     private final TaskRecordMapper mapper = new TaskRecordMapper();
 
     private static final String TABLE = "tasks";
+
+    @Override
+    public Optional<Task> findById(String id) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Task findByIdOrThrow(String id) {
+        return null;
+    }
 
     @Override
     public List<Task> findAll() {
