@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.courses.application.services;
+package com.udla.markenx.api.classroom.courses.application.handlers;
 
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class CreateCourseService implements CreateCourseUseCase {
+public class CreateCourseHandler implements CreateCourseUseCase {
 
     private final ValidateTermUseCase validateTermUseCase;
     private final CourseCommandRepository repository;
