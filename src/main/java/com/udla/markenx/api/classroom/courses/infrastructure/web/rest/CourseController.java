@@ -35,6 +35,7 @@ public class CourseController {
     private final TaskResponseDTOMapper taskMapper;
     private final CreateCourseUseCase createCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
+    private final QueryCourseUseCase queryCourseUseCase;
     private final QueryCourseUseCase courseQueryUseCase;
     private final TaskQueryUseCase taskQueryUseCase;
 
@@ -58,7 +59,7 @@ public class CourseController {
     })
     public CourseResponseDTO getById(@PathVariable String id) {
         var query = new CourseIdQuery(id);
-        return mapper.toDTO(updateCourseUseCase.getById(query));
+        return mapper.toDTO(queryCourseUseCase.getCourseById(query));
     }
 
     @GetMapping("/{courseId}/tasks")
