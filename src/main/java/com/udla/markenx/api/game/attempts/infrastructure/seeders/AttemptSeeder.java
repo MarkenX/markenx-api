@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadMo
 import com.udla.markenx.api.game.attempts.application.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.commands.RegisterGameSessionCommand.TurnHistoryDTO;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.RegisterGameSessionUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.RegisterGameSessionUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

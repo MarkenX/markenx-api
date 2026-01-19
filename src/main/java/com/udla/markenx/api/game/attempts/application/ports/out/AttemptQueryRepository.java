@@ -1,4 +1,4 @@
-package com.udla.markenx.api.game.attempts.domain.ports.outgoing;
+package com.udla.markenx.api.game.attempts.application.ports.out;
 
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;

@@ -2,11 +2,11 @@ package com.udla.markenx.api.game.attempts.application.services;
 
 import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQuery;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptQueryRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;

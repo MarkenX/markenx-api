@@ -2,7 +2,7 @@ package com.udla.markenx.api.game.attempts.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptCommandRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

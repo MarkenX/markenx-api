@@ -10,7 +10,7 @@ import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.C
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.AttemptQueryUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

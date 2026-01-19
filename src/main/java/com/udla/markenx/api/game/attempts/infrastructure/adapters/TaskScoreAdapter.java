@@ -1,6 +1,6 @@
 package com.udla.markenx.api.game.attempts.infrastructure.adapters;
 
-import com.udla.markenx.api.game.attempts.application.ports.incoming.TaskScoreProvider;
+import com.udla.markenx.api.game.attempts.application.ports.in.TaskScoreProvider;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.springframework.stereotype.Component;

@@ -2,12 +2,12 @@ package com.udla.markenx.api.game.attempts.application.services;
 
 import com.udla.markenx.api.game.attempts.application.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.RegisterGameSessionUseCase;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.TaskScoreProvider;
+import com.udla.markenx.api.game.attempts.application.ports.in.RegisterGameSessionUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.TaskScoreProvider;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptCommandRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptCommandRepository;
 import com.udla.markenx.api.shared.domain.events.integration.AttemptResultRegisteredEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

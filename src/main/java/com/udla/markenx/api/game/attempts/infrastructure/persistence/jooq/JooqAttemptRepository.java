@@ -3,7 +3,7 @@ package com.udla.markenx.api.game.attempts.infrastructure.persistence.jooq;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptQueryRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
