@@ -26,8 +26,8 @@ public class QueryTasksService implements QueryTasksUseCase {
     private final TaskPortMapper mapper = new TaskPortMapper();
 
     @Override
-    public TaskPortDTO getTaskById(TaskIdQuery query) {
-        return null;
+    public TaskPortDTO getTaskById(@NonNull TaskIdQuery query) {
+        return mapper.toDTO(repository.findByIdOrThrow(query.id()));
     }
 
     @Override
