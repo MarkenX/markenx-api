@@ -1,10 +1,7 @@
 @ApplicationModule(
         displayName = "Term Management",
         allowedDependencies = {
-                "shared::aggregates",
-                "shared::valueobjects",
-                "shared::exceptions",
-                "shared::dtos",
+                "shared::public"
         })
 package com.udla.markenx.api.classroom.terms;
 
