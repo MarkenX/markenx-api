@@ -56,9 +56,7 @@ public class JdbcActionRepository implements ActionCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró la acción con el identificador: " + id
-            );
+            throw new EntityNotFoundException(Action.class.getName(), id);
         }
     }
 
