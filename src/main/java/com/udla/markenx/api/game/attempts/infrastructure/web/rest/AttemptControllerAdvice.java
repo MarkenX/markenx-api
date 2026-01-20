@@ -2,7 +2,7 @@ package com.udla.markenx.api.game.attempts.infrastructure.web.rest;
 
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptException;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
-import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

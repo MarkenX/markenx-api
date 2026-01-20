@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
-import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

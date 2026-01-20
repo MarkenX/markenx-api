@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.terms.domain.exceptions.AcademicTermException;
-import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;

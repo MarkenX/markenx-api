@@ -1,4 +1,4 @@
-package com.udla.markenx.api.shared.application.dtos;
+package com.udla.markenx.api.shared.infrastructure.web.dtos;
 
 import java.util.Map;
 

@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
-import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

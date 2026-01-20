@@ -1,7 +1,7 @@
 package com.udla.markenx.api.game.scenarios.infrastructure.web.rest;
 
 import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
-import com.udla.markenx.api.shared.application.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
