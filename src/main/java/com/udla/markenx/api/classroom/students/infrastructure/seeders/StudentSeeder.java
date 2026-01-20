@@ -1,12 +1,13 @@
 package com.udla.markenx.api.classroom.students.infrastructure.seeders;
 
+import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.flywaydb.core.Flyway;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
@@ -22,9 +23,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudentSeeder implements CommandLineRunner {
 
-    private final FindAllCoursesIdsForStudentsHandler findAllCoursesIdsForStudents;
+    private final QueryCourseUseCase queryCourseUseCase;
     private final RegisterStudentUseCase registerStudentUseCase;
-    private final Flyway flyway;
 
     private record StudentData(String firstName, String lastName, String email) {}
 
@@ -39,28 +39,26 @@ public class StudentSeeder implements CommandLineRunner {
     public void run(String @NonNull ... args) {
         log.info("Seeding students...");
 
-        List<String> coursesIds = findAllCoursesIdsForStudents.handle();
-        if (coursesIds.isEmpty()) {
+        List<CoursePortDTO> courses = queryCourseUseCase.listCourses();
+        if (courses.isEmpty()) {
             log.warn("No courses found, skipping student seeding.");
             return;
         }
 
-        int studentIndex = 0;
         try {
             for (StudentData student : STUDENTS) {
                 // Distribute students across courses
-                String courseId = coursesIds.getFirst();
+                CoursePortDTO course = courses.getFirst();
                 var command = new RegisterStudentCommand(
                         student.firstName(),
                         student.lastName(),
-                        courseId,
+                        course.id(),
                         student.email(),
                         true
                 );
                 Student saved = registerStudentUseCase.handle(command);
                 log.info("Student created: {} {} (id: {})",
                         student.firstName(), student.lastName(), saved.getId());
-                studentIndex++;
             }
             log.info("Students seeded successfully. Total: {}", STUDENTS.size());
         } catch (StudentException e) {
