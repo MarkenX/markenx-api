@@ -8,7 +8,6 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermSta
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.mappers.TermPortMapper;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -34,10 +33,7 @@ public class QueryTermsService implements QueryTermsUseCase {
 
         @Override
         public TermPortDTO getActiveTerm() {
-                return repository.findActiveTerm()
-                                .map(mapper::toDTO)
-                                .orElseThrow(() -> new EntityNotFoundException(
-                                                "No se encontró un periodo académico activo"));
+                return mapper.toDTO(repository.findActiveTerm());
         }
 
         @Override

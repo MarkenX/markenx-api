@@ -11,7 +11,7 @@ import java.util.Set;
 
 public interface TermQueryRepository {
     Optional<Term> findById(@NonNull String id);
-    Optional<Term> findActiveTerm();
+    Term findActiveTerm();
     Term findByIdOrThrow(@NonNull String id);
     List<Term> findAll();
     List<Term> findAllByYear(int year);
