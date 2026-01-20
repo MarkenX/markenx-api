@@ -1,7 +1,9 @@
 package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
@@ -35,6 +37,7 @@ public class AttemptSeeder implements CommandLineRunner {
 
     private final RegisterGameSessionUseCase registerGameSessionUseCase;
     private final QueryTasksUseCase queryTasksUseCase;
+    private final ValidateTaskUseCase validateTaskUseCase;
     private final QueryStudentsUseCase queryStudentsUseCase;
 
     @Override
@@ -57,8 +60,9 @@ public class AttemptSeeder implements CommandLineRunner {
 
             // Create attempts for first 2 tasks and first 2 students
             for (int i = 0; i < Math.min(2, tasks.size()); i++) {
-                Task task = tasks.get(i);
-                if (task.isOutdated()) continue;
+                TaskPortDTO task = tasks.get(i);
+                var query = new IsTaskOutdatedQuery(task.id());
+                if (validateTaskUseCase.isOutdated(query)) continue;
 
                 for (int j = 0; j < Math.min(2, students.size()); j++) {
                     StudentSummaryReadModel student = students.get(j);
@@ -75,7 +79,7 @@ public class AttemptSeeder implements CommandLineRunner {
                     List<TurnHistoryDTO> history = buildTurnHistory(turnsUsed, finalAcceptance, remainingBudget);
 
                     var command = new RegisterGameSessionCommand(
-                            task.getId(),
+                            task.id(),
                             student.studentId(),
                             LocalDateTime.now().minusDays(5 - j),
                             finalAcceptance,
@@ -88,7 +92,7 @@ public class AttemptSeeder implements CommandLineRunner {
                     GameSessionResponse response = registerGameSessionUseCase.handle(command);
                     log.info("Attempt created: student={}, task={}, outcome={} (id: {})",
                             student.fullName(),
-                            task.getInfo().title(),
+                            task.title(),
                             response.finalOutcome(),
                             response.id()
                     );

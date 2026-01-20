@@ -3,7 +3,6 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
@@ -30,7 +29,6 @@ public class TaskController {
 
     private final CreateTaskUseCase createTaskUseCase;
     private final QueryTasksUseCase queryTasksUseCase;
-    private final UpdateTaskUseCase updateTaskUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
 
     private final TaskResponseDTOMapper mapper = new TaskResponseDTOMapper();
@@ -63,7 +61,7 @@ public class TaskController {
     })
     public TaskResponseDTO getById(@PathVariable String id) {
         var query = new TaskIdQuery(id);
-        return mapper.toDTO(updateTaskUseCase.getById(query));
+        return mapper.toDTO(queryTasksUseCase.getTaskById(query));
     }
 
     @GetMapping
@@ -100,13 +98,13 @@ public class TaskController {
         }
         return ResponseEntity.ok(attempts.stream()
                 .map(attempt -> new TaskAttemptResponseDTO(
-                        attempt.getId(),
-                        attempt.getTaskId(),
-                        attempt.getSessionDate(),
-                        attempt.getSessionDate(), // finishedAt - using sessionDate as placeholder
-                        attempt.getStatus().name(),
-                        attempt.getStatus().name().equals("FINISHED") ? "WIN" : "IN_PROGRESS",
-                        attempt.getResult().profileScore()
+                        attempt.attemptId(),
+                        attempt.taskId(),
+                        attempt.evaluatedAt(),
+                        attempt.evaluatedAt(), // finishedAt - using sessionDate as placeholder
+                        attempt.finalOutcome(),
+                        attempt.finalOutcome(),
+                        attempt.finalAcceptance()
                 ))
                 .toList());
     }
