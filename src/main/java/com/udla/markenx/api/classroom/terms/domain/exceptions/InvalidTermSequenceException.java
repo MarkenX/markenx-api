@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.terms.domain.exceptions;
 import lombok.Getter;
 
 @Getter
-public class InvalidTermSequenceException extends AcademicTermException {
+public class InvalidTermSequenceException extends TermException {
 
     private final int sequence;
 

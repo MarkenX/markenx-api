@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.terms.domain.exceptions;
 import lombok.Getter;
 
 @Getter
-public class InsufficientMonthsBeforeYearEndException extends AcademicTermException {
+public class InsufficientMonthsBeforeYearEndException extends TermException {
 
     private final long actualMonths;
     private final int requiredMonths;

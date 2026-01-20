@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.terms.domain.exceptions;
 import lombok.Getter;
 
 @Getter
-public class TermCannotBeCreatedTooFarInFutureException extends AcademicTermException {
+public class TermCannotBeCreatedTooFarInFutureException extends TermException {
 
     private final int endYear;
     private final int maxAllowedYear;

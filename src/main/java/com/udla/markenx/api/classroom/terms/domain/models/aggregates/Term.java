@@ -230,13 +230,13 @@ public class Term extends Entity {
      *
      * @param year the academic year to validate
      * @return the validated academic year if it is valid
-     * @throws InvalidAcademicYearException if the year is less than the historical threshold
+     * @throws InvalidYearException if the year is less than the historical threshold
      *                                      or greater than the next calendar year
      */
     private int validateYear(int year) {
         var nextYear = LocalDate.now().getYear() + 1;
         if (year < YEAR_HISTORICAL_THRESHOLD || year > nextYear) {
-            throw new InvalidAcademicYearException(year, YEAR_HISTORICAL_THRESHOLD, nextYear);
+            throw new InvalidYearException(year, YEAR_HISTORICAL_THRESHOLD, nextYear);
         }
         return year;
     }

@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.terms.domain.exceptions.AcademicTermException;
+import com.udla.markenx.api.classroom.terms.domain.exceptions.TermException;
 import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -13,10 +13,10 @@ public class TermControllerAdvice {
 
     private static final String ACADEMIC_TERM_ERROR_CODE = "ACADEMIC_TERM_ERROR";
 
-    @ExceptionHandler(AcademicTermException.class)
+    @ExceptionHandler(TermException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponse handleDomainException(AcademicTermException ex) {
+    public ErrorResponse handleDomainException(TermException ex) {
         return new ErrorResponse(ACADEMIC_TERM_ERROR_CODE, ex.getMessage());
     }
 }

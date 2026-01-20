@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.CreateTermUseCase;
-import com.udla.markenx.api.classroom.terms.domain.exceptions.AcademicTermException;
+import com.udla.markenx.api.classroom.terms.domain.exceptions.TermException;
 import com.udla.markenx.api.classroom.terms.infrastructure.seeders.factories.TermSeedFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,7 +49,7 @@ public class AcademicTermSeeder implements CommandLineRunner {
             long tookMs = System.currentTimeMillis() - startMs;
             log.info("Seed completed. created={}, tookMs={}", created.size(), tookMs);
 
-        } catch (AcademicTermException e) {
+        } catch (TermException e) {
             long tookMs = System.currentTimeMillis() - startMs;
             log.error("Seed failed. tookMs={}, reason={}", tookMs, e.getMessage(), e);
         }
