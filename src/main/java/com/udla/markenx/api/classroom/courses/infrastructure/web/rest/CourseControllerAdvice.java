@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.courses.application.exceptions.CourseNotFoundException;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
@@ -16,10 +16,10 @@ public class CourseControllerAdvice {
     private static final String COURSE_ERROR_CODE = "COURSE_ERROR";
     private static final String COURSE_NOT_FOUND_CODE = "COURSE_NOT_FOUND";
 
-    @ExceptionHandler(CourseNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleCourseNotFoundException(@NonNull CourseNotFoundException ex) {
+    public ErrorResponse handleCourseNotFoundException(@NonNull EntityNotFoundException ex) {
         return new ErrorResponse(COURSE_NOT_FOUND_CODE, ex.getMessage());
     }
 
