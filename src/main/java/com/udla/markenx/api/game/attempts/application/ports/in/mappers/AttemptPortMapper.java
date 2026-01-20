@@ -1,6 +1,6 @@
-package com.udla.markenx.api.game.attempts.application.ports.mappers;
+package com.udla.markenx.api.game.attempts.application.ports.in.mappers;
 
-import com.udla.markenx.api.game.attempts.application.ports.dtos.AttemptPortDTO;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 
 public class AttemptPortMapper {
