@@ -52,9 +52,7 @@ public class JdbcDimensionRepository implements DimensionCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró la dimensión con el identificador: " + id
-            );
+            throw new EntityNotFoundException(Dimension.class.getName(), id);
         }
     }
 }

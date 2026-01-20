@@ -52,9 +52,7 @@ public class JdbcGameEventRepository implements GameEventCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró el evento con el identificador: " + id
-            );
+            throw new EntityNotFoundException(GameEvent.class.getName(), id);
         }
     }
 

@@ -51,9 +51,7 @@ public class JdbcScenarioRepository implements ScenarioCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró el escenario con el identificador: " + id
-            );
+            throw new EntityNotFoundException(Scenario.class.getName(), id);
         }
     }
 

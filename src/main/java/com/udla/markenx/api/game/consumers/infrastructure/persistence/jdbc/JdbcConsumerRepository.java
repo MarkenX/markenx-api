@@ -51,9 +51,7 @@ public class JdbcConsumerRepository implements ConsumerCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró el consumidor con el identificador: " + id
-            );
+            throw new EntityNotFoundException(Consumer.class.getName(), id);
         }
     }
 }
