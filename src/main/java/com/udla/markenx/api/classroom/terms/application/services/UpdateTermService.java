@@ -28,19 +28,14 @@ public class UpdateTermService implements UpdateTermUseCase {
 
     @Override
     public TermPortDTO update(@NonNull UpdateTermCommand command) {
-        Optional<Term> term = queryRepository.findById(command.id());
-        if (term.isEmpty()) {
-            throw new EntityNotFoundException("""
-                    "No se encontró un periodo académico con el id: "
-                    """ + command.id());
-        }
-        term.get().update(command.startDate(), command.endDate(), command.year());
-        return mapper.toDTO(commandRepository.save(term.get()));
+        Term term = queryRepository.findByIdOrThrow(command.id());
+        term.update(command.startDate(), command.endDate(), command.year());
+        return mapper.toDTO(commandRepository.save(term));
     }
 
     @Override
     public TermPortDTO changeStatus(@NonNull ChangeTermStatusCommand command) {
-        var term = commandRepository.findById(command.id());
+        var term = queryRepository.findByIdOrThrow(command.id());
         switch (command.targetStatus()) {
             case LifecycleStatus.ACTIVE -> term.enable();
             case LifecycleStatus.DISABLED -> term.disable();
@@ -50,6 +45,6 @@ public class UpdateTermService implements UpdateTermUseCase {
 
     @Override
     public TermPortDTO getById(@NotNull TermIdQuery query) {
-        return mapper.toDTO(commandRepository.findById(query.id()));
+        return mapper.toDTO(queryRepository.findByIdOrThrow(query.id()));
     }
 }
