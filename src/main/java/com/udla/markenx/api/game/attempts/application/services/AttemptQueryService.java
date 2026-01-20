@@ -1,6 +1,8 @@
 package com.udla.markenx.api.game.attempts.application.services;
 
+import com.udla.markenx.api.game.attempts.application.ports.dtos.AttemptPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.GetAttemptByIdQuery;
+import com.udla.markenx.api.game.attempts.application.ports.mappers.AttemptPortMapper;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class AttemptQueryService implements AttemptQueryUseCase {
 
     private final AttemptQueryRepository repository;
+    private final AttemptPortMapper mapper = new AttemptPortMapper();
 
     @Override
     public GameSessionResponse getById(@NonNull GetAttemptByIdQuery query) {
@@ -59,12 +62,12 @@ public class AttemptQueryService implements AttemptQueryUseCase {
     }
 
     @Override
-    public List<Attempt> getByTaskId(String taskId) {
-        return repository.findByTaskId(taskId);
+    public List<AttemptPortDTO> getByTaskId(String taskId) {
+        return repository.findByTaskId(taskId).stream().map(mapper::toDTO).toList();
     }
 
     @Override
-    public List<Attempt> getByStudentId(String studentId) {
-        return repository.findByStudentId(studentId);
+    public List<AttemptPortDTO> getByStudentId(String studentId) {
+        return repository.findByStudentId(studentId).stream().map(mapper::toDTO).toList();
     }
 }
