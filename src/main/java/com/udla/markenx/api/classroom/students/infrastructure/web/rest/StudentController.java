@@ -121,14 +121,13 @@ public class StudentController {
         }
         return ResponseEntity.ok(attempts.stream()
                 .map(attempt -> new StudentAttemptResponseDTO(
-                        attempt.getId(),
-                        attempt.getTaskId(),
-                        attempt.getSessionDate(),
-                        attempt.getSessionDate(),
-                        attempt.getStatus().name(),
-                        attempt.getStatus().name().equals("APPROVED") ? "WIN" :
-                                attempt.getStatus().name().equals("DISAPPROVED") ? "LOSE" : "IN_PROGRESS",
-                        attempt.getResult() != null ? attempt.getResult().profileScore() : 0.0
+                        attempt.attemptId(),
+                        attempt.taskId(),
+                        attempt.evaluatedAt(),
+                        attempt.evaluatedAt(),
+                        attempt.finalOutcome(),
+                        attempt.finalOutcome(),
+                        attempt.finalAcceptance()
                 ))
                 .toList());
     }
