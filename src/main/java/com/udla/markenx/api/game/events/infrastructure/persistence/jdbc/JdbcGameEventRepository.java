@@ -57,7 +57,7 @@ public class JdbcGameEventRepository implements GameEventCommandRepository {
     }
 
     @Override
-    public void saveEffects(String eventId, List<EventEffect> effects) {
+    public void saveEffects(String eventId, @NonNull List<EventEffect> effects) {
         for (EventEffect effect : effects) {
             jdbcTemplate.update("""
                 INSERT INTO event_effects
