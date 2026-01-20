@@ -2,6 +2,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -52,7 +53,7 @@ public class JdbcStudentRepository implements StudentCommandRepository {
                 id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new StudentNotFoundException(id);
+            throw new EntityNotFoundException(Student.class.getName(), id);
         }
     }
 
@@ -80,7 +81,7 @@ public class JdbcStudentRepository implements StudentCommandRepository {
         );
 
         if (updatedRows == 0) {
-            throw new StudentNotFoundException(student.getId());
+            throw new EntityNotFoundException(Student.class.getName(), student.getId());
         }
     }
 }
