@@ -2,8 +2,10 @@ package com.udla.markenx.api.classroom.assignments.application.services;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.MarkTaskAsFailedIfOverdueCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.RegisterTaskAttemptResultCommand;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
+import com.udla.markenx.api.classroom.assignments.application.ports.in.mappers.TaskPortMapper;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.UpdateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
@@ -18,34 +20,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UpdateTaskService implements UpdateTaskUseCase {
 
-    private final TaskCommandRepository repository;
+    private final TaskQueryRepository queryRepository;
+    private final TaskCommandRepository commandRepository;
+    private final TaskPortMapper mapper = new TaskPortMapper();
 
     @Override
-    public Task markTaskAsFailedIfOverdue(@NonNull MarkTaskAsFailedIfOverdueCommand command) {
-        Task task = repository.findById(command.id());
+    public TaskPortDTO markTaskAsFailedIfOverdue(@NonNull MarkTaskAsFailedIfOverdueCommand command) {
+        Task task = queryRepository.findByIdOrThrow(command.id());
         task.markAsFailedIfNotCompleted();
-        return repository.update(task);
-    }
-
-    @Override
-    public Task getById(@NonNull TaskIdQuery query) {
-        return repository.findById(query.id());
+        return mapper.toDTO(commandRepository.update(task));
     }
 
     @Override
     @Transactional
-    public Task registerAttemptResult(@NonNull RegisterTaskAttemptResultCommand command) {
+    public TaskPortDTO registerAttemptResult(@NonNull RegisterTaskAttemptResultCommand command) {
         log.info("Registering attempt result for task: {}, score: {}", command.taskId(), command.score());
 
-        Task task = repository.findById(command.taskId());
+        Task task = queryRepository.findByIdOrThrow(command.taskId());
         AssignmentScore score = new AssignmentScore(command.score());
 
         task.registerAttemptResult(score);
 
-        Task updated = repository.update(task);
+        Task updated = commandRepository.update(task);
         log.info("Task {} updated: status={}, currentAttempt={}",
                 task.getId(), task.getStatus(), task.getCurrentAttempt());
 
-        return updated;
+        return mapper.toDTO(updated);
     }
 }
