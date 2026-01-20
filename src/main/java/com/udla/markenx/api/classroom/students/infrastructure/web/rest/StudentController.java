@@ -4,9 +4,9 @@ import com.udla.markenx.api.classroom.students.application.ports.in.commands.Dis
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentCourseResponseDTO;
@@ -39,7 +39,7 @@ public class StudentController {
     private final StudentResponseDTOMapper responseDTOMapper;
     private final StudentUserRedDTOMapper userDTOMapper;
     private final RegisterStudentUseCase registerStudentUseCase;
-    private final StudentQueryUseCase studentQueryUseCase;
+    private final QueryStudentsUseCase queryStudentsUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
 
@@ -72,7 +72,7 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return studentQueryUseCase.findByEmail(email)
+        return queryStudentsUseCase.findByEmail(email)
                 .map(student -> ResponseEntity.ok(
                         new StudentMeResponseDTO(
                                 student.studentId(),
@@ -97,7 +97,7 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student or course not found")
     })
     public ResponseEntity<StudentCourseResponseDTO> getStudentCourse(@PathVariable String studentId) {
-        return studentQueryUseCase.findCourseByStudentId(studentId)
+        return queryStudentsUseCase.findCourseByStudentId(studentId)
                 .map(courseInfo -> ResponseEntity.ok(
                         new StudentCourseResponseDTO(
                                 courseInfo.courseId(),
@@ -143,9 +143,9 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        var query = new GetAllStudentsPaginatedQuery(page, size);
+        var query = new StudentPageQueryCriteria(page, size);
         Page<@NotNull StudentUserReadDTO> result =
-                studentQueryUseCase.getAllPaginated(query).map(userDTOMapper::toDTO);
+                queryStudentsUseCase.getAllPaginated(query).map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
