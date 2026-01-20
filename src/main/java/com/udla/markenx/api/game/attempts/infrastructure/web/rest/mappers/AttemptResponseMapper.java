@@ -1,6 +1,6 @@
 package com.udla.markenx.api.game.attempts.infrastructure.web.rest.mappers;
 
-import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponse;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponseDTO;
 import org.springframework.stereotype.Component;
 

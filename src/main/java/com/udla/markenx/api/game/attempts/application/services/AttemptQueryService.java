@@ -3,7 +3,7 @@ package com.udla.markenx.api.game.attempts.application.services;
 import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.GetAttemptByIdQuery;
 import com.udla.markenx.api.game.attempts.application.ports.in.mappers.AttemptPortMapper;
-import com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos.GameSessionResponse;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
