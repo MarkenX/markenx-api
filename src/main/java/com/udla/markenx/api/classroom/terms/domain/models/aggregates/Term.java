@@ -2,7 +2,6 @@ package com.udla.markenx.api.classroom.terms.domain.models.aggregates;
 
 import com.udla.markenx.api.classroom.terms.domain.exceptions.*;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
-import com.udla.markenx.api.classroom.terms.domain.utils.DateUtils;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.AccessLevel;
@@ -183,7 +182,6 @@ public class Term extends Entity {
     private static @NotNull Term createCrossYearTerm(int year, int sequence, DateInterval dateInterval) {
         validateCrossYears(dateInterval);
         validateMonthLength(dateInterval);
-//        validateCrossYearMonths(dateInterval);
 
         var id = AcademicTermId.generate();
         return new Term(id, dateInterval, year, sequence, calculateStatus(dateInterval));
@@ -338,34 +336,6 @@ public class Term extends Entity {
         }
     }
 
-    /**
-     * Validates whether the given date interval satisfies the minimum required number of months
-     * at the end of the starting year and at the beginning of the ending year. Throws an exception
-     * if either condition is not met.
-     *
-     * @param interval the date interval to validate, must not be null
-     * @throws InsufficientMonthsBeforeYearEndException  if the number of months from the start date to the end of the year is less than the minimum required
-     * @throws InsufficientMonthsAfterYearStartException if the number of months from the start of the year to the end date is less than the minimum required
-     */
-    private static void validateCrossYearMonths(@NotNull DateInterval interval) {
-        long monthsAtStart = DateUtils.monthsToEndOfYear(interval.getStartDate());
-        long monthsAtEnd = DateUtils.monthsFromStartOfYear(interval.getEndDate());
-
-        if (monthsAtStart < MIN_MONTHS_PER_YEAR) {
-            throw new InsufficientMonthsBeforeYearEndException(
-                    monthsAtStart,
-                    MIN_MONTHS_PER_YEAR
-            );
-        }
-
-        if (monthsAtEnd < MIN_MONTHS_PER_YEAR) {
-            throw new InsufficientMonthsAfterYearStartException(
-                    monthsAtEnd,
-                    MIN_MONTHS_PER_YEAR
-            );
-        }
-    }
-
     //endregion
 
     public boolean overlapsWith(Term other) {
@@ -375,7 +345,6 @@ public class Term extends Entity {
         return this.dateInterval.overlapsWith(other.dateInterval);
     }
 
-    @Override
     public boolean isActive() {
         return this.status == TermStatus.ACTIVE;
     }
@@ -388,11 +357,15 @@ public class Term extends Entity {
         return this.status == TermStatus.ENDED;
     }
 
-    public void refreshStatus() {
+    public TermStatus refreshStatusAndDisableIfEnded() {
         TermStatus newStatus = calculateStatus(dateInterval);
         if (this.status != newStatus) {
             this.status = newStatus;
         }
+        if (newStatus == TermStatus.ENDED) {
+            this.disable();
+        }
+        return newStatus;
     }
 
     private static TermStatus calculateStatus(@NotNull DateInterval dateInterval) {

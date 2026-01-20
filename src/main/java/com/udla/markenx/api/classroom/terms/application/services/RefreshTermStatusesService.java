@@ -20,7 +20,10 @@ public class RefreshTermStatusesService {
     public void handle() {
         List<Term> terms = queryRepository.findAllByStatus(Set.of(TermStatus.ENDED.name()), true);
         for (Term term: terms) {
-            term.refreshStatus();
+            TermStatus newStatus = term.refreshStatusAndDisableIfEnded();
+            if (newStatus == TermStatus.ENDED) {
+                // TODO deshabilitar todos los cursos asociados
+            }
             commandRepository.save(term);
         }
     }

@@ -16,6 +16,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.jooq.impl.DSL.field;
 
@@ -25,18 +26,18 @@ public class JooqCourseRepository implements CourseQueryRepository,
         FindAllCoursesIdsForStudentsHandler,
         FindAllCoursesIdsForAssignmentsHandler {
 
+    private static final String COURSE_TABLE = "courses";
     private static final Field<String> COURSE_ID_FIELD = field("id", String.class);
+    private static final Field<String> COURSE_STATUS_FIELD = field("status", String.class);
 
     private final DSLContext dsl;
     private final CourseRecordMapper mapper = new CourseRecordMapper();
-
-    private static final String TABLE = "courses";
 
     @Override
     public Optional<Course> findById(String id) {
         return Optional.ofNullable(
                 dsl.select()
-                        .from(TABLE)
+                        .from(COURSE_TABLE)
                         .where(COURSE_ID_FIELD.eq(id))
                         .fetchOne(mapper::toDomain)
         );
@@ -49,17 +50,40 @@ public class JooqCourseRepository implements CourseQueryRepository,
     }
 
     @Override
+    public List<Course> findAll() {
+        return dsl
+                .select()
+                .from(COURSE_TABLE)
+                .fetch(mapper::toDomain);
+    }
+
+    @Override
+    public List<Course> findAllByStatus(@NonNull Set<String> statuses, boolean exclude) {
+        if (statuses.isEmpty()) return exclude ? findAll() : List.of();
+
+        var values = statuses.stream().toList();
+        var condition = exclude
+                ? COURSE_STATUS_FIELD.notIn(values)
+                : COURSE_STATUS_FIELD.in(values);
+
+        return dsl.select()
+                .from(COURSE_TABLE)
+                .where(condition)
+                .fetch(mapper::toDomain);
+    }
+
+    @Override
     public Page<Course> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
-                .from(TABLE)
+                .from(COURSE_TABLE)
                 .limit(pageable.getPageSize())
                 .offset((int) pageable.getOffset())
                 .fetch();
 
         Long total = dsl
                 .selectCount()
-                .from(TABLE)
+                .from(COURSE_TABLE)
                 .fetchOneInto(Long.class);
 
         long safeTotal = total != null ? total : 0L;
@@ -75,7 +99,7 @@ public class JooqCourseRepository implements CourseQueryRepository,
     public List<String> handle() {
         return dsl
                 .select(field("id", String.class))
-                .from(TABLE)
+                .from(COURSE_TABLE)
                 .fetchInto(String.class);
     }
 }
