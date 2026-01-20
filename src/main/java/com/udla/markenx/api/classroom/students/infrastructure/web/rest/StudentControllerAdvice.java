@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.students.application.exceptions.StudentNotFoundException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -15,10 +15,10 @@ public class StudentControllerAdvice {
     private static final String STUDENT_ERROR_CODE = "STUDENT_ERROR";
     private static final String STUDENT_NOT_FOUND_CODE = "STUDENT_NOT_FOUND";
 
-    @ExceptionHandler(StudentNotFoundException.class)
+    @ExceptionHandler(EntityNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleStudentNotFoundException(StudentNotFoundException ex) {
+    public ErrorResponse handleStudentNotFoundException(EntityNotFoundException ex) {
         return new ErrorResponse(STUDENT_NOT_FOUND_CODE, ex.getMessage());
     }
 
