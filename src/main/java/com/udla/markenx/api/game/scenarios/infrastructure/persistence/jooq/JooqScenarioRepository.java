@@ -2,8 +2,10 @@ package com.udla.markenx.api.game.scenarios.infrastructure.persistence.jooq;
 
 import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
 import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioQueryRepository;
+import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -47,7 +49,13 @@ public class JooqScenarioRepository implements ScenarioQueryRepository {
     }
 
     @Override
-    public Page<Scenario> findAllPaginated(Pageable pageable) {
+    public Scenario findByIdOrThrow(String id) {
+        return findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(Scenario.class.getName(), id));
+    }
+
+    @Override
+    public Page<Scenario> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
                 .from(table(TABLE))
