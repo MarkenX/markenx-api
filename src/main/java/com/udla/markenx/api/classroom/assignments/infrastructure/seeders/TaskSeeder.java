@@ -1,7 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.FindAllCoursesIdsForAssignmentsHandler;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;

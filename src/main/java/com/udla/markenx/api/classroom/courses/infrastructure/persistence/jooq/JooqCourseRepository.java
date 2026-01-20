@@ -1,9 +1,7 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jooq;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.FindAllCoursesIdsForAssignmentsHandler;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.FindAllCoursesIdsForStudentsHandler;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
@@ -22,9 +20,7 @@ import static org.jooq.impl.DSL.field;
 
 @Repository
 @RequiredArgsConstructor
-public class JooqCourseRepository implements CourseQueryRepository,
-        FindAllCoursesIdsForStudentsHandler,
-        FindAllCoursesIdsForAssignmentsHandler {
+public class JooqCourseRepository implements CourseQueryRepository {
 
     private static final String COURSE_TABLE = "courses";
     private static final Field<String> COURSE_ID_FIELD = field("id", String.class);
@@ -93,13 +89,5 @@ public class JooqCourseRepository implements CourseQueryRepository,
                 pageable,
                 safeTotal
         );
-    }
-
-    @Override
-    public List<String> handle() {
-        return dsl
-                .select(field("id", String.class))
-                .from(COURSE_TABLE)
-                .fetchInto(String.class);
     }
 }
