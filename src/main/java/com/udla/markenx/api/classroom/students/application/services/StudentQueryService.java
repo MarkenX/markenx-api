@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.StudentQueryUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataPort;
-import com.udla.markenx.api.classroom.students.application.ports.in.queries.GetAllStudentsPaginatedQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryPagedReadRepository;
@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class StudentQueryService implements StudentQueryUseCase {
+public class StudentQueryService implements QueryStudentsUseCase {
 
     private final StudentSummaryPagedReadRepository pagedRepository;
     private final StudentSummaryReadRepository readRepository;
@@ -25,7 +25,7 @@ public class StudentQueryService implements StudentQueryUseCase {
     private final CourseDataPort courseDataPort;
 
     @Override
-    public Page<StudentSummaryReadModel> getAllPaginated(@NonNull GetAllStudentsPaginatedQuery query) {
+    public Page<StudentSummaryReadModel> getAllPaginated(@NonNull StudentPageQueryCriteria query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return pagedRepository.findAllPaginated(pageable);
     }
