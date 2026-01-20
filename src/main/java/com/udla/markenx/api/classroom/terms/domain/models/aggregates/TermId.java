@@ -4,12 +4,12 @@ import com.udla.markenx.api.shared.domain.models.aggregates.Identifier;
 
 import java.util.UUID;
 
-public class AcademicTermId extends Identifier {
-    protected AcademicTermId(String value) {
+public class TermId extends Identifier {
+    protected TermId(String value) {
         super(value);
     }
 
-    public static AcademicTermId generate() {
-        return new AcademicTermId(UUID.randomUUID().toString());
+    public static TermId generate() {
+        return new TermId(UUID.randomUUID().toString());
     }
 }

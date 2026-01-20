@@ -24,7 +24,7 @@ public class Term extends Entity {
 
     // endregion
 
-    private final AcademicTermId id;
+    private final TermId id;
     private int year;
     private final int sequence;
 
@@ -45,7 +45,7 @@ public class Term extends Entity {
      * @param status the current status of the academic term
      */
     private Term(
-            AcademicTermId id,
+            TermId id,
             DateInterval dateInterval,
             int year,
             int sequence,
@@ -79,7 +79,7 @@ public class Term extends Entity {
             int sequence,
             TermStatus status) {
         super(lifecycleStatus);
-        this.id = new AcademicTermId(id);
+        this.id = new TermId(id);
         this.year = validateYear(year);
         this.sequence = validateSequence(sequence);
         this.dateInterval = new DateInterval(startDate, endDate);
@@ -155,7 +155,7 @@ public class Term extends Entity {
         validateSingleYear(dateInterval);
         validateMonthLength(dateInterval);
 
-        var id = AcademicTermId.generate();
+        var id = TermId.generate();
         return new Term(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
@@ -183,7 +183,7 @@ public class Term extends Entity {
         validateCrossYears(dateInterval);
         validateMonthLength(dateInterval);
 
-        var id = AcademicTermId.generate();
+        var id = TermId.generate();
         return new Term(id, dateInterval, year, sequence, calculateStatus(dateInterval));
     }
 
