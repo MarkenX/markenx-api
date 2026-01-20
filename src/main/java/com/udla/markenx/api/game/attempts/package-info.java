@@ -2,8 +2,7 @@
         displayName = "Attempt Management",
         allowedDependencies = {
                 "shared::public",
-                "classroom.assignments::public",
-                "classroom.students::public",
+                "classroom.assignments::public"
         }
 )
 package com.udla.markenx.api.game.attempts;

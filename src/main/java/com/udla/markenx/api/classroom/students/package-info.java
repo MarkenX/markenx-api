@@ -3,7 +3,7 @@
         allowedDependencies = {
                 "shared::public",
                 "security::public",
-                "game.attempts::public",
+                "game.attempts::*",
                 "classroom.terms::public",
                 "classroom.courses::public"
         })
