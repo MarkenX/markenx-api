@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.terms.application.services;
 
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
-import com.udla.markenx.api.classroom.terms.application.ports.in.queries.FilterMode;
+import com.udla.markenx.api.shared.application.ports.in.queries.FilterMode;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermPageQueryCriteria;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermStatusQueryCriteria;
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
@@ -22,48 +22,42 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QueryTermsService implements QueryTermsUseCase {
 
-    private final TermQueryRepository repository;
-    private final TermPortMapper mapper = new TermPortMapper();
+        private final TermQueryRepository repository;
+        private final TermPortMapper mapper = new TermPortMapper();
 
-    @Override
-    public List<TermPortDTO> listTerms() {
-        return repository.findAll().stream()
-                .map(mapper::toDTO)
-                .toList();
-    }
+        @Override
+        public List<TermPortDTO> listTerms() {
+                return repository.findAll().stream()
+                                .map(mapper::toDTO)
+                                .toList();
+        }
 
-    @Override
-    public TermPortDTO getActiveTerm() {
-        return repository.findActiveTerm()
-                .map(mapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontró un periodo académico activo"
-                ));
-    }
+        @Override
+        public TermPortDTO getActiveTerm() {
+                return repository.findActiveTerm()
+                                .map(mapper::toDTO)
+                                .orElseThrow(() -> new EntityNotFoundException(
+                                                "No se encontró un periodo académico activo"));
+        }
 
-    @Override
-    public TermPortDTO getTermById(@NonNull TermIdQuery query) {
-        return repository.findById(query.id())
-                .map(mapper::toDTO)
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontró un periodo académico con el id: " + query.id()
-                ));
-    }
+        @Override
+        public TermPortDTO getTermById(@NonNull TermIdQuery query) {
+                return mapper.toDTO(repository.findByIdOrThrow(query.id()));
+        }
 
-    @Override
-    public List<TermPortDTO> listTermsByStatus(@NonNull TermStatusQueryCriteria criteria) {
-        boolean exclude = criteria.mode() == FilterMode.EXCLUDE;
+        @Override
+        public List<TermPortDTO> listTermsByStatus(@NonNull TermStatusQueryCriteria criteria) {
+                boolean exclude = criteria.mode() == FilterMode.EXCLUDE;
 
-        return repository.findAllByStatus(criteria.statuses(), exclude).stream()
-                .map(mapper::toDTO)
-                .toList();
-    }
+                return repository.findAllByStatus(criteria.statuses(), exclude).stream()
+                                .map(mapper::toDTO)
+                                .toList();
+        }
 
-
-    @Override
-    public Page<TermPortDTO> listTermsPage(@NotNull TermPageQueryCriteria criteria) {
-        var pageable = PageRequest.of(criteria.page(), criteria.size());
-        return repository.findAllPaginated(pageable)
-                .map(mapper::toDTO);
-    }
+        @Override
+        public Page<TermPortDTO> listTermsPage(@NotNull TermPageQueryCriteria criteria) {
+                var pageable = PageRequest.of(criteria.page(), criteria.size());
+                return repository.findAllPaginated(pageable)
+                                .map(mapper::toDTO);
+        }
 }

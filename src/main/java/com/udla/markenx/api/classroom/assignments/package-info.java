@@ -1,7 +1,8 @@
 @ApplicationModule(
         displayName = "Assignment Management",
         allowedDependencies = {
-                "shared::public"
+                "shared::public",
+                "classroom.courses::public",
         })
 package com.udla.markenx.api.classroom.assignments;
 
