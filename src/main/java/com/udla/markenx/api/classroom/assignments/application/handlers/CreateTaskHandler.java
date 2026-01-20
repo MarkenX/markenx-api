@@ -3,12 +3,14 @@ package com.udla.markenx.api.classroom.assignments.application.handlers;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.mappers.TaskPortMapper;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.EnsureCourseHasUpcomingTermForAssignment;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.CourseNotInUpcomingTermException;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
+import com.udla.markenx.api.classroom.courses.application.ports.in.queries.IsActiveCourseQuery;
+import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ValidateCourseUseCase;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -17,15 +19,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CreateTaskHandler implements CreateTaskUseCase {
 
-    private final EnsureCourseHasUpcomingTermForAssignment ensureCourseHasUpcomingTerm;
+    private final ValidateCourseUseCase validateCourseUseCase;
     private final TaskCommandRepository repository;
-
     private final TaskPortMapper mapper = new TaskPortMapper();
 
     @Override
     public TaskPortDTO handle(@NonNull CreateTaskCommand command) {
         if (!command.isHistorical()) {
-            ensureCourseHasUpcomingTerm.ensureCourseHasUpcomingTerm(command.courseId());
+            var query = new IsActiveCourseQuery(command.courseId());
+            if(!validateCourseUseCase.isActive(query)) {
+                throw new CourseNotInUpcomingTermException(command.courseId());
+            }
         }
 
         var info = new AssignmentInfo(command.title(), command.summary());
