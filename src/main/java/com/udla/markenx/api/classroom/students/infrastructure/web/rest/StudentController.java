@@ -42,7 +42,7 @@ public class StudentController {
 
     // region Use Cases
     private final RegisterStudentUseCase registerStudentUseCase;
-    private final QueryStudentsUseCase queryStudentsUseCase;
+    private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentProfileUseCase queryStudentProfileUseCase;
@@ -168,7 +168,7 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        Page<@NotNull StudentUserReadDTO> result = queryStudentsUseCase.listStudentsPage(query)
+        Page<@NotNull StudentUserReadDTO> result = queryStudentsDetailUseCase.listStudentsPage(query)
                 .map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {

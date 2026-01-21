@@ -4,7 +4,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import org.springframework.data.domain.Page;
 
-public interface QueryStudentsUseCase {
+public interface QueryStudentsDetailUseCase {
     StudentSummaryReadModel findByEmail(String email);
     Page<StudentSummaryReadModel> listStudentsPage(StudentPageQueryCriteria query);
 }
