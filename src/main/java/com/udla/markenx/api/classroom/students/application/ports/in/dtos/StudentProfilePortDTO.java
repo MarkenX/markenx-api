@@ -4,7 +4,13 @@ public record StudentProfilePortDTO(
         String id,
         String email,
         String fullName,
-        String enrolledCourse,
-        String activeAcademicTerm
-) {}
-
+        EnrolledCoursePortDTO enrolledCourse,
+        CurrentTermPortDTO currentTerm
+) {
+    public record EnrolledCoursePortDTO(
+            String id,
+            String label) {}
+    public record CurrentTermPortDTO(
+            String id,
+            String label) {}
+}
