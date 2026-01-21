@@ -23,7 +23,7 @@ public class QueryStudentAttemptsHandler implements QueryStudentAttemptsUseCase 
     public List<StudentAttemptPortDTO> getAll(@NonNull StudentAttemptsQuery query) {
         List<AttemptPortDTO> attempts = attemptQueryUseCase.getByStudentId(query.studentId());
         return attempts.stream()
-                .map(mapper::toDTO)
+                .map(mapper::toStudentAttemptPortDTO)
                 .toList();
     }
 }
