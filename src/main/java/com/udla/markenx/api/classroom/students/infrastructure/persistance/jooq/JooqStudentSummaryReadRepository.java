@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
@@ -19,7 +20,7 @@ import java.util.Optional;
 import static org.jooq.impl.DSL.*;
 
 @Repository
-public class JooqStudentSummaryReadQueryRepository implements StudentSummaryReadQueryRepository {
+public class JooqStudentSummaryReadRepository implements StudentSummaryReadQueryRepository {
 
     private static final Table<?> STUDENT_SUMMARY =
             table(name("student_summary_read_model"));
@@ -37,7 +38,7 @@ public class JooqStudentSummaryReadQueryRepository implements StudentSummaryRead
 
     private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
 
-    public JooqStudentSummaryReadQueryRepository(DSLContext dsl) {
+    public JooqStudentSummaryReadRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
@@ -57,14 +58,15 @@ public class JooqStudentSummaryReadQueryRepository implements StudentSummaryRead
                         .from(STUDENT_SUMMARY)
                         .where(EMAIL.eq(email))
                         .fetchOne(mapper::toDomain)
-        ).orElseThrow(() -> new EntityNotFoundException("Student", "email", email));
+        ).orElseThrow(() -> StudentException.notFoundByEmail(email));
     }
 
     @Override
     public List<StudentSummaryReadModel> findAll() {
-        return dsl.select()
-                .from(STUDENT_SUMMARY)
-                .fetch(mapper::toDomain);
+        return Optional.of(dsl.select()
+                        .from(STUDENT_SUMMARY)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(StudentException::noneFound);
     }
 
     @Override

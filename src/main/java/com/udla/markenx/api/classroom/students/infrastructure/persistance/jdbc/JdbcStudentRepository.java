@@ -1,11 +1,10 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -42,22 +41,6 @@ public class JdbcStudentRepository implements StudentCommandRepository {
     }
 
     @Override
-    public Student findById(String id) {
-        try {
-            return jdbcTemplate.queryForObject("""
-            SELECT *
-            FROM students
-            WHERE id = ?
-            """,
-                rowMapper,
-                id
-            );
-        } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(Student.class.getName(), id);
-        }
-    }
-
-    @Override
     public void update(@NonNull Student student) {
 
         int updatedRows = jdbcTemplate.update("""
@@ -81,7 +64,7 @@ public class JdbcStudentRepository implements StudentCommandRepository {
         );
 
         if (updatedRows == 0) {
-            throw new EntityNotFoundException(Student.class.getName(), student.getId());
+            throw StudentException.notFoundById(student.getId());
         }
     }
 }

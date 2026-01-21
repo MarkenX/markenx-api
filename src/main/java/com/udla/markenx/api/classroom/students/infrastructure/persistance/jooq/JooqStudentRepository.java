@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -37,8 +37,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
 
     @Override
     public Student findByIdOrThrow(String id) {
-        return findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Student.class.getName(), id));
+        return findById(id).orElseThrow(() -> StudentException.notFoundById(id));
     }
 
     @Override
@@ -61,7 +60,6 @@ public class JooqStudentRepository implements StudentQueryRepository {
         return new PageImpl<>(
                 records.map(mapper::toDomain),
                 pageable,
-                safeTotal
-        );
+                safeTotal);
     }
 }

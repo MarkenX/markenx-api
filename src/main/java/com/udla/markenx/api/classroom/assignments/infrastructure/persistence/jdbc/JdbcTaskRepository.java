@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -73,7 +73,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         );
 
         if (updatedRows == 0) {
-            throw new EntityNotFoundException(Task.class.getName(), task.getId());
+            throw AssignmentException.notFoundById(task.getId());
         }
 
         return jdbcTemplate.queryForObject("""

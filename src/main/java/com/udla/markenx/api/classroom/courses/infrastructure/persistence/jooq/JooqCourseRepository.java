@@ -1,8 +1,8 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.persistence.jooq;
 
+import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
 import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -41,16 +41,15 @@ public class JooqCourseRepository implements CourseQueryRepository {
 
     @Override
     public Course findByIdOrThrow(String id) {
-        return findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Course.class.getName(), id));
+        return findById(id).orElseThrow(() -> CourseException.notFoundById(id));
     }
 
     @Override
     public List<Course> findAll() {
-        return dsl
-                .select()
-                .from(COURSE_TABLE)
-                .fetch(mapper::toDomain);
+        return Optional.of(dsl.select()
+                        .from(COURSE_TABLE)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(CourseException::noneFound);
     }
 
     @Override
@@ -62,10 +61,11 @@ public class JooqCourseRepository implements CourseQueryRepository {
                 ? COURSE_STATUS_FIELD.notIn(values)
                 : COURSE_STATUS_FIELD.in(values);
 
-        return dsl.select()
+        return Optional.of(dsl.select()
                 .from(COURSE_TABLE)
                 .where(condition)
-                .fetch(mapper::toDomain);
+                .fetch(mapper::toDomain))
+                .orElseThrow(() -> CourseException.noneFoundByStatuses(statuses));
     }
 
     @Override
