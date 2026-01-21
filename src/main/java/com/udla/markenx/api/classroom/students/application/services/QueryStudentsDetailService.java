@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StudentQueryServiceDetail implements QueryStudentsDetailUseCase {
+public class QueryStudentsDetailService implements QueryStudentsDetailUseCase {
 
     private final StudentDetailQueryRepository pagedRepository;
 
