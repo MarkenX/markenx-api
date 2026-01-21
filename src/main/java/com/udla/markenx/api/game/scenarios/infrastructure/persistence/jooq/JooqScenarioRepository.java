@@ -3,7 +3,6 @@ package com.udla.markenx.api.game.scenarios.infrastructure.persistence.jooq;
 import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
 import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
 import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jspecify.annotations.NonNull;
