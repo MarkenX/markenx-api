@@ -3,7 +3,6 @@ package com.udla.markenx.api.classroom.students.application.handlers;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentAttemptPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.mappers.StudentPortMapper;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAttemptsQuery;
-import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentAttemptsUseCase;
 import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
