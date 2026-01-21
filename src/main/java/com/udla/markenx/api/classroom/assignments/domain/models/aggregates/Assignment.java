@@ -1,6 +1,5 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
-import com.udla.markenx.api.classroom.assignments.domain.exceptions.*;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidAssignmentCodeException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidAssignmentStatusTransitionException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidCourseIdException;
