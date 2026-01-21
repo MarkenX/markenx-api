@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.domain.ports.outgoing;
+package com.udla.markenx.api.classroom.students.application.ports.out;
 
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import org.springframework.data.domain.Page;

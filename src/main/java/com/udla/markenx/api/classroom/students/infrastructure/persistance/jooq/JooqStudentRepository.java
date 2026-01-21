@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;

@@ -11,7 +11,7 @@ import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.IsUpcomingTermQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.ValidateTermUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningRequestedEvent;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.ApplicationEventPublisher;

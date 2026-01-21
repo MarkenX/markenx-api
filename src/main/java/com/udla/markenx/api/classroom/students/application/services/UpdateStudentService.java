@@ -5,7 +5,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.commands.Upd
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentIdQuery;
 import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
@@ -13,7 +13,7 @@ import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyD
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiveException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.models.valueobjects.StudentStatus;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentCommandRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;

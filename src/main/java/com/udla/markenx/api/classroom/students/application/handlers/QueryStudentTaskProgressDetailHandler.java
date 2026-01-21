@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.dtos.Student
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTaskProgressDetailUseCase;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;

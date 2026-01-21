@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
