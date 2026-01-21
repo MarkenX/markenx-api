@@ -3,7 +3,6 @@ package com.udla.markenx.api.game.dimensions.infrastructure.persistence.jdbc;
 import com.udla.markenx.api.game.dimensions.domain.exceptions.DimensionException;
 import com.udla.markenx.api.game.dimensions.domain.models.aggregates.Dimension;
 import com.udla.markenx.api.game.dimensions.domain.ports.outgoing.DimensionCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
