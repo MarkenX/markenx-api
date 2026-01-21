@@ -1,8 +1,8 @@
 package com.udla.markenx.api.game.scenarios.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
 import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
 import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -51,7 +51,7 @@ public class JdbcScenarioRepository implements ScenarioCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(Scenario.class.getName(), id);
+            throw ScenarioException.notFoundById(id);
         }
     }
 
@@ -68,7 +68,7 @@ public class JdbcScenarioRepository implements ScenarioCommandRepository {
     }
 
     @Override
-    public void addDimensions(String scenarioId, List<String> dimensionIds) {
+    public void addDimensions(String scenarioId, @NonNull List<String> dimensionIds) {
         for (String dimensionId : dimensionIds) {
             jdbcTemplate.update("""
                 INSERT INTO scenario_dimensions
@@ -82,7 +82,7 @@ public class JdbcScenarioRepository implements ScenarioCommandRepository {
     }
 
     @Override
-    public void addActions(String scenarioId, List<String> actionIds) {
+    public void addActions(String scenarioId, @NonNull List<String> actionIds) {
         for (String actionId : actionIds) {
             jdbcTemplate.update("""
                 INSERT INTO scenario_actions
@@ -96,7 +96,7 @@ public class JdbcScenarioRepository implements ScenarioCommandRepository {
     }
 
     @Override
-    public void addEvents(String scenarioId, List<String> eventIds) {
+    public void addEvents(String scenarioId, @NonNull List<String> eventIds) {
         for (String eventId : eventIds) {
             jdbcTemplate.update("""
                 INSERT INTO scenario_events
