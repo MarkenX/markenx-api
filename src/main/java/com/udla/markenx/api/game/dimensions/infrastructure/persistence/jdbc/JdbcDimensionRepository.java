@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.dimensions.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.dimensions.domain.exceptions.DimensionException;
 import com.udla.markenx.api.game.dimensions.domain.models.aggregates.Dimension;
 import com.udla.markenx.api.game.dimensions.domain.ports.outgoing.DimensionCommandRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
@@ -52,7 +53,7 @@ public class JdbcDimensionRepository implements DimensionCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(Dimension.class.getName(), id);
+            throw DimensionException.notFoundById(id);
         }
     }
 }
