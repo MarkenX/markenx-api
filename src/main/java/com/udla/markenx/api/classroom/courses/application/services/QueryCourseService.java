@@ -6,7 +6,6 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.queries.Cours
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CourseStatusQueryCriteria;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.queries.CoursePageQueryCriteria;
-import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
 import com.udla.markenx.api.shared.application.ports.in.queries.FilterMode;
 import lombok.RequiredArgsConstructor;
