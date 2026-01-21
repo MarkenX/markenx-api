@@ -9,7 +9,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.usecases.Que
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
 import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class QueryStudentProfileHandler implements QueryStudentProfileUseCase {
 
-    private final StudentSummaryReadQueryRepository summaryReadQueryRepository;
+    private final StudentDetailQueryRepository summaryReadQueryRepository;
     private final StudentQueryRepository queryRepository;
     private final QueryCourseUseCase queryCourseUseCase;
     private final QueryTermsUseCase queryTermsUseCase;

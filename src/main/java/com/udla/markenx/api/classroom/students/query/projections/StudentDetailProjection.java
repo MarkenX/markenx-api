@@ -2,16 +2,16 @@ package com.udla.markenx.api.classroom.students.query.projections;
 
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
 import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadCommandRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailCommandRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentSummaryProjection {
+public class StudentDetailProjection {
 
-    private final StudentSummaryReadCommandRepository repository;
+    private final StudentDetailCommandRepository repository;
 
-    public StudentSummaryProjection(StudentSummaryReadCommandRepository repository) {
+    public StudentDetailProjection(StudentDetailCommandRepository repository) {
         this.repository = repository;
     }
 

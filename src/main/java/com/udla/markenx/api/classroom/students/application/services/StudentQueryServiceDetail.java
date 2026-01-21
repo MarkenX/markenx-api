@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.students.application.services;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class StudentQueryServiceDetail implements QueryStudentsDetailUseCase {
 
-    private final StudentSummaryReadQueryRepository pagedRepository;
+    private final StudentDetailQueryRepository pagedRepository;
 
     @Override
     public Page<StudentDetailPortDTO> listStudentsPage(@NonNull StudentPageQueryCriteria query) {

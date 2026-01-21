@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Optional;
 
-public interface StudentSummaryReadQueryRepository {
+public interface StudentDetailQueryRepository {
     List<StudentDetailPortDTO> findAll();
     StudentDetailPortDTO findByIdOrThrow(String id);
     Optional<StudentDetailPortDTO> findById(String id);

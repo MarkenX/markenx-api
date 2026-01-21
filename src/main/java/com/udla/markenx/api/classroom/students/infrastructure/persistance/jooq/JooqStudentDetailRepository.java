@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -20,7 +20,7 @@ import java.util.Optional;
 import static org.jooq.impl.DSL.*;
 
 @Repository
-public class JooqStudentSummaryReadRepository implements StudentSummaryReadQueryRepository {
+public class JooqStudentDetailRepository implements StudentDetailQueryRepository {
 
     private static final Table<?> STUDENT_SUMMARY =
             table(name("student_summary_read_model"));
@@ -38,7 +38,7 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
 
     private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
 
-    public JooqStudentSummaryReadRepository(DSLContext dsl) {
+    public JooqStudentDetailRepository(DSLContext dsl) {
         this.dsl = dsl;
     }
 
