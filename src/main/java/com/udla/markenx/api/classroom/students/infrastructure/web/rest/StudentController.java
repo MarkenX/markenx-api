@@ -5,12 +5,14 @@ import com.udla.markenx.api.classroom.students.application.ports.in.commands.Reg
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAttemptsQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentProfileQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentProfileResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentTaskProgressResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
@@ -42,6 +44,7 @@ public class StudentController {
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentProfileUseCase queryStudentProfileUseCase;
+    private final QueryStudentTaskProgressUseCase queryStudentTaskProgressUseCase;
     // endregion
 
     // region Mappers
@@ -102,6 +105,27 @@ public class StudentController {
         var query = new StudentAttemptsQuery(studentId);
         return ResponseEntity.ok(queryStudentAttemptsUseCase.getAll(query).stream()
                 .map(studentResponseDTOMapper::toAttemptResponseDTO).toList());
+    }
+
+    @GetMapping("/{studentId}/tasks/{taskId}/progress")
+    @Operation(summary = "Get student's progress on a specific task")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Progress retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Task not found")
+    })
+    public ResponseEntity<StudentTaskProgressResponseDTO> getTaskProgress(
+            @PathVariable String studentId,
+            @PathVariable String taskId
+    ) {
+        var query = new StudentTaskProgressQuery(studentId, taskId);
+        var progress = queryStudentTaskProgressUseCase.getProgress(query);
+        return ResponseEntity.ok(new StudentTaskProgressResponseDTO(
+                progress.studentId(),
+                progress.taskId(),
+                progress.currentAttempt(),
+                progress.maxAttempts(),
+                progress.remainingAttempts()
+        ));
     }
 
     @GetMapping
