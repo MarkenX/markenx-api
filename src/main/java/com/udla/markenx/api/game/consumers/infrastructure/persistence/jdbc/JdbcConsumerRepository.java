@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.consumers.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.consumers.domain.exceptions.ConsumerException;
 import com.udla.markenx.api.game.consumers.domain.models.aggregates.Consumer;
 import com.udla.markenx.api.game.consumers.domain.ports.outgoing.ConsumerCommandRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
@@ -51,7 +52,7 @@ public class JdbcConsumerRepository implements ConsumerCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(Consumer.class.getName(), id);
+            throw ConsumerException.notFoundById(id);
         }
     }
 }
