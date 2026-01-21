@@ -1,19 +1,14 @@
 package com.udla.markenx.api.classroom.students.domain.models.valueobjects;
 
-import com.udla.markenx.api.classroom.students.domain.exceptions.InvalidPersonNameFormatException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.PersonNameCannotBeEmptyException;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Objects;
-import java.util.regex.Pattern;
 
 @Getter
 public final class PersonName {
-
-    private static final Pattern VALID_NAME_PATTERN =
-            Pattern.compile("^[A-Za-zÁÉÍÓÚáéíóúÑñ]+\\s[A-Za-zÁÉÍÓÚáéíóúÑñ]+$");
 
     private String value;
 
@@ -30,9 +25,6 @@ public final class PersonName {
         if (value == null || value.isBlank()) {
             throw new PersonNameCannotBeEmptyException();
         }
-//        if (!VALID_NAME_PATTERN.matcher(value.trim()).matches()) {
-//            throw new InvalidPersonNameFormatException();
-//        }
         return value;
     }
 
