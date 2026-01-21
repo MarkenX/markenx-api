@@ -4,7 +4,6 @@ import com.udla.markenx.api.game.events.domain.exceptions.GameEventException;
 import com.udla.markenx.api.game.events.domain.models.aggregates.GameEvent;
 import com.udla.markenx.api.game.events.domain.models.valueobjects.EventEffect;
 import com.udla.markenx.api.game.events.domain.ports.outgoing.GameEventCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
