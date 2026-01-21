@@ -6,7 +6,6 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryT
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
-import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
