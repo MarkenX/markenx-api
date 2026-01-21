@@ -7,6 +7,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.usecases.Que
 import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class QueryStudentAttemptsHandler implements QueryStudentAttemptsUseCase 
     private final StudentPortMapper mapper = new StudentPortMapper();
 
     @Override
-    public List<StudentAttemptPortDTO> getAll(StudentAttemptsQuery query) {
+    public List<StudentAttemptPortDTO> getAll(@NonNull StudentAttemptsQuery query) {
         List<AttemptPortDTO> attempts = attemptQueryUseCase.getByStudentId(query.studentId());
         return attempts.stream()
                 .map(mapper::toDTO)
