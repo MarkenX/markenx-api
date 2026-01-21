@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
@@ -38,6 +39,14 @@ public class JooqStudentRepository implements StudentQueryRepository {
     @Override
     public Student findByIdOrThrow(String id) {
         return findById(id).orElseThrow(() -> StudentException.notFoundById(id));
+    }
+
+    @Override
+    public List<Student> findAll() {
+        return Optional.of(dsl.select()
+                        .from(STUDENT_TABLE)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(StudentException::noneFound);
     }
 
     @Override
