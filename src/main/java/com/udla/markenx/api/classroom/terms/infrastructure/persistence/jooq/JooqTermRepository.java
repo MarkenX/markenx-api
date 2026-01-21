@@ -1,10 +1,10 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.persistence.jooq;
 
+import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
 import com.udla.markenx.api.classroom.terms.domain.exceptions.TermActiveNotFoundException;
+import com.udla.markenx.api.classroom.terms.domain.exceptions.TermException;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
-import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -35,11 +35,10 @@ public class JooqTermRepository implements TermQueryRepository {
 
     @Override
     public Optional<Term> findById(@NonNull String id) {
-        return Optional.ofNullable(
-                dsl.select()
-                        .from(TERM_TABLE)
-                        .where(TERM_ID_FIELD.eq(id))
-                        .fetchOne(mapper::toDomain));
+        return Optional.ofNullable(dsl.select()
+                .from(TERM_TABLE)
+                .where(TERM_ID_FIELD.eq(id))
+                .fetchOne(mapper::toDomain));
     }
 
     @Override
@@ -52,20 +51,19 @@ public class JooqTermRepository implements TermQueryRepository {
 
     @Override
     public Term findByIdOrThrow(@NonNull String id) {
-        return findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Term.class.getName(), id));
+        return findById(id).orElseThrow(() -> TermException.notFoundById(id));
     }
 
     @Override
     public List<Term> findAll() {
-        return dsl
-                .select()
-                .from(TERM_TABLE)
-                .fetch(mapper::toDomain);
+        return Optional.of(dsl.select()
+                        .from(TERM_TABLE)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(TermException::noneFound);
     }
 
     @Override
-    public List<Term> findAllByStatus(@NonNull Set<String> statuses, boolean exclude) {
+    public List<Term> findAllByStatuses(@NonNull Set<String> statuses, boolean exclude) {
         if (statuses.isEmpty())
             return exclude ? findAll() : List.of();
 
@@ -74,19 +72,21 @@ public class JooqTermRepository implements TermQueryRepository {
                 ? TERM_STATUS_FIELD.notIn(values)
                 : TERM_STATUS_FIELD.in(values);
 
-        return dsl.select()
-                .from(TERM_TABLE)
-                .where(condition)
-                .fetch(mapper::toDomain);
+        return Optional.of(dsl.select()
+                        .from(TERM_TABLE)
+                        .where(condition)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(() -> TermException.noneFoundByStatuses(statuses));
     }
 
     @Override
     public List<Term> findAllByYear(int year) {
-        return dsl
-                .select()
-                .from(TERM_TABLE)
-                .where(TERM_YEAR_FIELD.eq(year))
-                .fetch(mapper::toDomain);
+        return Optional.of(
+                dsl.select()
+                        .from(TERM_TABLE)
+                        .where(TERM_YEAR_FIELD.eq(year))
+                        .fetch(mapper::toDomain)
+        ).orElseThrow(() -> TermException.noneFoundByYear(year));
     }
 
     @Override

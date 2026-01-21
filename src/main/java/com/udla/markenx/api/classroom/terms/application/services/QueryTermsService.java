@@ -45,7 +45,7 @@ public class QueryTermsService implements QueryTermsUseCase {
         public List<TermPortDTO> listTermsByStatus(@NonNull TermStatusQueryCriteria criteria) {
                 boolean exclude = criteria.mode() == FilterMode.EXCLUDE;
 
-                return repository.findAllByStatus(criteria.statuses(), exclude).stream()
+                return repository.findAllByStatuses(criteria.statuses(), exclude).stream()
                                 .map(mapper::toDTO)
                                 .toList();
         }

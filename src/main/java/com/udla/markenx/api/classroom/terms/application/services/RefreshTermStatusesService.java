@@ -18,7 +18,7 @@ public class RefreshTermStatusesService {
     private final TermCommandRepository commandRepository;
 
     public void handle() {
-        List<Term> terms = queryRepository.findAllByStatus(Set.of(TermStatus.ENDED.name()), true);
+        List<Term> terms = queryRepository.findAllByStatuses(Set.of(TermStatus.ENDED.name()), true);
         for (Term term: terms) {
             TermStatus newStatus = term.refreshStatusAndDisableIfEnded();
             if (newStatus == TermStatus.ENDED) {
