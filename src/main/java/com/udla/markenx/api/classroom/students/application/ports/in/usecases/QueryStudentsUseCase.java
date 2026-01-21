@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface QueryStudentsUseCase {
     Page<StudentSummaryReadModel> getAllPaginated(StudentPageQueryCriteria query);
-    Optional<StudentSummaryReadModel> findByEmail(String email);
+    StudentSummaryReadModel findByEmail(String email);
     Optional<CourseDataPort.CourseInfo> findCourseByStudentId(String studentId);
 }

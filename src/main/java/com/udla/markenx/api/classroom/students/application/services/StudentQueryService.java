@@ -5,8 +5,8 @@ import com.udla.markenx.api.classroom.students.application.ports.out.CourseDataP
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryPagedReadRepository;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
+import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadCommandRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
@@ -19,8 +19,8 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class StudentQueryService implements QueryStudentsUseCase {
 
-    private final StudentSummaryPagedReadRepository pagedRepository;
-    private final StudentSummaryReadRepository readRepository;
+    private final StudentSummaryReadQueryRepository pagedRepository;
+    private final StudentSummaryReadCommandRepository readRepository;
     private final StudentCommandRepository studentRepository;
     private final CourseDataPort courseDataPort;
 
@@ -31,8 +31,8 @@ public class StudentQueryService implements QueryStudentsUseCase {
     }
 
     @Override
-    public Optional<StudentSummaryReadModel> findByEmail(String email) {
-        return readRepository.findByEmail(email);
+    public StudentSummaryReadModel findByEmail(String email) {
+        return pagedRepository.findByEmail(email);
     }
 
     @Override
