@@ -3,6 +3,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAttemptsQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentProfileQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
@@ -13,6 +14,7 @@ import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.Stud
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentProfileResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentTaskProgressResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentTaskWithProgressResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
@@ -45,6 +47,7 @@ public class StudentController {
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentProfileUseCase queryStudentProfileUseCase;
     private final QueryStudentTaskProgressUseCase queryStudentTaskProgressUseCase;
+    private final QueryStudentAllTasksProgressUseCase queryStudentAllTasksProgressUseCase;
     // endregion
 
     // region Mappers
@@ -126,6 +129,33 @@ public class StudentController {
                 progress.maxAttempts(),
                 progress.remainingAttempts()
         ));
+    }
+
+    @GetMapping("/{studentId}/tasks")
+    @Operation(summary = "Get all tasks for a student with their specific progress")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Tasks with progress retrieved successfully"),
+            @ApiResponse(responseCode = "404", description = "Student not found")
+    })
+    public ResponseEntity<List<StudentTaskWithProgressResponseDTO>> getAllTasksWithProgress(
+            @PathVariable String studentId
+    ) {
+        var query = new StudentAllTasksProgressQuery(studentId);
+        var tasksWithProgress = queryStudentAllTasksProgressUseCase.getAllTasksWithProgress(query);
+        return ResponseEntity.ok(tasksWithProgress.stream()
+                .map(task -> new StudentTaskWithProgressResponseDTO(
+                        task.taskId(),
+                        task.taskLabel(),
+                        task.title(),
+                        task.summary(),
+                        task.deadline(),
+                        task.minScoreToPass(),
+                        task.status(),
+                        task.currentAttempt(),
+                        task.maxAttempts(),
+                        task.remainingAttempts()
+                ))
+                .toList());
     }
 
     @GetMapping
