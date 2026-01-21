@@ -1,10 +1,13 @@
 package com.udla.markenx.api.classroom.assignments.application.ports.in.queries;
 
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
+import com.udla.markenx.api.shared.application.ports.in.queries.FilterMode;
 
 import java.util.List;
+import java.util.Set;
 
 public record TaskStatusQueryCriteria(
-        List<AssignmentStatus> statuses
+        Set<String> statuses,
+        FilterMode mode
 ) {
 }

@@ -7,12 +7,13 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface TaskQueryRepository {
     Optional<Task> findById(String id);
     Task findByIdOrThrow(String id);
     List<Task> findAll();
     Page<Task> findAllPaginated(Pageable pageable);
-    List<Task> findByStatuses(List<AssignmentStatus> statuses);
+    List<Task> findByStatuses(Set<String> statuses, boolean exclude);
     List<Task> findByCourseId(String courseId);
 }

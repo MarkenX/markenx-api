@@ -7,9 +7,8 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.T
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskStatusQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
-import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
+import com.udla.markenx.api.shared.application.ports.in.queries.FilterMode;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
@@ -43,7 +42,8 @@ public class QueryTasksService implements QueryTasksUseCase {
 
     @Override
     public List<TaskPortDTO> listTasksByStatuses(@NonNull TaskStatusQueryCriteria criteria) {
-        return repository.findByStatuses(criteria.statuses()).stream().map(mapper::toDTO).toList();
+        boolean exclude = criteria.mode() == FilterMode.EXCLUDE;
+        return repository.findByStatuses(criteria.statuses(), exclude).stream().map(mapper::toDTO).toList();
     }
 
     @Override
