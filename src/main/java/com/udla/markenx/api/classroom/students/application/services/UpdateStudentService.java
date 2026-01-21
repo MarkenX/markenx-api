@@ -5,6 +5,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.commands.Upd
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentIdQuery;
 import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
+import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
@@ -23,20 +24,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UpdateStudentService implements UpdateStudentUseCase {
 
-    private final StudentCommandRepository repository;
+    private final StudentCommandRepository commandRepository;
+    private final StudentQueryRepository queryRepository;
     private final UserDataPort userDataPort;
     private final ApplicationEventPublisher events;
 
     @Override
     public Student getById(@NonNull StudentIdQuery query) {
-        return repository.findById(query.id());
+        return queryRepository.findByIdOrThrow(query.id());
     }
 
     @Override
     public void markIdentityCreated(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.markIdentityCreated();
-        repository.save(student);
+        commandRepository.save(student);
 
         events.publishEvent(
                 new StudentIdentityActivatedEvent(studentId)
@@ -45,10 +47,10 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public void markIdentityCreationFailed(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.markIdentityCreationFailed();
         student.disable();
-        repository.update(student);
+        commandRepository.update(student);
 
         events.publishEvent(
                 new StudentIdentityFailedEvent(studentId)
@@ -57,17 +59,17 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public void onUserIdentityCreated(String studentId, String userId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
 
         student.assignUser(userId);
         student.markIdentityCreated();
 
-        repository.update(student);
+        commandRepository.update(student);
     }
 
     @Override
     public void disable(@NonNull DisableStudentCommand command) {
-        Student student = repository.findById(command.id());
+        Student student = queryRepository.findByIdOrThrow(command.id());
 
         validateCanDisable(student);
 
@@ -84,26 +86,20 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public Student update(@NonNull UpdateStudentCommand command) {
-        Student student = repository.findById(command.id());
+        Student student = queryRepository.findByIdOrThrow(command.id());
 
         student.update(command.firstName(), command.lastName());
         student.changeCourse(command.courseId());
 
-        repository.update(student);
+        commandRepository.update(student);
         return student;
     }
 
     @Override
     public void onUserDisabled(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.disable();
-        repository.update(student);
-    }
-
-    @Override
-    public void onUserDisableFailed(String studentId) {
-        // El rollback ya se realizó en el servicio de users
-        // Aquí solo podríamos registrar el fallo o notificar
+        commandRepository.update(student);
     }
 
     private void validateCanDisable(@NonNull Student student) {

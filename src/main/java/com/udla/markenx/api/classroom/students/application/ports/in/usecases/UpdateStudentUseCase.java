@@ -13,5 +13,4 @@ public interface UpdateStudentUseCase {
     void disable(DisableStudentCommand command);
     Student update(UpdateStudentCommand command);
     void onUserDisabled(String studentId);
-    void onUserDisableFailed(String studentId);
 }
