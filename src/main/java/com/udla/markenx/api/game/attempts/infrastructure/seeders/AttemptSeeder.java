@@ -4,7 +4,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.Task
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentDetailUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand;
@@ -37,14 +37,14 @@ public class AttemptSeeder implements CommandLineRunner {
     private final RegisterGameSessionUseCase registerGameSessionUseCase;
     private final QueryTasksUseCase queryTasksUseCase;
     private final ValidateTaskUseCase validateTaskUseCase;
-    private final QueryStudentDetailUseCase queryStudentDetailUseCase;
+    private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
 
     @Override
     public void run(String @NonNull ... args) {
         log.info("Seeding attempts...");
 
         List<TaskPortDTO> tasks = queryTasksUseCase.listTasks();
-        Page<StudentDetailPortDTO> studentsPage = queryStudentDetailUseCase.listStudentsPage(
+        Page<StudentDetailPortDTO> studentsPage = queryStudentsDetailUseCase.listStudentsPage(
                 new StudentPageQueryCriteria(0, 100)
         );
         List<StudentDetailPortDTO> students = studentsPage.getContent();

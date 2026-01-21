@@ -42,12 +42,12 @@ public class StudentController {
 
     // region Use Cases
     private final RegisterStudentUseCase registerStudentUseCase;
-    private final QueryStudentDetailUseCase queryStudentDetailUseCase;
+    private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
-    private final QueryStudentProfileUseCase queryStudentProfileUseCase;
-    private final QueryStudentTaskProgressUseCase queryStudentTaskProgressUseCase;
-    private final QueryStudentTaskProgressDetailUseCase queryStudentTaskProgressDetailUseCase;
+    private final QueryStudentsProfileUseCase queryStudentsProfileUseCase;
+    private final QueryStudentTasksProgressUseCase queryStudentTasksProgressUseCase;
+    private final QueryStudentTasksProgressDetailUseCase queryStudentTasksProgressDetailUseCase;
     // endregion
 
     // region Mappers
@@ -87,7 +87,7 @@ public class StudentController {
 
         var query = new StudentProfileQuery(email);
         return ResponseEntity.ok(studentResponseDTOMapper.toProfileResponseDTO(
-                queryStudentProfileUseCase.getByEmail(query)
+                queryStudentsProfileUseCase.getByEmail(query)
         ));
     }
 
@@ -121,7 +121,7 @@ public class StudentController {
             @PathVariable String taskId
     ) {
         var query = new StudentTaskProgressQuery(studentId, taskId);
-        var progress = queryStudentTaskProgressUseCase.getProgress(query);
+        var progress = queryStudentTasksProgressUseCase.getProgress(query);
         return ResponseEntity.ok(new StudentTaskProgressResponseDTO(
                 progress.studentId(),
                 progress.taskId(),
@@ -141,7 +141,7 @@ public class StudentController {
             @PathVariable String studentId
     ) {
         var query = new StudentAllTasksProgressQuery(studentId);
-        var tasksWithProgress = queryStudentTaskProgressDetailUseCase.getAllTasksWithProgress(query);
+        var tasksWithProgress = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
         return ResponseEntity.ok(tasksWithProgress.stream()
                 .map(task -> new StudentTaskWithProgressResponseDTO(
                         task.taskId(),
@@ -168,7 +168,7 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        Page<@NotNull StudentUserReadDTO> result = queryStudentDetailUseCase.listStudentsPage(query)
+        Page<@NotNull StudentUserReadDTO> result = queryStudentsDetailUseCase.listStudentsPage(query)
                 .map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {

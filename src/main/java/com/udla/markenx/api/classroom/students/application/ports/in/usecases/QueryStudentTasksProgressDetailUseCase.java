@@ -8,7 +8,7 @@ import java.util.List;
 /**
  * Use case for querying all tasks with progress for a specific student.
  */
-public interface QueryStudentTaskProgressDetailUseCase {
+public interface QueryStudentTasksProgressDetailUseCase {
 
     /**
      * Gets all tasks for a student's course with the student's specific progress on each task.

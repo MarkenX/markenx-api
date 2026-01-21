@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentDetailUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class StudentQueryServiceDetail implements QueryStudentDetailUseCase {
+public class StudentQueryServiceDetail implements QueryStudentsDetailUseCase {
 
     private final StudentDetailQueryRepository pagedRepository;
 

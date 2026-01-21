@@ -6,7 +6,7 @@ import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTaskProgressUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTasksProgressUseCase;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
-public class QueryStudentTaskProgressHandler implements QueryStudentTaskProgressUseCase {
+public class QueryStudentTasksProgressHandler implements QueryStudentTasksProgressUseCase {
 
     private final StudentTaskProgressQueryRepository progressRepository;
     private final TaskQueryRepository taskRepository;

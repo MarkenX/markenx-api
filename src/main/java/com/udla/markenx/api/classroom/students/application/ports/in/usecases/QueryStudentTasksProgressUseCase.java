@@ -6,7 +6,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 /**
  * Use case for querying a student's progress on a specific task.
  */
-public interface QueryStudentTaskProgressUseCase {
+public interface QueryStudentTasksProgressUseCase {
 
     /**
      * Gets the student's progress on a specific task.
