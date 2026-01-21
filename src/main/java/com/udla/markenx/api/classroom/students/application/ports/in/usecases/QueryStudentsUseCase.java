@@ -5,6 +5,6 @@ import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadMo
 import org.springframework.data.domain.Page;
 
 public interface QueryStudentsUseCase {
-    Page<StudentSummaryReadModel> getAllPaginated(StudentPageQueryCriteria query);
     StudentSummaryReadModel findByEmail(String email);
+    Page<StudentSummaryReadModel> listStudentsPage(StudentPageQueryCriteria query);
 }

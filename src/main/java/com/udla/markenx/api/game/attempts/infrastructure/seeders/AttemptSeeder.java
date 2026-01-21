@@ -44,7 +44,7 @@ public class AttemptSeeder implements CommandLineRunner {
         log.info("Seeding attempts...");
 
         List<TaskPortDTO> tasks = queryTasksUseCase.listTasks();
-        Page<StudentSummaryReadModel> studentsPage = queryStudentsUseCase.getAllPaginated(
+        Page<StudentSummaryReadModel> studentsPage = queryStudentsUseCase.listStudentsPage(
                 new StudentPageQueryCriteria(0, 100)
         );
         List<StudentSummaryReadModel> students = studentsPage.getContent();

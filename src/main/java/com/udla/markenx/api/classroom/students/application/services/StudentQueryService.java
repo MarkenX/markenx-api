@@ -17,7 +17,7 @@ public class StudentQueryService implements QueryStudentsUseCase {
     private final StudentSummaryReadQueryRepository pagedRepository;
 
     @Override
-    public Page<StudentSummaryReadModel> getAllPaginated(@NonNull StudentPageQueryCriteria query) {
+    public Page<StudentSummaryReadModel> listStudentsPage(@NonNull StudentPageQueryCriteria query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return pagedRepository.findAllPaginated(pageable);
     }

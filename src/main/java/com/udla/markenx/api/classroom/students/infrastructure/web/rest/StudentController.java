@@ -168,7 +168,7 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        Page<@NotNull StudentUserReadDTO> result = queryStudentsUseCase.getAllPaginated(query)
+        Page<@NotNull StudentUserReadDTO> result = queryStudentsUseCase.listStudentsPage(query)
                 .map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {
