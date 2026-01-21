@@ -6,7 +6,7 @@ import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentAllTasksProgressUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTaskProgressDetailUseCase;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class QueryStudentAllTasksProgressHandler implements QueryStudentAllTasksProgressUseCase {
+public class QueryStudentTaskProgressDetailHandler implements QueryStudentTaskProgressDetailUseCase {
 
     private final StudentQueryRepository studentRepository;
     private final TaskQueryRepository taskRepository;

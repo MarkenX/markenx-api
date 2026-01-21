@@ -42,12 +42,12 @@ public class StudentController {
 
     // region Use Cases
     private final RegisterStudentUseCase registerStudentUseCase;
-    private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
+    private final QueryStudentDetailUseCase queryStudentDetailUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentProfileUseCase queryStudentProfileUseCase;
     private final QueryStudentTaskProgressUseCase queryStudentTaskProgressUseCase;
-    private final QueryStudentAllTasksProgressUseCase queryStudentAllTasksProgressUseCase;
+    private final QueryStudentTaskProgressDetailUseCase queryStudentTaskProgressDetailUseCase;
     // endregion
 
     // region Mappers
@@ -141,7 +141,7 @@ public class StudentController {
             @PathVariable String studentId
     ) {
         var query = new StudentAllTasksProgressQuery(studentId);
-        var tasksWithProgress = queryStudentAllTasksProgressUseCase.getAllTasksWithProgress(query);
+        var tasksWithProgress = queryStudentTaskProgressDetailUseCase.getAllTasksWithProgress(query);
         return ResponseEntity.ok(tasksWithProgress.stream()
                 .map(task -> new StudentTaskWithProgressResponseDTO(
                         task.taskId(),
@@ -168,7 +168,7 @@ public class StudentController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        Page<@NotNull StudentUserReadDTO> result = queryStudentsDetailUseCase.listStudentsPage(query)
+        Page<@NotNull StudentUserReadDTO> result = queryStudentDetailUseCase.listStudentsPage(query)
                 .map(userDTOMapper::toDTO);
 
         if (result.isEmpty()) {
