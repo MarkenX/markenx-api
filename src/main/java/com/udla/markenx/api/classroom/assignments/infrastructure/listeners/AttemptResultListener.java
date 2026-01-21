@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * Listens to attempt result events from the game/attempts module
- * and updates the corresponding task's attempt counter and status.
+ * and updates the student's task progress and task status.
  */
 @Slf4j
 @Component
@@ -21,16 +21,18 @@ public class AttemptResultListener {
 
     @EventListener
     public void on(AttemptResultRegisteredEvent event) {
-        log.info("Received AttemptResultRegisteredEvent: attemptId={}, taskId={}, score={}, approved={}",
-                event.attemptId(), event.taskId(), event.profileScore(), event.isApproved());
+        log.info("Received AttemptResultRegisteredEvent: attemptId={}, taskId={}, studentId={}, score={}, approved={}",
+                event.attemptId(), event.taskId(), event.studentId(), event.profileScore(), event.isApproved());
 
         var command = new RegisterTaskAttemptResultCommand(
                 event.taskId(),
+                event.studentId(),
                 event.profileScore()
         );
 
         updateTaskUseCase.registerAttemptResult(command);
 
-        log.info("Task {} updated after attempt result registration", event.taskId());
+        log.info("Task {} and student {} progress updated after attempt result registration",
+                event.taskId(), event.studentId());
     }
 }
