@@ -52,12 +52,6 @@ public class DevSecurityConfig {
     );
 
     /**
-     * Endpoint público del BFF para iniciar login desde el frontend.
-     * El frontend jamás llama a Keycloak directo.
-     */
-    private static final String BFF_LOGIN_ENDPOINT = "/auth/login";
-
-    /**
      * Endpoint de logout “lógico” del BFF.
      * Spring Security lo intercepta con LogoutFilter.
      */
@@ -74,11 +68,6 @@ public class DevSecurityConfig {
      * Frontend principal en DEV (fallback seguro).
      */
     private static final String DEV_DEFAULT_FRONTEND = "http://localhost:3000/";
-
-    /**
-     * Ruta pública del frontend usada como “pantalla de salida”.
-     */
-    private static final String DEV_LOGGED_OUT_PAGE = "http://localhost:3000/logged-out";
 
     @Bean
     SecurityFilterChain securityFilterChain(@NonNull HttpSecurity http,
