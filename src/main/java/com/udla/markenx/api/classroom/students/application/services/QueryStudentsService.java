@@ -19,7 +19,7 @@ public class QueryStudentsService implements QueryStudentsUseCase {
 
     @Override
     public StudentPortDTO getStudentById(String studentId) {
-        return null;
+        return mapper.toStudentPortDTO(repository.findByIdOrThrow(studentId));
     }
 
     @Override
