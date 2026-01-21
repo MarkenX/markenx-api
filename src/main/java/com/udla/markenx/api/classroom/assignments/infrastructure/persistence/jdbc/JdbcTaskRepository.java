@@ -8,6 +8,10 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+/**
+ * JDBC implementation of TaskCommandRepository.
+ * Note: currentAttempt is now tracked in student_task_progress table.
+ */
 @Repository
 @RequiredArgsConstructor
 public class JdbcTaskRepository implements TaskCommandRepository {
@@ -20,8 +24,8 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         jdbcTemplate.update("""
         INSERT INTO tasks
         (id, lifecycle_status, status, title, summary, deadline, course_id,
-         min_score_to_pass, max_attempts, current_attempt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         min_score_to_pass, max_attempts)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
                 task.getId(),
                 task.getLifecycleStatus().name(),
@@ -31,8 +35,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
                 task.getDeadline().value(),
                 task.getCourseId(),
                 task.getMinScoreToPass().value(),
-                task.getMaxAttempts(),
-                task.getCurrentAttempt()
+                task.getMaxAttempts()
         );
 
         return jdbcTemplate.queryForObject("""
@@ -56,8 +59,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
             deadline = ?,
             course_id = ?,
             min_score_to_pass = ?,
-            max_attempts = ?,
-            current_attempt = ?
+            max_attempts = ?
         WHERE id = ?
         """,
                 task.getLifecycleStatus().name(),
@@ -68,7 +70,6 @@ public class JdbcTaskRepository implements TaskCommandRepository {
                 task.getCourseId(),
                 task.getMinScoreToPass().value(),
                 task.getMaxAttempts(),
-                task.getCurrentAttempt(),
                 task.getId()
         );
 

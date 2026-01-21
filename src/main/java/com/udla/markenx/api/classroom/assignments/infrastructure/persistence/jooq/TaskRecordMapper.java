@@ -8,6 +8,10 @@ import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDateTime;
 
+/**
+ * Maps jOOQ records to Task domain objects.
+ * Note: currentAttempt is now tracked in student_task_progress table.
+ */
 public class TaskRecordMapper {
 
     public Task toDomain(@NonNull Record r) {
@@ -21,8 +25,7 @@ public class TaskRecordMapper {
                 r.get("min_score_to_pass", Double.class),
                 AssignmentStatus.valueOf(r.get("status", String.class)),
                 r.get("course_id", String.class),
-                r.get("max_attempts", Integer.class),
-                r.get("current_attempt", Integer.class)
+                r.get("max_attempts", Integer.class)
         );
     }
 }

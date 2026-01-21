@@ -13,6 +13,7 @@ public class TaskRowMapper implements RowMapper<Task> {
 
     /**
      * Maps a row from the {@link ResultSet} to a {@link Task} object.
+     * Note: currentAttempt is now tracked in student_task_progress table.
      *
      * @param rs the {@link ResultSet} containing the current row of data
      * @param rowNum the number of the current row
@@ -31,8 +32,7 @@ public class TaskRowMapper implements RowMapper<Task> {
                 rs.getDouble("min_score_to_pass"),
                 AssignmentStatus.valueOf(rs.getString("status")),
                 rs.getString("course_id"),
-                rs.getInt("max_attempts"),
-                rs.getInt("current_attempt")
+                rs.getInt("max_attempts")
         );
     }
 }
