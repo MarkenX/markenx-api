@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.events.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.events.domain.exceptions.GameEventException;
 import com.udla.markenx.api.game.events.domain.models.aggregates.GameEvent;
 import com.udla.markenx.api.game.events.domain.models.valueobjects.EventEffect;
 import com.udla.markenx.api.game.events.domain.ports.outgoing.GameEventCommandRepository;
@@ -52,7 +53,7 @@ public class JdbcGameEventRepository implements GameEventCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(GameEvent.class.getName(), id);
+            throw GameEventException.notFoundById(id);
         }
     }
 
