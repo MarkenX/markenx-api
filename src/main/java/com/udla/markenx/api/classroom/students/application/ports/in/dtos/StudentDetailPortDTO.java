@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.application.dtos;
+package com.udla.markenx.api.classroom.students.application.ports.in.dtos;
 
 public record StudentDetailPortDTO(
         String studentId,

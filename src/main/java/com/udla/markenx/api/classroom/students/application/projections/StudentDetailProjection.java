@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.students.application.projections;
 
 import com.udla.markenx.api.classroom.students.domain.events.StudentRegisteredEvent;
-import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailCommandRepository;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

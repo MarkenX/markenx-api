@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers;
 
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
