@@ -6,7 +6,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class StudentUserRedDTOMapper {
+public class StudentUserReadDTOMapper {
 
     public StudentUserReadDTO toDTO(@NonNull StudentSummaryReadModel model) {
         return new StudentUserReadDTO(

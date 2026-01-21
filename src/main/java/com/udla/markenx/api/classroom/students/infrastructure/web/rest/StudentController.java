@@ -4,20 +4,17 @@ import com.udla.markenx.api.classroom.students.application.ports.in.commands.Dis
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAttemptsQuery;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentAttemptsUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentProfileQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentCourseResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentMeResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentProfileResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserRedDTOMapper;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserReadDTOMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -44,11 +41,12 @@ public class StudentController {
     private final QueryStudentsUseCase queryStudentsUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
+    private final QueryStudentProfileUseCase queryStudentProfileUseCase;
     // endregion
 
     // region Mappers
     private final StudentResponseDTOMapper responseDTOMapper = new StudentResponseDTOMapper();
-    private final StudentUserRedDTOMapper userDTOMapper = new StudentUserRedDTOMapper();
+    private final StudentUserReadDTOMapper userDTOMapper = new StudentUserReadDTOMapper();
     private final StudentResponseDTOMapper studentResponseDTOMapper = new StudentResponseDTOMapper();
     // endregion
 
@@ -61,7 +59,7 @@ public class StudentController {
     public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
         var command = new RegisterStudentCommand(
                 dto.firstName(), dto.lastName(), dto.courseId(), dto.email(), false);
-        return responseDTOMapper.toDTO(registerStudentUseCase.handle(command), dto.email());
+        return responseDTOMapper.toResponseDTO(registerStudentUseCase.handle(command), dto.email());
     }
 
     @GetMapping("/me")
@@ -71,7 +69,7 @@ public class StudentController {
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "404", description = "Student not found for authenticated user")
     })
-    public ResponseEntity<StudentMeResponseDTO> getMe(Authentication authentication) {
+    public ResponseEntity<StudentProfileResponseDTO> getMe(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
@@ -81,13 +79,10 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        return queryStudentsUseCase.findByEmail(email)
-                .map(student -> ResponseEntity.ok(
-                        new StudentMeResponseDTO(
-                                student.studentId(),
-                                student.email(),
-                                student.fullName())))
-                .orElse(ResponseEntity.notFound().build());
+        var query = new StudentProfileQuery(email);
+        return ResponseEntity.ok(studentResponseDTOMapper.toProfileResponseDTO(
+                queryStudentProfileUseCase.getByEmail(query)
+        ));
     }
 
     private @Nullable String extractEmail(@NonNull Authentication authentication) {
@@ -95,22 +90,6 @@ public class StudentController {
             return oidcUser.getEmail();
         }
         return null;
-    }
-
-    @GetMapping("/{studentId}/course")
-    @Operation(summary = "Get course information for a student")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Course information retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Student or course not found")
-    })
-    public ResponseEntity<StudentCourseResponseDTO> getStudentCourse(@PathVariable String studentId) {
-        return queryStudentsUseCase.findCourseByStudentId(studentId)
-                .map(courseInfo -> ResponseEntity.ok(
-                        new StudentCourseResponseDTO(
-                                courseInfo.courseId(),
-                                courseInfo.courseName(),
-                                courseInfo.term())))
-                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{studentId}/attempts")
@@ -160,7 +139,7 @@ public class StudentController {
                 dto.lastName(),
                 dto.courseId());
         var student = updateStudentUseCase.update(command);
-        return responseDTOMapper.toDTO(student, null);
+        return responseDTOMapper.toResponseDTO(student, null);
     }
 
     @DeleteMapping("/{id}")

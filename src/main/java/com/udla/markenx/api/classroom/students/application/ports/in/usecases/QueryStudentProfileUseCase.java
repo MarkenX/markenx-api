@@ -4,5 +4,5 @@ import com.udla.markenx.api.classroom.students.application.ports.in.dtos.Student
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentProfileQuery;
 
 public interface QueryStudentProfileUseCase {
-    StudentProfilePortDTO getById(StudentProfileQuery query);
+    StudentProfilePortDTO getByEmail(StudentProfileQuery query);
 }
