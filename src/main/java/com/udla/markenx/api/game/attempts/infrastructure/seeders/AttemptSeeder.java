@@ -4,7 +4,6 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.Task
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
-import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
