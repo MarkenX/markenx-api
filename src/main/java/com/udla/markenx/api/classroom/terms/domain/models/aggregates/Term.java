@@ -20,7 +20,6 @@ public class Term extends Entity {
     private static final int MAX_YEARS_IN_FUTURE = 1;
     private static final int MIN_MONTHS_LENGTH = 4;
     private static final int MAX_MONTHS_LENGTH = 6;
-    private static final int MIN_MONTHS_PER_YEAR = 2;
 
     // endregion
 
@@ -406,7 +405,6 @@ public class Term extends Entity {
             validateSingleYear(interval);
         } else {
             validateCrossYears(interval);
-//            validateCrossYearMonths(interval);
         }
 
         this.dateInterval = interval;
