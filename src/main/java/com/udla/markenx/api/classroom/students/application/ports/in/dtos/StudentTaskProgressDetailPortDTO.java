@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
  * @param maxAttempts The maximum attempts allowed for the task
  * @param remainingAttempts The number of remaining attempts for the student
  */
-public record StudentTaskWithProgressPortDTO(
+public record StudentTaskProgressDetailPortDTO(
         String taskId,
         String taskLabel,
         String title,

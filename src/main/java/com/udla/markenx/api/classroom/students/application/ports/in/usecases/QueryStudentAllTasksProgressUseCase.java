@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.application.ports.in.usecases;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskWithProgressPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 
 import java.util.List;
@@ -16,5 +16,5 @@ public interface QueryStudentAllTasksProgressUseCase {
      * @param query The query containing studentId
      * @return List of tasks with student's progress
      */
-    List<StudentTaskWithProgressPortDTO> getAllTasksWithProgress(StudentAllTasksProgressQuery query);
+    List<StudentTaskProgressDetailPortDTO> getAllTasksWithProgress(StudentAllTasksProgressQuery query);
 }

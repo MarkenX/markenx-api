@@ -4,7 +4,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.out.StudentT
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskWithProgressPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentAllTasksProgressUseCase;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
@@ -31,7 +31,7 @@ public class QueryStudentAllTasksProgressHandler implements QueryStudentAllTasks
     private final StudentTaskProgressQueryRepository progressRepository;
 
     @Override
-    public List<StudentTaskWithProgressPortDTO> getAllTasksWithProgress(
+    public List<StudentTaskProgressDetailPortDTO> getAllTasksWithProgress(
             @NonNull StudentAllTasksProgressQuery query
     ) {
         // 1. Get student to retrieve their course
@@ -55,11 +55,11 @@ public class QueryStudentAllTasksProgressHandler implements QueryStudentAllTasks
                 .toList();
     }
 
-    private StudentTaskWithProgressPortDTO mapToDTO(Task task, StudentTaskProgress progress) {
+    private StudentTaskProgressDetailPortDTO mapToDTO(Task task, StudentTaskProgress progress) {
         int currentAttempt = progress != null ? progress.getCurrentAttempt() : 0;
         int remainingAttempts = task.getMaxAttempts() - currentAttempt;
 
-        return new StudentTaskWithProgressPortDTO(
+        return new StudentTaskProgressDetailPortDTO(
                 task.getId(),
                 task.toString(),
                 task.getInfo().title(),
