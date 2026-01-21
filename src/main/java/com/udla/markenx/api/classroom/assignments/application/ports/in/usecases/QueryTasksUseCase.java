@@ -5,7 +5,6 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.T
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskStatusQueryCriteria;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
