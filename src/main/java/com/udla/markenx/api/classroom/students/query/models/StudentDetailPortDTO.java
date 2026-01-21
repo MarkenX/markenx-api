@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.query.models;
 
-public record StudentSummaryReadModel(
+public record StudentDetailPortDTO(
         String studentId,
         String email,
         String fullName

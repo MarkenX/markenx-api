@@ -2,7 +2,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
+import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import org.jooq.DSLContext;
@@ -43,7 +43,7 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
     }
 
     @Override
-    public Optional<StudentSummaryReadModel> findById(String id) {
+    public Optional<StudentDetailPortDTO> findById(String id) {
         return Optional.ofNullable(
                 dsl.select()
                         .from(STUDENT_SUMMARY)
@@ -52,7 +52,7 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
     }
 
     @Override
-    public StudentSummaryReadModel findByEmail(String email) {
+    public StudentDetailPortDTO findByEmail(String email) {
         return Optional.ofNullable(
                 dsl.select()
                         .from(STUDENT_SUMMARY)
@@ -62,7 +62,7 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
     }
 
     @Override
-    public List<StudentSummaryReadModel> findAll() {
+    public List<StudentDetailPortDTO> findAll() {
         return Optional.of(dsl.select()
                         .from(STUDENT_SUMMARY)
                         .fetch(mapper::toDomain))
@@ -70,13 +70,13 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
     }
 
     @Override
-    public StudentSummaryReadModel findByIdOrThrow(String id) {
+    public StudentDetailPortDTO findByIdOrThrow(String id) {
         return findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(StudentUserReadDTO.class.getName(), "id", id));
     }
 
     @Override
-    public Page<StudentSummaryReadModel> findAllPaginated(
+    public Page<StudentDetailPortDTO> findAllPaginated(
             @NonNull Pageable pageable
     ) {
 
@@ -91,7 +91,7 @@ public class JooqStudentSummaryReadRepository implements StudentSummaryReadQuery
                 .fetch();
 
         var content = records.map(record ->
-                new StudentSummaryReadModel(
+                new StudentDetailPortDTO(
                         record.get(STUDENT_ID),
                         record.get(EMAIL),
                         record.get(FULL_NAME)

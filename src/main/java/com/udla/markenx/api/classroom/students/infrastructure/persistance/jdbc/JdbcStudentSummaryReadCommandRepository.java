@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
-import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
+import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadCommandRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,7 +16,7 @@ public class JdbcStudentSummaryReadCommandRepository implements StudentSummaryRe
     }
 
     @Override
-    public void upsert(@NonNull StudentSummaryReadModel model) {
+    public void upsert(@NonNull StudentDetailPortDTO model) {
         jdbc.update("""
             INSERT INTO student_summary_read_model
               (student_id, email, full_name)

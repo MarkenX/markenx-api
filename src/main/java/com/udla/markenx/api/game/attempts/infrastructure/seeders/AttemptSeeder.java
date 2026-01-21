@@ -6,7 +6,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
-import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
+import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand.TurnHistoryDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
@@ -44,10 +44,10 @@ public class AttemptSeeder implements CommandLineRunner {
         log.info("Seeding attempts...");
 
         List<TaskPortDTO> tasks = queryTasksUseCase.listTasks();
-        Page<StudentSummaryReadModel> studentsPage = queryStudentsDetailUseCase.listStudentsPage(
+        Page<StudentDetailPortDTO> studentsPage = queryStudentsDetailUseCase.listStudentsPage(
                 new StudentPageQueryCriteria(0, 100)
         );
-        List<StudentSummaryReadModel> students = studentsPage.getContent();
+        List<StudentDetailPortDTO> students = studentsPage.getContent();
 
         if (tasks.isEmpty() || students.isEmpty()) {
             log.warn("No tasks or students found, skipping attempt seeding.");
@@ -64,7 +64,7 @@ public class AttemptSeeder implements CommandLineRunner {
                 if (validateTaskUseCase.isOutdated(query)) continue;
 
                 for (int j = 0; j < Math.min(2, students.size()); j++) {
-                    StudentSummaryReadModel student = students.get(j);
+                    StudentDetailPortDTO student = students.get(j);
 
                     // Create an attempt with varying results
                     boolean isApproved = (i + j) % 2 == 0;

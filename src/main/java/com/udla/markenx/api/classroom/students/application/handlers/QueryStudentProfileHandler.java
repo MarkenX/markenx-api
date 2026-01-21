@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentProfileUseCase;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
-import com.udla.markenx.api.classroom.students.query.models.StudentSummaryReadModel;
+import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.query.repositories.StudentSummaryReadQueryRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
@@ -28,7 +28,7 @@ public class QueryStudentProfileHandler implements QueryStudentProfileUseCase {
 
     @Override
     public StudentProfilePortDTO getByEmail(@NonNull StudentProfileQuery query) {
-        StudentSummaryReadModel studentSummary = summaryReadQueryRepository.findByEmail(query.email());
+        StudentDetailPortDTO studentSummary = summaryReadQueryRepository.findByEmail(query.email());
         Student student = queryRepository.findByIdOrThrow(studentSummary.studentId());
         CoursePortDTO course = queryCourseUseCase.getCourseById(new CourseIdQuery(student.getCourseId()));
         TermPortDTO term = queryTermsUseCase.getTermById(new TermIdQuery(course.termId()));
