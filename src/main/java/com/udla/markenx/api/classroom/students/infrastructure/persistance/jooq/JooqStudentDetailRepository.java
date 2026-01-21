@@ -2,8 +2,8 @@ package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
+import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import org.jooq.DSLContext;
 import org.jooq.Field;

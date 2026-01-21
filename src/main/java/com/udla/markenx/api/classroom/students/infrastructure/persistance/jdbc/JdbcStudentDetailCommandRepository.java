@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jdbc;
 
-import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailCommandRepository;
+import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailCommandRepository;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;

@@ -2,8 +2,8 @@ package com.udla.markenx.api.classroom.students.application.services;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
-import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
+import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;

@@ -8,8 +8,8 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentProfileUseCase;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
-import com.udla.markenx.api.classroom.students.query.models.StudentDetailPortDTO;
-import com.udla.markenx.api.classroom.students.query.repositories.StudentDetailQueryRepository;
+import com.udla.markenx.api.classroom.students.application.dtos.StudentDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
