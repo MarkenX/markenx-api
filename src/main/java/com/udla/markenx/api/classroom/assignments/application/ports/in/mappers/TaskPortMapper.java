@@ -16,7 +16,6 @@ public class TaskPortMapper {
                 task.getMinScoreToPass().value(),
                 task.getStatus().name(),
                 task.getMaxAttempts(),
-                task.getCurrentAttempt(),
                 task.getCourseId()
         );
     }

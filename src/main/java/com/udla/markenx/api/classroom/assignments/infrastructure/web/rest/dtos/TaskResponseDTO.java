@@ -2,6 +2,10 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos;
 
 import java.time.LocalDateTime;
 
+/**
+ * Response DTO for Task data.
+ * Note: currentAttempt is now tracked per student via GET /students/{studentId}/tasks/{taskId}/progress
+ */
 public record TaskResponseDTO(
         String id,
         String label,
@@ -11,7 +15,6 @@ public record TaskResponseDTO(
         double minScoreToPass,
         String status,
         int maxAttempts,
-        int currentAttempt,
         String courseId
 ) {
 }

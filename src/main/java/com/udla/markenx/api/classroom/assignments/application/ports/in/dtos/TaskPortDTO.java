@@ -2,6 +2,10 @@ package com.udla.markenx.api.classroom.assignments.application.ports.in.dtos;
 
 import java.time.LocalDateTime;
 
+/**
+ * DTO for Task data at the application port layer.
+ * Note: currentAttempt is now tracked per student in StudentTaskProgress.
+ */
 public record TaskPortDTO(
         String id,
         String label,
@@ -11,7 +15,6 @@ public record TaskPortDTO(
         double minScoreToPass,
         String status,
         int maxAttempts,
-        int currentAttempt,
         String courseId
 ) {
 }

@@ -1,6 +1,5 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
-import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidCurrentAttemptException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidMaxAttemptsException;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
@@ -11,11 +10,14 @@ import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDateTime;
 
+/**
+ * Task aggregate representing an assignment that students can attempt.
+ * Note: currentAttempt has been moved to StudentTaskProgress (per student-task basis).
+ */
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Task extends Assignment {
 
     private int maxAttempts;
-    private int currentAttempt;
 
     // region Constructors
 
@@ -26,12 +28,10 @@ public class Task extends Assignment {
             AssignmentScore minScoreToPass,
             AssignmentStatus status,
             String academicTermId,
-            int maxAttempts,
-            int currentAttempt
+            int maxAttempts
     ) {
         super(id, info, deadline, minScoreToPass, status, academicTermId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
-        this.currentAttempt = validateCurrentAttempt(currentAttempt);
     }
 
     public Task(
@@ -44,12 +44,10 @@ public class Task extends Assignment {
             double minScoreToPass,
             AssignmentStatus status,
             String courseId,
-            int maxAttempts,
-            int currentAttempt
+            int maxAttempts
     ) {
         super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, status, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
-        this.currentAttempt = validateCurrentAttempt(currentAttempt);
     }
 
     // endregion
@@ -71,8 +69,7 @@ public class Task extends Assignment {
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
                 courseId,
-                maxAttempts,
-                0
+                maxAttempts
         );
     }
 
@@ -91,8 +88,7 @@ public class Task extends Assignment {
                 minScoreToPass,
                 AssignmentStatus.OUTDATED,
                 courseId,
-                maxAttempts,
-                0
+                maxAttempts
         );
     }
 
@@ -102,10 +98,6 @@ public class Task extends Assignment {
 
     public int getMaxAttempts() {
         return this.maxAttempts;
-    }
-
-    public int getCurrentAttempt() {
-        return this.currentAttempt;
     }
 
     // endregion
@@ -118,7 +110,6 @@ public class Task extends Assignment {
 
     // endregion
 
-
     // region Validations
 
     public int validateMaxAttempts(int maxAttempts) {
@@ -128,26 +119,24 @@ public class Task extends Assignment {
         return maxAttempts;
     }
 
-    public int validateCurrentAttempt(int currentAttempt) {
-        if (currentAttempt < 0 || currentAttempt > this.maxAttempts) {
-            throw new InvalidCurrentAttemptException();
-        }
-        return currentAttempt;
-    }
-
     // endregion
 
-    public void registerAttemptResult(@NonNull AssignmentScore score) {
+    /**
+     * Updates task status based on attempt result.
+     * Note: currentAttempt tracking is now handled by StudentTaskProgress.
+     *
+     * @param score The score achieved in the attempt
+     * @param currentAttempt The current attempt number from StudentTaskProgress
+     */
+    public void registerAttemptResult(@NonNull AssignmentScore score, int currentAttempt) {
         if (isCompleted() || isFailed()) return;
-
-        this.currentAttempt++;
 
         if (score.isGreaterOrEqualThan(this.minScoreToPass)) {
             transitionTo(AssignmentStatus.COMPLETED);
             return;
         }
 
-        if (deadline.isOverdue()) {
+        if (deadline.isOverdue() || currentAttempt >= maxAttempts) {
             transitionTo(AssignmentStatus.FAILED);
             return;
         }
@@ -166,6 +155,5 @@ public class Task extends Assignment {
     @Override
     public String toString() {
         return String.format("TSK-%s", formatCode());
-
     }
 }

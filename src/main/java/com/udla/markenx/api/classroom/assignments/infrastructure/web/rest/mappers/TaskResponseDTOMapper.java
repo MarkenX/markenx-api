@@ -11,14 +11,13 @@ public class TaskResponseDTOMapper {
     public TaskResponseDTO toDTO(@NonNull TaskPortDTO query) {
         return new TaskResponseDTO(
                 query.id(),
-                query.toString(),
+                query.label(),
                 query.title(),
                 query.summary(),
                 query.deadline(),
                 query.minScoreToPass(),
                 query.status(),
                 query.maxAttempts(),
-                query.currentAttempt(),
                 query.courseId()
         );
     }
