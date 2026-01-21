@@ -69,7 +69,7 @@ public class StudentController {
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
             @ApiResponse(responseCode = "404", description = "Student not found for authenticated user")
     })
-    public ResponseEntity<StudentProfileResponseDTO> getMe(Authentication authentication) {
+    public ResponseEntity<StudentProfileResponseDTO> getProfile(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
