@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Response DTO for Task data.
- * Note: currentAttempt is now tracked per student via GET /students/{studentId}/tasks/{taskId}/progress
+ * Note: currentAttempt is now tracked per student via GET /students/{studentId}/tasks/{id}/progress
  */
 public record TaskResponseDTO(
         String id,

@@ -11,7 +11,7 @@ public interface QueryStudentTaskProgressUseCase {
     /**
      * Gets the student's progress on a specific task.
      *
-     * @param query The query containing studentId and taskId
+     * @param query The query containing studentId and id
      * @return The student's task progress
      */
     StudentTaskProgressPortDTO getProgress(StudentTaskProgressQuery query);

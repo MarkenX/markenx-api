@@ -5,8 +5,8 @@ import java.time.LocalDateTime;
 /**
  * Response DTO for a task with student-specific progress.
  *
- * @param taskId The ID of the task
- * @param taskLabel The task label (e.g., "TSK-0001")
+ * @param id The ID of the task
+ * @param label The task label (e.g., "TSK-0001")
  * @param title The task title
  * @param summary The task summary
  * @param deadline The task deadline
@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
  * @param remainingAttempts The number of remaining attempts for the student
  */
 public record StudentTaskWithProgressResponseDTO(
-        String taskId,
-        String taskLabel,
+        String id,
+        String label,
         String title,
         String summary,
         LocalDateTime deadline,

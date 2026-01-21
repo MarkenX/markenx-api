@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * Response DTO for task attempts.
- * Used by GET /tasks/{taskId}/attempts endpoint.
+ * Used by GET /tasks/{id}/attempts endpoint.
  */
 public record TaskAttemptResponseDTO(
         String attemptId,
