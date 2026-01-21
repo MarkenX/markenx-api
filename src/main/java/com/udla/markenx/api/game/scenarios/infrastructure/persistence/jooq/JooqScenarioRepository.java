@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.scenarios.infrastructure.persistence.jooq;
 
+import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
 import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
 import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioQueryRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
@@ -50,8 +51,7 @@ public class JooqScenarioRepository implements ScenarioQueryRepository {
 
     @Override
     public Scenario findByIdOrThrow(String id) {
-        return findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(Scenario.class.getName(), id));
+        return findById(id).orElseThrow(() -> ScenarioException.notFoundById(id));
     }
 
     @Override
