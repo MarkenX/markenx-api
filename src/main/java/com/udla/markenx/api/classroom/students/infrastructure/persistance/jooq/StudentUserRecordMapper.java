@@ -8,9 +8,9 @@ public class StudentUserRecordMapper {
 
     public StudentSummaryReadModel toDomain(@NonNull Record r) {
         return new StudentSummaryReadModel(
-                r.get("id", String.class),
-                r.get("user_id", String.class),
-                r.get("email", String.class)
+                r.get("student_id", String.class),
+                r.get("email", String.class),
+                r.get("full_name", String.class)
         );
     }
 }
