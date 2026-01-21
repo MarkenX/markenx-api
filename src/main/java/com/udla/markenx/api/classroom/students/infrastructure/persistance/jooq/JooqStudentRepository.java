@@ -1,6 +1,5 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
@@ -25,9 +24,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
     private static final Field<String> STUDENT_ID_FIELD = field("id", String.class);
 
     private final DSLContext dsl;
-    private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
-
-    private static final String TABLE = "students";
+    private final StudentRecordMapper mapper = new StudentRecordMapper();
 
     @Override
     public Optional<Student> findById(String id) {
@@ -43,9 +40,12 @@ public class JooqStudentRepository implements StudentQueryRepository {
         return findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(Student.class.getName(), id));
     }
+
+    @Override
+    public Page<Student> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
-                .from(TABLE)
+                .from(STUDENT_TABLE)
                 .orderBy(field("last_name").desc())
                 .limit(pageable.getPageSize())
                 .offset((int) pageable.getOffset())
@@ -53,7 +53,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
 
         Long total = dsl
                 .selectCount()
-                .from(TABLE)
+                .from(STUDENT_TABLE)
                 .fetchOneInto(Long.class);
 
         long safeTotal = total != null ? total : 0L;

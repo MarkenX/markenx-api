@@ -39,14 +39,18 @@ import java.util.List;
 @RequestMapping("students")
 public class StudentController {
 
-    private final StudentResponseDTOMapper responseDTOMapper;
-    private final StudentUserRedDTOMapper userDTOMapper;
+    // region Use Cases
     private final RegisterStudentUseCase registerStudentUseCase;
     private final QueryStudentsUseCase queryStudentsUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
+    // endregion
 
+    // region Mappers
+    private final StudentResponseDTOMapper responseDTOMapper = new StudentResponseDTOMapper();
+    private final StudentUserRedDTOMapper userDTOMapper = new StudentUserRedDTOMapper();
     private final StudentResponseDTOMapper studentResponseDTOMapper = new StudentResponseDTOMapper();
+    // endregion
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
