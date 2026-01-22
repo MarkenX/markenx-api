@@ -1,11 +1,10 @@
 package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
-import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
-import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
-import com.udla.markenx.api.classroom.courses.domain.exceptions.CourseException;
+import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
+import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
+import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -21,35 +20,45 @@ import java.util.List;
 @Profile("dev")
 @Order(2)
 @RequiredArgsConstructor
-public class CourseSeeder implements CommandLineRunner {
+public class CourseSeeder extends BaseSeeder implements CommandLineRunner {
+
+    private static final List<String> COURSE_NAMES = List.of(
+            "Marketing Digital I",
+            "Marketing Digital II"
+    );
 
     private final CreateCourseUseCase createCourseUseCase;
     private final QueryTermsUseCase queryTermsUseCase;
 
-    private static final List<String> COURSE_NAMES = List.of(
-            "Marketing Digital",
-            "Marketing Estratégico"
-    );
+    @Override
+    public String name() {
+        return "Courses";
+    }
+
+    @Override
+    protected void doSeed() {
+        upcomingTerms().forEach(this::seedCoursesForTerm);
+    }
 
     @Override
     public void run(String @NonNull ... args) {
-        log.info("Seeding courses...");
+        seed();
+    }
 
-        List<TermPortDTO> academicTermsIds = queryTermsUseCase.listTerms();
+    private @NonNull List<TermPortDTO> upcomingTerms() {
+        return queryTermsUseCase.listTerms().stream()
+                .filter(TermPortDTO::isUpcoming)
+                .toList();
+    }
 
-        try {
-            academicTermsIds.forEach(term -> {
-                if (!term.isUpcoming()) return;
-                COURSE_NAMES.forEach(courseName -> {
-                    var command = new CreateCourseCommand(courseName, term.id(), true);
-                    CoursePortDTO saved = createCourseUseCase.handle(command);
-                    log.info("Course created: {} (id: {})", saved.label(), saved.id());
-                });
-            });
-            log.info("Courses seeded successfully.");
-        } catch (CourseException e) {
-            log.error(e.getMessage(), e);
-            log.info("Courses seeding failed.");
-        }
+    private void seedCoursesForTerm(TermPortDTO term) {
+        COURSE_NAMES.forEach(courseName ->
+                createCourse(courseName, term.id())
+        );
+    }
+
+    private void createCourse(String courseName, String termId) {
+        var command = new CreateCourseCommand(courseName, termId, true);
+        createCourseUseCase.handle(command);
     }
 }
