@@ -25,7 +25,8 @@ public class TaskRecordMapper {
                 r.get("min_score_to_pass", Double.class),
                 AssignmentStatus.valueOf(r.get("status", String.class)),
                 r.get("course_id", String.class),
-                r.get("max_attempts", Integer.class)
+                r.get("max_attempts", Integer.class),
+                r.get("scenario_id", String.class)
         );
     }
 }

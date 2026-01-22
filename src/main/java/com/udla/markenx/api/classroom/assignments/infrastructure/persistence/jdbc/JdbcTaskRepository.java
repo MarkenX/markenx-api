@@ -24,8 +24,8 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         jdbcTemplate.update("""
         INSERT INTO tasks
         (id, lifecycle_status, status, title, summary, deadline, course_id,
-         min_score_to_pass, max_attempts)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+         min_score_to_pass, max_attempts, scenario_id)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
                 task.getId(),
                 task.getLifecycleStatus().name(),
@@ -35,7 +35,8 @@ public class JdbcTaskRepository implements TaskCommandRepository {
                 task.getDeadline().value(),
                 task.getCourseId(),
                 task.getMinScoreToPass().value(),
-                task.getMaxAttempts()
+                task.getMaxAttempts(),
+                task.getScenarioId()
         );
 
         return jdbcTemplate.queryForObject("""
@@ -59,7 +60,8 @@ public class JdbcTaskRepository implements TaskCommandRepository {
             deadline = ?,
             course_id = ?,
             min_score_to_pass = ?,
-            max_attempts = ?
+            max_attempts = ?,
+            scenario_id = ?
         WHERE id = ?
         """,
                 task.getLifecycleStatus().name(),
@@ -70,6 +72,7 @@ public class JdbcTaskRepository implements TaskCommandRepository {
                 task.getCourseId(),
                 task.getMinScoreToPass().value(),
                 task.getMaxAttempts(),
+                task.getScenarioId(),
                 task.getId()
         );
 

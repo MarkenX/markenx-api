@@ -32,7 +32,8 @@ public class TaskRowMapper implements RowMapper<Task> {
                 rs.getDouble("min_score_to_pass"),
                 AssignmentStatus.valueOf(rs.getString("status")),
                 rs.getString("course_id"),
-                rs.getInt("max_attempts")
+                rs.getInt("max_attempts"),
+                rs.getString("scenario_id")
         );
     }
 }
