@@ -19,7 +19,7 @@ import java.util.List;
 @Profile("dev")
 @Order(1)
 @RequiredArgsConstructor
-public class AcademicTermSeeder implements CommandLineRunner {
+public class TermSeeder implements CommandLineRunner {
 
     private final CreateTermUseCase service;
 
