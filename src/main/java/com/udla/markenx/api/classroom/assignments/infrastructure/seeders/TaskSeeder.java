@@ -6,11 +6,14 @@ import com.udla.markenx.api.classroom.assignments.infrastructure.seeders.factori
 import com.udla.markenx.api.classroom.assignments.infrastructure.seeders.valueobjects.TaskSeedDefinition;
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
+import com.udla.markenx.api.game.scenarios.application.ports.incoming.ScenarioQueryUseCase;
+import com.udla.markenx.api.game.scenarios.application.queries.GetAllScenariosPaginatedQuery;
 import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -28,6 +31,7 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
 
     private final QueryCourseUseCase queryCourseUseCase;
     private final CreateTaskUseCase createTaskUseCase;
+    private final ScenarioQueryUseCase scenarioQueryUseCase;
 
     @Override
     public String name() {
@@ -36,7 +40,17 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
 
     @Override
     protected void doSeed() {
-        activeCourses().forEach(this::seedTasksForCourse);
+        String scenarioId = getFirstScenarioId();
+        if (scenarioId == null) {
+            log.warn("No scenarios found. Skipping task seeding.");
+            return;
+        }
+        activeCourses().forEach(course -> seedTasksForCourse(course, scenarioId));
+    }
+
+    private @Nullable String getFirstScenarioId() {
+        var scenarios = scenarioQueryUseCase.getAllPaginated(new GetAllScenariosPaginatedQuery(0, 1));
+        return scenarios.isEmpty() ? null : scenarios.getContent().get(0).id();
     }
 
     @Override
@@ -48,12 +62,12 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
         return queryCourseUseCase.listCourses();
     }
 
-    private void seedTasksForCourse(CoursePortDTO course) {
+    private void seedTasksForCourse(CoursePortDTO course, String scenarioId) {
         TaskSeedFactory.forActiveCourse(referenceTime())
-                .forEach(def -> createTask(def, course.id()));
+                .forEach(def -> createTask(def, course.id(), scenarioId));
     }
 
-    private void createTask(@NonNull TaskSeedDefinition def, String courseId) {
+    private void createTask(@NonNull TaskSeedDefinition def, String courseId, String scenarioId) {
         var command = new CreateTaskCommand(
                 def.title(),
                 def.description(),
@@ -61,6 +75,7 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
                 def.acceptanceRate(),
                 courseId,
                 def.maxAttempts(),
+                scenarioId,
                 def.outdated()
         );
 
