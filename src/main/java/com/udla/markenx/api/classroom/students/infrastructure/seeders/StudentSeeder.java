@@ -4,8 +4,9 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePo
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
-import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
-import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
+import com.udla.markenx.api.classroom.students.infrastructure.seeders.factories.StudentSeedFactory;
+import com.udla.markenx.api.classroom.students.infrastructure.seeders.valueobjects.StudentSeedDefinition;
+import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
@@ -21,49 +22,50 @@ import java.util.List;
 @Profile("dev")
 @Order(3)
 @RequiredArgsConstructor
-public class StudentSeeder implements CommandLineRunner {
+public class StudentSeeder extends BaseSeeder implements CommandLineRunner {
 
     private final QueryCourseUseCase queryCourseUseCase;
     private final RegisterStudentUseCase registerStudentUseCase;
 
-    private record StudentData(String firstName, String lastName, String email) {}
+    @Override
+    public String name() {
+        return "Students";
+    }
 
-    private static final List<StudentData> STUDENTS = List.of(
-            new StudentData("Christian", "Jácome", "christian.jacome.mora@udla.edu.ec"),
-            new StudentData("Ana", "Rodriguez", "ana.rodriguez@udla.edu.ec"),
-            new StudentData("Luis", "Garcia", "luis.garcia@udla.edu.ec"),
-            new StudentData("Sofia", "Martinez", "sofia.martinez@udla.edu.ec")
-    );
+    @Override
+    protected void doSeed() {
+        var courses = availableCourses();
+        seedStudentsAcrossCourses(courses);
+    }
 
     @Override
     public void run(String @NonNull ... args) {
-        log.info("Seeding students...");
+        seed();
+    }
 
-        List<CoursePortDTO> courses = queryCourseUseCase.listCourses();
-        if (courses.isEmpty()) {
-            log.warn("No courses found, skipping student seeding.");
-            return;
-        }
+    private List<CoursePortDTO> availableCourses() {
+        return queryCourseUseCase.listCourses();
+    }
 
-        try {
-            for (StudentData student : STUDENTS) {
-                // Distribute students across courses
-                CoursePortDTO course = courses.getFirst();
-                var command = new RegisterStudentCommand(
-                        student.firstName(),
-                        student.lastName(),
-                        course.id(),
-                        student.email(),
-                        true
-                );
-                Student saved = registerStudentUseCase.handle(command);
-                log.info("Student created: {} {} (id: {})",
-                        student.firstName(), student.lastName(), saved.getId());
-            }
-            log.info("Students seeded successfully. Total: {}", STUDENTS.size());
-        } catch (StudentException e) {
-            log.error(e.getMessage(), e);
-            log.info("Students seeding failed.");
+    private void seedStudentsAcrossCourses(List<CoursePortDTO> courses) {
+        var students = StudentSeedFactory.defaultStudents();
+
+        for (int i = 0; i < students.size(); i++) {
+            var student = students.get(i);
+            var course = courses.get(i % courses.size());
+            registerStudent(student, course.id());
         }
+    }
+
+    private void registerStudent(@NonNull StudentSeedDefinition student, String courseId) {
+        var command = new RegisterStudentCommand(
+                student.firstName(),
+                student.lastName(),
+                courseId,
+                student.email(),
+                true
+        );
+
+        registerStudentUseCase.handle(command);
     }
 }
