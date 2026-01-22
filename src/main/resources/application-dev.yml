@@ -41,7 +41,7 @@ spring:
         registration:
           keycloak:
             client-id: ${KEYCLOAK_CLIENT:bff}
-            client-secret: ${KEYCLOAK_CLIENT_SECRET:dev-secret}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:super-secret}
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
             scope:
@@ -81,3 +81,16 @@ keycloak:
 
 identity:
   default-temporary-password: ${IDENTITY_DEFAULT_TEMP_PASSWORD:password}
+
+# ============================
+# Game Token (Unity WebGL)
+# ============================
+app:
+  game-token:
+    # Secret for signing JWT tokens (min 32 chars)
+    # IMPORTANT: Change this in production!
+    secret: ${GAME_TOKEN_SECRET:markenx-game-token-secret-key-dev-only-32chars}
+    # Token duration in seconds (default: 10 minutes)
+    duration-seconds: ${GAME_TOKEN_DURATION:600}
+    # Grace period for token refresh in seconds (default: 5 minutes)
+    refresh-grace-period-seconds: ${GAME_TOKEN_REFRESH_GRACE:300}
