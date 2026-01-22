@@ -1,6 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidMaxAttemptsException;
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidScenarioIdException;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
@@ -18,6 +19,7 @@ import java.time.LocalDateTime;
 public class Task extends Assignment {
 
     private int maxAttempts;
+    private String scenarioId;
 
     // region Constructors
 
@@ -28,10 +30,12 @@ public class Task extends Assignment {
             AssignmentScore minScoreToPass,
             AssignmentStatus status,
             String academicTermId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         super(id, info, deadline, minScoreToPass, status, academicTermId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
+        this.scenarioId = validateScenarioId(scenarioId);
     }
 
     public Task(
@@ -44,10 +48,12 @@ public class Task extends Assignment {
             double minScoreToPass,
             AssignmentStatus status,
             String courseId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, status, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
+        this.scenarioId = validateScenarioId(scenarioId);
     }
 
     // endregion
@@ -59,7 +65,8 @@ public class Task extends Assignment {
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
             String courseId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -69,7 +76,8 @@ public class Task extends Assignment {
                 minScoreToPass,
                 AssignmentStatus.NOT_STARTED,
                 courseId,
-                maxAttempts
+                maxAttempts,
+                scenarioId
         );
     }
 
@@ -78,7 +86,8 @@ public class Task extends Assignment {
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
             String courseId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -88,7 +97,8 @@ public class Task extends Assignment {
                 minScoreToPass,
                 AssignmentStatus.OUTDATED,
                 courseId,
-                maxAttempts
+                maxAttempts,
+                scenarioId
         );
     }
 
@@ -98,6 +108,10 @@ public class Task extends Assignment {
 
     public int getMaxAttempts() {
         return this.maxAttempts;
+    }
+
+    public String getScenarioId() {
+        return this.scenarioId;
     }
 
     // endregion
@@ -117,6 +131,13 @@ public class Task extends Assignment {
             throw new InvalidMaxAttemptsException();
         }
         return maxAttempts;
+    }
+
+    public String validateScenarioId(String scenarioId) {
+        if (scenarioId == null || scenarioId.isBlank()) {
+            throw new InvalidScenarioIdException();
+        }
+        return scenarioId;
     }
 
     // endregion
