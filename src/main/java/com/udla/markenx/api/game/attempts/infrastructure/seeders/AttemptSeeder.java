@@ -1,6 +1,5 @@
 package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
-import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
