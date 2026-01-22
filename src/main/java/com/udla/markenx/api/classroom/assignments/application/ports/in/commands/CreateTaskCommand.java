@@ -9,6 +9,7 @@ public record CreateTaskCommand(
         Double minScoreToPass,
         String courseId,
         int maxAttempts,
+        String scenarioId,
         boolean isHistorical
 ) {
 }
