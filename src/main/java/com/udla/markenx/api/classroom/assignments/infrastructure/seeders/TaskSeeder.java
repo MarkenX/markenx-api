@@ -25,7 +25,7 @@ import java.util.List;
 @Slf4j
 @Component
 @Profile("dev")
-@Order(4)
+@Order(5)
 @RequiredArgsConstructor
 public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
 

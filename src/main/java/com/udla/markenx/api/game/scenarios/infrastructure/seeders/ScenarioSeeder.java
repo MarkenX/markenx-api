@@ -27,7 +27,7 @@ import java.util.UUID;
 @Slf4j
 @Component
 @Profile("dev")
-@Order(5)
+@Order(4)
 @RequiredArgsConstructor
 public class ScenarioSeeder implements CommandLineRunner {
 
