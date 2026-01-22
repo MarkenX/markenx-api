@@ -1,11 +1,13 @@
 package com.udla.markenx.api.classroom.terms.infrastructure.seeders;
 
+import com.udla.markenx.api.classroom.terms.application.ports.in.commands.CreateTermCommand;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.CreateTermUseCase;
-import com.udla.markenx.api.classroom.terms.domain.exceptions.TermException;
 import com.udla.markenx.api.classroom.terms.infrastructure.seeders.factories.TermSeedFactory;
+import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
@@ -19,39 +21,41 @@ import java.util.List;
 @Profile("dev")
 @Order(1)
 @RequiredArgsConstructor
-public class TermSeeder implements CommandLineRunner {
+public class TermSeeder extends BaseSeeder implements CommandLineRunner {
 
-    private final CreateTermUseCase service;
+    private final CreateTermUseCase createTermUseCase;
 
     @Override
-    public void run(String @NotNull ... args) {
-        final long startMs = System.currentTimeMillis();
+    public String name() {
+        return "Terms";
+    }
 
-        log.info("Seeding academic terms...");
+    @Override
+    protected void doSeed() {
+        seedTermsFor(today());
+    }
 
-        try {
-            LocalDate today = LocalDate.now();
+    @Override
+    public void run(String @NonNull ... args) {
+        seed();
+    }
 
-            var commands = List.of(
-                    TermSeedFactory.past(today),
-                    TermSeedFactory.current(today),
-                    TermSeedFactory.future(today)
-            );
+    private void seedTermsFor(LocalDate referenceDate) {
+        termCommands(referenceDate)
+                .forEach(createTermUseCase::handle);
+    }
 
-            log.debug("Creating {} academic terms...", commands.size());
+    @Contract("_ -> new")
+    private @NonNull List<CreateTermCommand> termCommands(LocalDate referenceDate) {
+        return List.of(
+                TermSeedFactory.past(referenceDate),
+                TermSeedFactory.current(referenceDate),
+                TermSeedFactory.future(referenceDate)
+        );
+    }
 
-            var created = commands.stream()
-                    .map(service::handle)
-                    .toList();
-
-            created.forEach(term -> log.debug("Created {}", term));
-
-            long tookMs = System.currentTimeMillis() - startMs;
-            log.info("Seed completed. created={}, tookMs={}", created.size(), tookMs);
-
-        } catch (TermException e) {
-            long tookMs = System.currentTimeMillis() - startMs;
-            log.error("Seed failed. tookMs={}, reason={}", tookMs, e.getMessage(), e);
-        }
+    @Contract(" -> new")
+    private @NonNull LocalDate today() {
+        return LocalDate.now();
     }
 }
