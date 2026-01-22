@@ -47,6 +47,7 @@ public class TaskController {
                 dto.minScoreToPass(),
                 dto.courseId(),
                 dto.maxAttempts(),
+                dto.scenarioId(),
                 false
         );
         return mapper.toDTO(createTaskUseCase.handle(command));
