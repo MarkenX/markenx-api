@@ -2,29 +2,27 @@ package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTasksProgressDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand;
-import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand.TurnHistoryDTO;
-import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.RegisterGameSessionUseCase;
-import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptException;
+import com.udla.markenx.api.game.attempts.infrastructure.seeders.factories.AttemptSeedFactory;
+import com.udla.markenx.api.game.attempts.infrastructure.seeders.valueobjects.AttemptSeedDefinition;
+import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -32,103 +30,76 @@ import java.util.List;
 @Profile("dev")
 @Order(6)
 @RequiredArgsConstructor
-public class AttemptSeeder implements CommandLineRunner {
+public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
 
     private final RegisterGameSessionUseCase registerGameSessionUseCase;
-    private final QueryTasksUseCase queryTasksUseCase;
-    private final ValidateTaskUseCase validateTaskUseCase;
     private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
+    private final QueryStudentTasksProgressDetailUseCase queryStudentTasksProgressDetailUseCase;
+    private final ValidateTaskUseCase validateTaskUseCase;
+
+    @Override
+    public String name() {
+        return "Attempts";
+    }
+
+    @Override
+    protected void doSeed() {
+        students().forEach(this::seedAttemptsForStudent);
+    }
 
     @Override
     public void run(String @NonNull ... args) {
-        log.info("Seeding attempts...");
-
-        List<TaskPortDTO> tasks = queryTasksUseCase.listTasks();
-        Page<StudentDetailPortDTO> studentsPage = queryStudentsDetailUseCase.listStudentsPage(
-                new StudentPageQueryCriteria(0, 100)
-        );
-        List<StudentDetailPortDTO> students = studentsPage.getContent();
-
-        if (tasks.isEmpty() || students.isEmpty()) {
-            log.warn("No tasks or students found, skipping attempt seeding.");
-            return;
-        }
-
-        try {
-            int attemptCount = 0;
-
-            // Create attempts for first 2 tasks and first 2 students
-            for (int i = 0; i < Math.min(2, tasks.size()); i++) {
-                TaskPortDTO task = tasks.get(i);
-                var query = new IsTaskOutdatedQuery(task.id());
-                if (validateTaskUseCase.isOutdated(query)) continue;
-
-                for (int j = 0; j < Math.min(2, students.size()); j++) {
-                    StudentDetailPortDTO student = students.get(j);
-
-                    // Create an attempt with varying results
-                    boolean isApproved = (i + j) % 2 == 0;
-                    double finalAcceptance = isApproved ? 0.75 + (j * 0.05) : 0.55 + (j * 0.05);
-                    double profileScore = isApproved ? 0.80 + (j * 0.05) : 0.50 + (j * 0.05);
-                    int turnsUsed = 4 + j;
-                    BigDecimal remainingBudget = new BigDecimal("200.00").subtract(
-                            new BigDecimal(j * 30)
-                    );
-
-                    List<TurnHistoryDTO> history = buildTurnHistory(turnsUsed, finalAcceptance, remainingBudget);
-
-                    var command = new RegisterGameSessionCommand(
-                            task.id(),
-                            student.studentId(),
-                            LocalDateTime.now().minusDays(5 - j),
-                            finalAcceptance,
-                            remainingBudget,
-                            turnsUsed,
-                            profileScore,
-                            history
-                    );
-
-                    GameSessionResponse response = registerGameSessionUseCase.handle(command);
-                    log.info("Attempt created: student={}, task={}, outcome={} (id: {})",
-                            student.fullName(),
-                            task.title(),
-                            response.finalOutcome(),
-                            response.id()
-                    );
-                    attemptCount++;
-                }
-            }
-
-            log.info("Attempts seeded successfully. Total: {}", attemptCount);
-        } catch (AttemptException e) {
-            log.error(e.getMessage(), e);
-            log.info("Attempts seeding failed.");
-        }
+        seed();
     }
 
-    private List<TurnHistoryDTO> buildTurnHistory(int totalTurns, double finalAcceptance, BigDecimal finalBudget) {
-        List<TurnHistoryDTO> history = new ArrayList<>();
-        double startAcceptance = 0.30;
-        BigDecimal startBudget = new BigDecimal("500.00");
+    private @NonNull List<StudentDetailPortDTO> students() {
+        return queryStudentsDetailUseCase
+                .listStudentsPage(new StudentPageQueryCriteria(0, 50))
+                .getContent();
+    }
 
-        for (int turn = 1; turn <= totalTurns; turn++) {
-            double progress = (double) turn / totalTurns;
-            double acceptance = startAcceptance + (finalAcceptance - startAcceptance) * progress;
-            BigDecimal budget = startBudget.subtract(
-                    startBudget.subtract(finalBudget).multiply(BigDecimal.valueOf(progress))
-            );
+    private void seedAttemptsForStudent(@NonNull StudentDetailPortDTO student) {
+        var query = new StudentAllTasksProgressQuery(student.studentId());
+        var tasks = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
 
-            String event = turn == 3 ? "Tendencia Viral" : null;
+        tasks.forEach(task ->
+                        seedAttempts(student, task)
+                );
+    }
 
-            history.add(new TurnHistoryDTO(
-                    turn,
-                    Math.round(acceptance * 10000.0) / 10000.0,
-                    budget.setScale(2, java.math.RoundingMode.HALF_UP),
-                    event,
-                    Collections.emptyList()
-            ));
-        }
+    private void seedAttempts(@NonNull StudentDetailPortDTO student, @NonNull StudentTaskProgressDetailPortDTO task) {
+        var now = LocalDateTime.now();
 
-        return history;
+        var success = AttemptSeedFactory.successful(now, 0);
+        var failure = AttemptSeedFactory.failed(now, 1);
+
+        registerAttempt(task.taskId(), student.studentId(), success);
+        registerAttempt(task.taskId(), student.studentId(), failure);
+    }
+
+    private void registerAttempt(
+            String taskId,
+            String studentId,
+            @NonNull AttemptSeedDefinition attempt
+    ) {
+        var command = new RegisterGameSessionCommand(
+                taskId,
+                studentId,
+                attempt.startedAt(),
+                attempt.finalAcceptance(),
+                attempt.remainingBudget(),
+                attempt.turnsUsed(),
+                attempt.profileScore(),
+                attempt.history()
+        );
+
+        registerGameSessionUseCase.handle(command);
+    }
+
+    private boolean isValidTask(@NonNull TaskPortDTO task) {
+        return !validateTaskUseCase.isOutdated(
+                new IsTaskOutdatedQuery(task.id())
+        );
     }
 }
+
