@@ -82,7 +82,7 @@ public class RegisterGameSessionCommandHandler implements RegisterGameSessionUse
         return mapToResponse(savedAttempt);
     }
 
-    private void publishAttemptResultEvent(Attempt attempt) {
+    private void publishAttemptResultEvent(@NonNull Attempt attempt) {
         var event = new AttemptResultRegisteredEvent(
                 attempt.getId(),
                 attempt.getTaskId(),
@@ -97,7 +97,7 @@ public class RegisterGameSessionCommandHandler implements RegisterGameSessionUse
         eventPublisher.publishEvent(event);
     }
 
-    private GameSessionResponse mapToResponse(Attempt attempt) {
+    private @NonNull GameSessionResponse mapToResponse(@NonNull Attempt attempt) {
         List<GameSessionResponse.TurnHistoryResponse> historyResponses =
                 attempt.getTurnHistories().stream()
                         .map(th -> new GameSessionResponse.TurnHistoryResponse(
