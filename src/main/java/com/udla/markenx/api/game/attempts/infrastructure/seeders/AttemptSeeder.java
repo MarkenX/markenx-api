@@ -62,7 +62,9 @@ public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
         var query = new StudentAllTasksProgressQuery(student.studentId());
         var tasks = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
 
-        tasks.forEach(task ->
+        tasks.stream()
+                .filter(this::isValidTask)
+                .forEach(task ->
                         seedAttempts(student, task)
                 );
     }
@@ -96,9 +98,9 @@ public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
         registerGameSessionUseCase.handle(command);
     }
 
-    private boolean isValidTask(@NonNull TaskPortDTO task) {
+    private boolean isValidTask(@NonNull StudentTaskProgressDetailPortDTO task) {
         return !validateTaskUseCase.isOutdated(
-                new IsTaskOutdatedQuery(task.id())
+                new IsTaskOutdatedQuery(task.taskId())
         );
     }
 }
