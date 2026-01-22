@@ -65,7 +65,7 @@ public class JdbcStudentTaskProgressRepository implements StudentTaskProgressCom
 
     @Override
     public StudentTaskProgress saveOrUpdate(@NonNull StudentTaskProgress progress) {
-        int updatedRows = jdbcTemplate.update("""
+        jdbcTemplate.update("""
             INSERT INTO student_task_progress
             (student_id, task_id, current_attempt)
             VALUES (?, ?, ?)
