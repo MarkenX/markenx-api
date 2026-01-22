@@ -1,7 +1,10 @@
 package com.udla.markenx.api.security.infrastructure.configurations;
 
+import com.udla.markenx.api.security.infrastructure.gametoken.GameTokenAuthenticationFilter;
+import com.udla.markenx.api.security.infrastructure.gametoken.GameTokenService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +31,7 @@ import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -40,7 +44,10 @@ import java.util.*;
 
 @Configuration
 @Profile("dev")
+@RequiredArgsConstructor
 public class DevSecurityConfig {
+
+    private final GameTokenService gameTokenService;
 
     /**
      * En DEV trabajamos con SPA(s) en localhost y el BFF en otro puerto.
@@ -114,7 +121,7 @@ public class DevSecurityConfig {
 
                 .logout(l -> l
                         /**
-                         * /auth/logout es el endpoint “contrato” para el frontend.
+                         * /auth/logout es el endpoint "contrato" para el frontend.
                          * Importante: Spring intercepta antes de controller.
                          */
                         .logoutUrl(BFF_LOGOUT_ENDPOINT)
@@ -129,6 +136,16 @@ public class DevSecurityConfig {
                          * - redirige de vuelta al BFF (bridge)
                          */
                         .logoutSuccessHandler(oidcLogoutSuccessHandler(clientRegistrationRepository))
+                )
+
+                /**
+                 * Game token filter:
+                 * Allows Unity WebGL to authenticate via Bearer token
+                 * when session cookies are not available.
+                 */
+                .addFilterBefore(
+                        new GameTokenAuthenticationFilter(gameTokenService),
+                        UsernamePasswordAuthenticationFilter.class
                 );
 
         return http.build();
