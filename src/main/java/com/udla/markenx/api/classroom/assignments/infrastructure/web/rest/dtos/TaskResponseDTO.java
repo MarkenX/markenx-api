@@ -15,6 +15,7 @@ public record TaskResponseDTO(
         double minScoreToPass,
         String status,
         int maxAttempts,
-        String courseId
+        String courseId,
+        String scenarioId
 ) {
 }

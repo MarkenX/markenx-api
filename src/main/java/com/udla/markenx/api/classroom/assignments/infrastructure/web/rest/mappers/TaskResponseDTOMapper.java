@@ -18,7 +18,8 @@ public class TaskResponseDTOMapper {
                 query.minScoreToPass(),
                 query.status(),
                 query.maxAttempts(),
-                query.courseId()
+                query.courseId(),
+                query.scenarioId()
         );
     }
 }
