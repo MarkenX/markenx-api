@@ -1,7 +1,7 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
-import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ApiErrorResponse;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,7 +17,7 @@ public class TaskControllerAdvice {
     @ExceptionHandler(AssignmentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponse handleDomainException(@NonNull AssignmentException ex) {
-        return new ErrorResponse(TASK_ERROR_CODE, ex.getMessage());
+    public ApiErrorResponse handleDomainException(@NonNull AssignmentException ex) {
+        return new ApiErrorResponse(TASK_ERROR_CODE, ex.getMessage());
     }
 }

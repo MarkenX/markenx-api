@@ -2,7 +2,7 @@ package com.udla.markenx.api.game.attempts.infrastructure.web.rest;
 
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptException;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
-import com.udla.markenx.api.shared.infrastructure.web.dtos.ErrorResponse;
+import com.udla.markenx.api.shared.infrastructure.web.dtos.ApiErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,14 +18,14 @@ public class AttemptControllerAdvice {
     @ExceptionHandler(AttemptNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
-    public ErrorResponse handleAttemptNotFoundException(AttemptNotFoundException ex) {
-        return new ErrorResponse(ATTEMPT_NOT_FOUND_CODE, ex.getMessage());
+    public ApiErrorResponse handleAttemptNotFoundException(AttemptNotFoundException ex) {
+        return new ApiErrorResponse(ATTEMPT_NOT_FOUND_CODE, ex.getMessage());
     }
 
     @ExceptionHandler(AttemptException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ErrorResponse handleDomainException(AttemptException ex) {
-        return new ErrorResponse(ATTEMPT_ERROR_CODE, ex.getMessage());
+    public ApiErrorResponse handleDomainException(AttemptException ex) {
+        return new ApiErrorResponse(ATTEMPT_ERROR_CODE, ex.getMessage());
     }
 }
