@@ -89,8 +89,7 @@ public class GlobalControllerAdvice {
     }
 
     // ----------------------------
-    // 409 - Conflicts (optional example)
-    // If you have a specific exception for duplicates, map it here.
+    // 409 - Conflicts
     // ----------------------------
     @ExceptionHandler(IllegalStateException.class)
     public org.springframework.http.ResponseEntity<ApiErrorResponse> handleConflict(
