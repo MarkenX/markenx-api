@@ -23,6 +23,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
 
     private static final String STUDENT_TABLE = "students";
     private static final Field<String> STUDENT_ID_FIELD = field("id", String.class);
+    private static final Field<String> COURSE_ID_FIELD = field("course_id", String.class);
 
     private final DSLContext dsl;
     private final StudentRecordMapper mapper = new StudentRecordMapper();
@@ -70,5 +71,13 @@ public class JooqStudentRepository implements StudentQueryRepository {
                 records.map(mapper::toDomain),
                 pageable,
                 safeTotal);
+    }
+
+    @Override
+    public List<Student> findByCourseId(String courseId) {
+        return dsl.select()
+                .from(STUDENT_TABLE)
+                .where(COURSE_ID_FIELD.eq(courseId))
+                .fetch(mapper::toDomain);
     }
 }

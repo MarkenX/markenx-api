@@ -12,4 +12,5 @@ public interface StudentQueryRepository {
     Student findByIdOrThrow(String id);
     List<Student> findAll();
     Page<Student> findAllPaginated(Pageable pageable);
+    List<Student> findByCourseId(String courseId);
 }
