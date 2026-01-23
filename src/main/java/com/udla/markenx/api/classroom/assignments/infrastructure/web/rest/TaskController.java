@@ -6,6 +6,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskDTOMapper;
@@ -46,10 +47,9 @@ public class TaskController {
             @ApiResponse(responseCode = "422", description = "Domain validation failed"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public TaskResponseDTO create(@RequestBody @Valid CreateTaskRequestDTO request) {
-        return mapper.toResponseDTO(
-                createTaskUseCase.handle(CreateTaskCommand.from(request))
-        );
+    public CreateTaskResponseDTO create(@RequestBody @Valid CreateTaskRequestDTO request) {
+        var newTask = createTaskUseCase.handle(CreateTaskCommand.from(request));
+        return CreateTaskResponseDTO.from(newTask);
     }
 
     @GetMapping("/{id}")
