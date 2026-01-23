@@ -6,9 +6,8 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TaskResponseDTOMapper {
-
-    public TaskResponseDTO toDTO(@NonNull TaskPortDTO query) {
+public class TaskDTOMapper {
+    public TaskResponseDTO toResponseDTO(@NonNull TaskPortDTO query) {
         return new TaskResponseDTO(
                 query.id(),
                 query.label(),

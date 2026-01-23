@@ -3,7 +3,7 @@ package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskCourseIdQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeTermCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeStatusCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
@@ -33,7 +33,7 @@ import java.util.List;
 public class CourseController {
 
     private final CourseDTOMapper mapper;
-    private final TaskResponseDTOMapper taskMapper;
+    private final TaskDTOMapper taskMapper;
     private final CreateCourseUseCase createCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
     private final QueryCourseUseCase queryCourseUseCase;
@@ -75,7 +75,7 @@ public class CourseController {
         if (tasks.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
-        return ResponseEntity.ok(tasks.stream().map(taskMapper::toDTO).toList());
+        return ResponseEntity.ok(tasks.stream().map(taskMapper::toResponseDTO).toList());
     }
 
     @PatchMapping("/{id}/status")

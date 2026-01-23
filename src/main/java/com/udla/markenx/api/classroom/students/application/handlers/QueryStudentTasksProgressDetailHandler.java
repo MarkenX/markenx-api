@@ -4,6 +4,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.out.StudentT
 import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTasksProgressDetailUseCase;
@@ -58,6 +59,9 @@ public class QueryStudentTasksProgressDetailHandler implements QueryStudentTasks
     private StudentTaskProgressDetailPortDTO mapToDTO(Task task, StudentTaskProgress progress) {
         int currentAttempt = progress != null ? progress.getCurrentAttempt() : 0;
         int remainingAttempts = task.getMaxAttempts() - currentAttempt;
+        String status = progress != null
+                ? progress.getStatus().name()
+                : AssignmentStatus.NOT_STARTED.name();
 
         return new StudentTaskProgressDetailPortDTO(
                 task.getId(),
@@ -66,7 +70,7 @@ public class QueryStudentTasksProgressDetailHandler implements QueryStudentTasks
                 task.getInfo().summary(),
                 task.getDeadline().value(),
                 task.getMinScoreToPass().value(),
-                task.getStatus().name(),
+                status,
                 currentAttempt,
                 task.getMaxAttempts(),
                 Math.max(0, remainingAttempts)

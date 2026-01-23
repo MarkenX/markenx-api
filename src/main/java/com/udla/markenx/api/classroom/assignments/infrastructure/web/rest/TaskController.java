@@ -8,11 +8,12 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.T
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
 import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskResponseDTOMapper;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskDTOMapper;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
@@ -31,26 +32,24 @@ public class TaskController {
     private final QueryTasksUseCase queryTasksUseCase;
     private final AttemptQueryUseCase attemptQueryUseCase;
 
-    private final TaskResponseDTOMapper mapper = new TaskResponseDTOMapper();
+    private final TaskDTOMapper mapper = new TaskDTOMapper();
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new task")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Task created successfully")
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "Task created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "Task already exists or conflict"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public TaskResponseDTO create(@RequestBody CreateTaskRequestDTO dto) {
-        var command = new CreateTaskCommand(
-                dto.title(),
-                dto.summary(),
-                dto.deadline(),
-                dto.minScoreToPass(),
-                dto.courseId(),
-                dto.maxAttempts(),
-                dto.scenarioId(),
-                false
+    public TaskResponseDTO create(@RequestBody @Valid CreateTaskRequestDTO request) {
+        return mapper.toResponseDTO(
+                createTaskUseCase.handle(CreateTaskCommand.from(request))
         );
-        return mapper.toDTO(createTaskUseCase.handle(command));
     }
 
     @GetMapping("/{id}")
@@ -62,7 +61,7 @@ public class TaskController {
     })
     public TaskResponseDTO getById(@PathVariable String id) {
         var query = new TaskIdQuery(id);
-        return mapper.toDTO(queryTasksUseCase.getTaskById(query));
+        return mapper.toResponseDTO(queryTasksUseCase.getTaskById(query));
     }
 
     @GetMapping
@@ -77,7 +76,7 @@ public class TaskController {
     ) {
         var query = new TaskPageQueryCriteria(page, size);
         Page<@NotNull TaskResponseDTO> result =
-                queryTasksUseCase.listTasksPage(query).map(mapper::toDTO);
+                queryTasksUseCase.listTasksPage(query).map(mapper::toResponseDTO);
 
         if (result.isEmpty()) {
             return ResponseEntity.notFound().build();
