@@ -17,6 +17,6 @@ public class ValidateTaskService implements ValidateTaskUseCase {
     @Override
     public boolean isOutdated(@NonNull IsTaskOutdatedQuery query) {
         Task task = repository.findByIdOrThrow(query.taskId());
-        return task.isOutdated();
+        return task.getDeadline().isOverdue();
     }
 }

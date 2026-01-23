@@ -4,7 +4,6 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.Task
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskCourseIdQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
-import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskStatusQueryCriteria;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -13,6 +12,5 @@ public interface QueryTasksUseCase {
     TaskPortDTO getTaskById(TaskIdQuery query);
     List<TaskPortDTO> listTasks();
     Page<TaskPortDTO> listTasksPage(TaskPageQueryCriteria query);
-    List<TaskPortDTO> listTasksByStatuses(TaskStatusQueryCriteria criteria);
     List<TaskPortDTO> listTasksByCourseId(TaskCourseIdQueryCriteria criteria);
 }
