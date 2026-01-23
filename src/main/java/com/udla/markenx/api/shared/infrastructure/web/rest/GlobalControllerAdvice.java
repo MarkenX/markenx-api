@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
+import org.springframework.web.ErrorResponseException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -133,6 +134,30 @@ public class GlobalControllerAdvice {
                 .build();
 
         return ResponseEntity.status(status).body(body);
+    }
+
+    // ----------------------------
+    // Spring "typed" errors
+    // ----------------------------
+    @ExceptionHandler(ErrorResponseException.class)
+    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleSpringErrorResponse(
+            @NonNull ErrorResponseException ex,
+            @NonNull HttpServletRequest request
+    ) {
+        HttpStatus status = HttpStatus.valueOf(ex.getStatusCode().value());
+
+        ex.getMessage();
+        var body = ApiErrorResponse.builder()
+                .timestamp(Instant.now().toString())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .code("HTTP_ERROR")
+                .message(ex.getMessage())
+                .userMessage("Ocurrió un error inesperado. Inténtalo más tarde.")
+                .path(request.getRequestURI())
+                .build();
+
+        return org.springframework.http.ResponseEntity.status(status).body(body);
     }
 
     @Contract("_ -> new")
