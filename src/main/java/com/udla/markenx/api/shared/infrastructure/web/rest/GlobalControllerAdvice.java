@@ -81,11 +81,33 @@ public class GlobalControllerAdvice {
                 .error(HttpStatus.BAD_REQUEST.getReasonPhrase())
                 .code("INVALID_JSON")
                 .message(message)
-                .userMessage("Revisa los datos ingresados e inténtalo nuevamente.")
+                .userMessage("El formato de la solicitud no es válido.")
                 .path(request.getRequestURI())
                 .build();
 
         return org.springframework.http.ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    // ----------------------------
+    // 409 - Conflicts (optional example)
+    // If you have a specific exception for duplicates, map it here.
+    // ----------------------------
+    @ExceptionHandler(IllegalStateException.class)
+    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleConflict(
+            @NonNull IllegalStateException ex,
+            @NonNull HttpServletRequest request
+    ) {
+        var body = ApiErrorResponse.builder()
+                .timestamp(Instant.now().toString())
+                .status(HttpStatus.CONFLICT.value())
+                .error(HttpStatus.CONFLICT.getReasonPhrase())
+                .code("CONFLICT")
+                .message(ex.getMessage() == null ? "Conflict" : ex.getMessage())
+                .userMessage("Ya existe un registro con esos datos.")
+                .path(request.getRequestURI())
+                .build();
+
+        return org.springframework.http.ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     @Contract("_ -> new")
@@ -96,8 +118,6 @@ public class GlobalControllerAdvice {
                 fe.getRejectedValue()
         );
     }
-
-
 
     private static Throwable rootCause(Throwable ex) {
         Throwable cur = ex;
