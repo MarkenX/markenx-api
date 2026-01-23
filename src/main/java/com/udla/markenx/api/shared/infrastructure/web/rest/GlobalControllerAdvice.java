@@ -53,7 +53,7 @@ public class GlobalControllerAdvice {
                 .violations(violations)
                 .build();
 
-        return org.springframework.http.ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     // ----------------------------
@@ -88,7 +88,7 @@ public class GlobalControllerAdvice {
                 .path(request.getRequestURI())
                 .build();
 
-        return org.springframework.http.ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
     }
 
     // ----------------------------
@@ -109,7 +109,7 @@ public class GlobalControllerAdvice {
                 .path(request.getRequestURI())
                 .build();
 
-        return org.springframework.http.ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     // ----------------------------
@@ -140,7 +140,7 @@ public class GlobalControllerAdvice {
     // Spring "typed" errors
     // ----------------------------
     @ExceptionHandler(ErrorResponseException.class)
-    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleSpringErrorResponse(
+    public ResponseEntity<ApiErrorResponse> handleSpringErrorResponse(
             @NonNull ErrorResponseException ex,
             @NonNull HttpServletRequest request
     ) {
@@ -157,14 +157,14 @@ public class GlobalControllerAdvice {
                 .path(request.getRequestURI())
                 .build();
 
-        return org.springframework.http.ResponseEntity.status(status).body(body);
+        return ResponseEntity.status(status).body(body);
     }
 
     // ----------------------------
     // 500 - Fallback
     // ----------------------------
     @ExceptionHandler(Exception.class)
-    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnhandled(
+    public ResponseEntity<ApiErrorResponse> handleUnhandled(
             @NonNull Exception ex,
             @NonNull HttpServletRequest request
     ) {
@@ -178,7 +178,7 @@ public class GlobalControllerAdvice {
                 .path(request.getRequestURI())
                 .build();
 
-        return org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
     }
 
     @Contract("_ -> new")
