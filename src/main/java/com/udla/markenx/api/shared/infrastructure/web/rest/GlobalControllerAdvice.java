@@ -2,11 +2,13 @@ package com.udla.markenx.api.shared.infrastructure.web.rest;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.udla.markenx.api.shared.domain.exceptions.EntityException;
 import com.udla.markenx.api.shared.infrastructure.web.dtos.ApiErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -25,7 +27,7 @@ public class GlobalControllerAdvice {
     // 400 - Bean Validation (@Valid)
     // ----------------------------
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleValidation(
+    public ResponseEntity<ApiErrorResponse> handleValidation(
             @NonNull MethodArgumentNotValidException ex,
             @NonNull HttpServletRequest request
     ) {
@@ -57,7 +59,7 @@ public class GlobalControllerAdvice {
     // 400 - Invalid / malformed JSON
     // ----------------------------
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnreadableBody(
+    public ResponseEntity<ApiErrorResponse> handleUnreadableBody(
             @NonNull HttpMessageNotReadableException ex,
             @NonNull HttpServletRequest request
     ) {
@@ -92,7 +94,7 @@ public class GlobalControllerAdvice {
     // 409 - Conflicts
     // ----------------------------
     @ExceptionHandler(IllegalStateException.class)
-    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleConflict(
+    public ResponseEntity<ApiErrorResponse> handleConflict(
             @NonNull IllegalStateException ex,
             @NonNull HttpServletRequest request
     ) {
@@ -107,6 +109,30 @@ public class GlobalControllerAdvice {
                 .build();
 
         return org.springframework.http.ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
+
+    // ----------------------------
+    // 422 - Domain / business rule violations
+    // ----------------------------
+    @ExceptionHandler(EntityException.class)
+    public ResponseEntity<ApiErrorResponse> handleDomain(
+            @NonNull EntityException ex,
+            @NonNull HttpServletRequest request
+    ) {
+        HttpStatus status = ex.status() == null ? HttpStatus.valueOf(422) : ex.status();
+        String code = ex.code() == null ? "DOMAIN_ERROR" : ex.code();
+
+        var body = ApiErrorResponse.builder()
+                .timestamp(Instant.now().toString())
+                .status(status.value())
+                .error(status.getReasonPhrase())
+                .code(code)
+                .message(ex.getMessage() == null ? "Domain rule violated" : ex.getMessage())
+                .userMessage("")
+                .path(request.getRequestURI())
+                .build();
+
+        return ResponseEntity.status(status).body(body);
     }
 
     @Contract("_ -> new")
