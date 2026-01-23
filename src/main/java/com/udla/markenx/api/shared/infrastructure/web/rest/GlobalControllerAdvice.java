@@ -160,6 +160,27 @@ public class GlobalControllerAdvice {
         return org.springframework.http.ResponseEntity.status(status).body(body);
     }
 
+    // ----------------------------
+    // 500 - Fallback
+    // ----------------------------
+    @ExceptionHandler(Exception.class)
+    public org.springframework.http.ResponseEntity<ApiErrorResponse> handleUnhandled(
+            @NonNull Exception ex,
+            @NonNull HttpServletRequest request
+    ) {
+        var body = ApiErrorResponse.builder()
+                .timestamp(Instant.now().toString())
+                .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .error(HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .code("INTERNAL_ERROR")
+                .message("Unexpected error")
+                .userMessage("Ocurrió un error inesperado. Inténtalo más tarde.")
+                .path(request.getRequestURI())
+                .build();
+
+        return org.springframework.http.ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+    }
+
     @Contract("_ -> new")
     private ApiErrorResponse.@NonNull FieldViolation toViolation(@NonNull FieldError fe) {
         return new ApiErrorResponse.FieldViolation(
