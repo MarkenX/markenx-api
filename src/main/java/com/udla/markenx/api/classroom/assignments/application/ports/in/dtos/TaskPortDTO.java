@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 /**
  * DTO for Task data at the application port layer.
- * Note: currentAttempt is now tracked per student in StudentTaskProgress.
+ * Note: status and currentAttempt are now tracked per student in StudentTaskProgress.
  */
 public record TaskPortDTO(
         String id,
@@ -13,7 +13,6 @@ public record TaskPortDTO(
         String summary,
         LocalDateTime deadline,
         double minScoreToPass,
-        String status,
         int maxAttempts,
         String courseId,
         String scenarioId

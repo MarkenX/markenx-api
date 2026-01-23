@@ -5,7 +5,6 @@ import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidScena
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jspecify.annotations.NonNull;
 
@@ -13,7 +12,7 @@ import java.time.LocalDateTime;
 
 /**
  * Task aggregate representing an assignment that students can attempt.
- * Note: currentAttempt has been moved to StudentTaskProgress (per student-task basis).
+ * Note: status and currentAttempt are tracked per student in StudentTaskProgress.
  */
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Task extends Assignment {
@@ -28,12 +27,11 @@ public class Task extends Assignment {
             AssignmentInfo info,
             AssignmentDeadline deadline,
             AssignmentScore minScoreToPass,
-            AssignmentStatus status,
-            String academicTermId,
+            String courseId,
             int maxAttempts,
             String scenarioId
     ) {
-        super(id, info, deadline, minScoreToPass, status, academicTermId);
+        super(id, info, deadline, minScoreToPass, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
         this.scenarioId = validateScenarioId(scenarioId);
     }
@@ -46,12 +44,11 @@ public class Task extends Assignment {
             String summary,
             LocalDateTime deadline,
             double minScoreToPass,
-            AssignmentStatus status,
             String courseId,
             int maxAttempts,
             String scenarioId
     ) {
-        super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, status, courseId);
+        super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
         this.scenarioId = validateScenarioId(scenarioId);
     }
@@ -74,7 +71,6 @@ public class Task extends Assignment {
                 info,
                 AssignmentDeadline.future(deadline),
                 minScoreToPass,
-                AssignmentStatus.NOT_STARTED,
                 courseId,
                 maxAttempts,
                 scenarioId
@@ -95,7 +91,6 @@ public class Task extends Assignment {
                 info,
                 AssignmentDeadline.historical(deadline),
                 minScoreToPass,
-                AssignmentStatus.OUTDATED,
                 courseId,
                 maxAttempts,
                 scenarioId
@@ -141,37 +136,6 @@ public class Task extends Assignment {
     }
 
     // endregion
-
-    /**
-     * Updates task status based on attempt result.
-     * Note: currentAttempt tracking is now handled by StudentTaskProgress.
-     *
-     * @param score The score achieved in the attempt
-     * @param currentAttempt The current attempt number from StudentTaskProgress
-     */
-    public void registerAttemptResult(@NonNull AssignmentScore score, int currentAttempt) {
-        if (isCompleted() || isFailed()) return;
-
-        if (score.isGreaterOrEqualThan(this.minScoreToPass)) {
-            transitionTo(AssignmentStatus.COMPLETED);
-            return;
-        }
-
-        if (deadline.isOverdue() || currentAttempt >= maxAttempts) {
-            transitionTo(AssignmentStatus.FAILED);
-            return;
-        }
-
-        transitionTo(AssignmentStatus.IN_PROGRESS);
-    }
-
-    public void markAsFailedIfNotCompleted() {
-        if (this.status == AssignmentStatus.COMPLETED) return;
-
-        if (deadline.isOverdue()) {
-            transitionTo(AssignmentStatus.FAILED);
-        }
-    }
 
     @Override
     public String toString() {

@@ -16,7 +16,6 @@ public class TaskResponseDTOMapper {
                 query.summary(),
                 query.deadline(),
                 query.minScoreToPass(),
-                query.status(),
                 query.maxAttempts(),
                 query.courseId(),
                 query.scenarioId()

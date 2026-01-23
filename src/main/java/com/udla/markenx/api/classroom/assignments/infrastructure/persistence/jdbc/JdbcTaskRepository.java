@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * JDBC implementation of TaskCommandRepository.
- * Note: currentAttempt is now tracked in student_task_progress table.
+ * Note: status and currentAttempt are now tracked in student_task_progress table.
  */
 @Repository
 @RequiredArgsConstructor
@@ -23,13 +23,12 @@ public class JdbcTaskRepository implements TaskCommandRepository {
     public Task save(@NonNull Task task) {
         jdbcTemplate.update("""
         INSERT INTO tasks
-        (id, lifecycle_status, status, title, summary, deadline, course_id,
+        (id, lifecycle_status, title, summary, deadline, course_id,
          min_score_to_pass, max_attempts, scenario_id)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
                 task.getId(),
                 task.getLifecycleStatus().name(),
-                task.getStatus().name(),
                 task.getInfo().title(),
                 task.getInfo().summary(),
                 task.getDeadline().value(),
@@ -54,7 +53,6 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         UPDATE tasks
         SET
             lifecycle_status = ?,
-            status = ?,
             title = ?,
             summary = ?,
             deadline = ?,
@@ -65,7 +63,6 @@ public class JdbcTaskRepository implements TaskCommandRepository {
         WHERE id = ?
         """,
                 task.getLifecycleStatus().name(),
-                task.getStatus().name(),
                 task.getInfo().title(),
                 task.getInfo().summary(),
                 task.getDeadline().value(),

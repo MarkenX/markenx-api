@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static org.jooq.impl.DSL.field;
 
@@ -24,7 +23,6 @@ public class JooqTaskRepository implements TaskQueryRepository {
 
     private static final String TABLE = "tasks";
     private static final Field<String> TERM_ID_FIELD = field("id", String.class);
-    private static final Field<String> TASK_STATUS_FIELD = field("status", String.class);
 
     private final DSLContext dsl;
     private final TaskRecordMapper mapper = new TaskRecordMapper();
@@ -75,23 +73,6 @@ public class JooqTaskRepository implements TaskQueryRepository {
                 pageable,
                 safeTotal
         );
-    }
-
-    @Override
-    public List<Task> findByStatuses(@NonNull Set<String> statuses, boolean exclude) {
-        if (statuses.isEmpty())
-            return exclude ? findAll() : List.of();
-
-        var values = statuses.stream().toList();
-        var condition = exclude
-                ? TASK_STATUS_FIELD.notIn(values)
-                : TASK_STATUS_FIELD.in(values);
-
-        return Optional.of(dsl.select()
-                .from(TABLE)
-                .where(condition)
-                .fetch(mapper::toDomain))
-                .orElseThrow(() -> AssignmentException.noneFoundByStatuses(statuses));
     }
 
     @Override

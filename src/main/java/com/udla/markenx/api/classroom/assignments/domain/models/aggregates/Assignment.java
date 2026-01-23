@@ -1,12 +1,10 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidAssignmentCodeException;
-import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidAssignmentStatusTransitionException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidCourseIdException;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jetbrains.annotations.Contract;
@@ -23,10 +21,8 @@ public abstract class Assignment extends Entity {
 
     private long code;
     private AssignmentInfo info;
-    // TODO: Se debe validar que el deadline esté dentro del periodo académico activo
     protected AssignmentDeadline deadline;
     protected AssignmentScore minScoreToPass;
-    protected AssignmentStatus status;
 
     private String courseId;
 
@@ -37,14 +33,12 @@ public abstract class Assignment extends Entity {
             AssignmentInfo info,
             AssignmentDeadline deadline,
             AssignmentScore minScoreToPass,
-            AssignmentStatus status,
             String courseId) {
         super();
         this.id = id;
         this.info = info;
         this.deadline = deadline;
         this.minScoreToPass = minScoreToPass;
-        this.status = status;
         this.courseId = validateCourseId(courseId);
     }
 
@@ -56,7 +50,6 @@ public abstract class Assignment extends Entity {
             String summary,
             LocalDateTime deadline,
             double minScoreToPass,
-            AssignmentStatus status,
             String courseId
     ) {
         super(lifecycleStatus);
@@ -65,7 +58,6 @@ public abstract class Assignment extends Entity {
         this.info = new AssignmentInfo(title, summary);
         this.deadline = new AssignmentDeadline(deadline);
         this.minScoreToPass = new AssignmentScore(minScoreToPass);
-        this.status = status;
         this.courseId = validateCourseId(courseId);
     }
 
@@ -97,25 +89,10 @@ public abstract class Assignment extends Entity {
         return this.deadline.time();
     }
 
-    public AssignmentStatus getStatus() {
-        return this.status;
-    }
-
     public String getCourseId() {
         return this.courseId;
     }
 
-    public boolean isCompleted() {
-        return this.status == AssignmentStatus.COMPLETED;
-    }
-
-    public boolean isFailed() {
-        return this.status == AssignmentStatus.FAILED;
-    }
-
-    public boolean isOutdated() {
-        return this.status == AssignmentStatus.OUTDATED;
-    }
     // endregion
 
     // region Setters
@@ -155,13 +132,6 @@ public abstract class Assignment extends Entity {
     }
 
     // endregion
-
-    protected void transitionTo(AssignmentStatus next) {
-        if (!status.canTransitionTo(next)) {
-            throw new InvalidAssignmentStatusTransitionException(status, next);
-        }
-        this.status = next;
-    }
 
     // region Equals & HashCode
 

@@ -1,11 +1,16 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.entities;
 
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidAssignmentStatusTransitionException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidCurrentAttemptException;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import org.jspecify.annotations.NonNull;
+
+import java.time.LocalDateTime;
 
 /**
  * Entity representing a student's progress on a specific task.
- * Tracks the current attempt number per (student, task) combination.
+ * Tracks the current attempt number and status per (student, task) combination.
  */
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class StudentTaskProgress {
@@ -13,17 +18,20 @@ public class StudentTaskProgress {
     private final String studentId;
     private final String taskId;
     private int currentAttempt;
+    private AssignmentStatus status;
 
     // region Constructors
 
     public StudentTaskProgress(
             @NonNull String studentId,
             @NonNull String taskId,
-            int currentAttempt
+            int currentAttempt,
+            @NonNull AssignmentStatus status
     ) {
         this.studentId = validateStudentId(studentId);
         this.taskId = validateTaskId(taskId);
         this.currentAttempt = validateCurrentAttempt(currentAttempt);
+        this.status = status;
     }
 
     // endregion
@@ -31,13 +39,13 @@ public class StudentTaskProgress {
     // region Factories
 
     /**
-     * Creates a new StudentTaskProgress with zero attempts.
+     * Creates a new StudentTaskProgress with zero attempts and NOT_STARTED status.
      */
     public static @NonNull StudentTaskProgress create(
             @NonNull String studentId,
             @NonNull String taskId
     ) {
-        return new StudentTaskProgress(studentId, taskId, 0);
+        return new StudentTaskProgress(studentId, taskId, 0, AssignmentStatus.NOT_STARTED);
     }
 
     // endregion
@@ -54,6 +62,10 @@ public class StudentTaskProgress {
 
     public int getCurrentAttempt() {
         return this.currentAttempt;
+    }
+
+    public AssignmentStatus getStatus() {
+        return this.status;
     }
 
     // endregion
@@ -86,6 +98,83 @@ public class StudentTaskProgress {
      */
     public boolean hasExhaustedAttempts(int maxAttempts) {
         return currentAttempt >= maxAttempts;
+    }
+
+    /**
+     * Registers the result of an attempt and updates status accordingly.
+     *
+     * @param score The score achieved in the attempt
+     * @param minScoreToPass The minimum score required to pass
+     * @param maxAttempts The maximum attempts allowed
+     * @param deadline The task deadline
+     */
+    public void registerAttemptResult(
+            @NonNull AssignmentScore score,
+            @NonNull AssignmentScore minScoreToPass,
+            int maxAttempts,
+            @NonNull LocalDateTime deadline
+    ) {
+        if (isCompleted() || isFailed()) {
+            return;
+        }
+
+        if (score.isGreaterOrEqualThan(minScoreToPass)) {
+            transitionTo(AssignmentStatus.COMPLETED);
+            return;
+        }
+
+        if (isOverdue(deadline) || currentAttempt >= maxAttempts) {
+            transitionTo(AssignmentStatus.FAILED);
+            return;
+        }
+
+        transitionTo(AssignmentStatus.IN_PROGRESS);
+    }
+
+    /**
+     * Marks this progress as failed if the deadline has passed and not completed.
+     *
+     * @param deadline The task deadline
+     */
+    public void markAsFailedIfOverdue(@NonNull LocalDateTime deadline) {
+        if (isCompleted()) {
+            return;
+        }
+
+        if (isOverdue(deadline)) {
+            transitionTo(AssignmentStatus.FAILED);
+        }
+    }
+
+    public boolean isCompleted() {
+        return this.status == AssignmentStatus.COMPLETED;
+    }
+
+    public boolean isFailed() {
+        return this.status == AssignmentStatus.FAILED;
+    }
+
+    public boolean isNotStarted() {
+        return this.status == AssignmentStatus.NOT_STARTED;
+    }
+
+    public boolean isInProgress() {
+        return this.status == AssignmentStatus.IN_PROGRESS;
+    }
+
+    // endregion
+
+    // region Status Transitions
+
+    private void transitionTo(@NonNull AssignmentStatus newStatus) {
+        if (!this.status.canTransitionTo(newStatus)) {
+            throw new InvalidAssignmentStatusTransitionException(this.status, newStatus);
+        }
+        this.status = newStatus;
+    }
+
+    private boolean isOverdue(@NonNull LocalDateTime deadline) {
+        return LocalDateTime.now().isAfter(deadline);
     }
 
     // endregion
