@@ -39,7 +39,8 @@ public class QueryStudentTasksProgressHandler implements QueryStudentTasksProgre
                 progress.getTaskId(),
                 progress.getCurrentAttempt(),
                 task.getMaxAttempts(),
-                remainingAttempts
+                remainingAttempts,
+                progress.getStatus().name()
         );
     }
 }

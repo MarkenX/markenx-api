@@ -2,6 +2,7 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jo
 
 import com.udla.markenx.api.classroom.assignments.application.ports.out.StudentTaskProgressQueryRepository;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
+import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static org.jooq.impl.DSL.field;
 import static org.jooq.impl.DSL.table;
@@ -59,11 +61,22 @@ public class JooqStudentTaskProgressRepository implements StudentTaskProgressQue
                 .map(this::mapToProgress);
     }
 
+    @Override
+    public List<StudentTaskProgress> findByStatuses(@NonNull Set<String> statuses) {
+        return dsl
+                .select()
+                .from(table(TABLE))
+                .where(field("status").in(statuses))
+                .fetch()
+                .map(this::mapToProgress);
+    }
+
     private StudentTaskProgress mapToProgress(Record record) {
         return new StudentTaskProgress(
                 record.get("student_id", String.class),
                 record.get("task_id", String.class),
-                record.get("current_attempt", Integer.class)
+                record.get("current_attempt", Integer.class),
+                AssignmentStatus.valueOf(record.get("status", String.class))
         );
     }
 }

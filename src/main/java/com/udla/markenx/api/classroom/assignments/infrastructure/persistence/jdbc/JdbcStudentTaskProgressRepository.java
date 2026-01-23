@@ -21,12 +21,13 @@ public class JdbcStudentTaskProgressRepository implements StudentTaskProgressCom
     public StudentTaskProgress save(@NonNull StudentTaskProgress progress) {
         jdbcTemplate.update("""
             INSERT INTO student_task_progress
-            (student_id, task_id, current_attempt)
-            VALUES (?, ?, ?)
+            (student_id, task_id, current_attempt, status)
+            VALUES (?, ?, ?, ?)
             """,
                 progress.getStudentId(),
                 progress.getTaskId(),
-                progress.getCurrentAttempt()
+                progress.getCurrentAttempt(),
+                progress.getStatus().name()
         );
 
         return jdbcTemplate.queryForObject("""
@@ -44,10 +45,11 @@ public class JdbcStudentTaskProgressRepository implements StudentTaskProgressCom
     public StudentTaskProgress update(@NonNull StudentTaskProgress progress) {
         jdbcTemplate.update("""
             UPDATE student_task_progress
-            SET current_attempt = ?
+            SET current_attempt = ?, status = ?
             WHERE student_id = ? AND task_id = ?
             """,
                 progress.getCurrentAttempt(),
+                progress.getStatus().name(),
                 progress.getStudentId(),
                 progress.getTaskId()
         );
@@ -67,14 +69,16 @@ public class JdbcStudentTaskProgressRepository implements StudentTaskProgressCom
     public StudentTaskProgress saveOrUpdate(@NonNull StudentTaskProgress progress) {
         jdbcTemplate.update("""
             INSERT INTO student_task_progress
-            (student_id, task_id, current_attempt)
-            VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE current_attempt = ?
+            (student_id, task_id, current_attempt, status)
+            VALUES (?, ?, ?, ?)
+            ON DUPLICATE KEY UPDATE current_attempt = ?, status = ?
             """,
                 progress.getStudentId(),
                 progress.getTaskId(),
                 progress.getCurrentAttempt(),
-                progress.getCurrentAttempt()
+                progress.getStatus().name(),
+                progress.getCurrentAttempt(),
+                progress.getStatus().name()
         );
 
         return jdbcTemplate.queryForObject("""

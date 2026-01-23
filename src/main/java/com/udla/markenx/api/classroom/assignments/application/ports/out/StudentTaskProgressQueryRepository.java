@@ -5,6 +5,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Query repository for StudentTaskProgress read operations.
@@ -38,4 +39,12 @@ public interface StudentTaskProgressQueryRepository {
      * @return List of progress records for the task
      */
     List<StudentTaskProgress> findByTaskId(@NonNull String taskId);
+
+    /**
+     * Finds all progress records with the specified statuses.
+     *
+     * @param statuses The set of status names to filter by
+     * @return List of progress records matching the statuses
+     */
+    List<StudentTaskProgress> findByStatuses(@NonNull Set<String> statuses);
 }

@@ -127,7 +127,8 @@ public class StudentController {
                 progress.taskId(),
                 progress.currentAttempt(),
                 progress.maxAttempts(),
-                progress.remainingAttempts()
+                progress.remainingAttempts(),
+                progress.status()
         ));
     }
 

@@ -8,12 +8,14 @@ package com.udla.markenx.api.classroom.students.application.ports.in.dtos;
  * @param currentAttempt The current attempt number (0 if no attempts yet)
  * @param maxAttempts The maximum attempts allowed for the task
  * @param remainingAttempts The number of remaining attempts
+ * @param status The progress status (NOT_STARTED, IN_PROGRESS, COMPLETED, FAILED)
  */
 public record StudentTaskProgressPortDTO(
         String studentId,
         String taskId,
         int currentAttempt,
         int maxAttempts,
-        int remainingAttempts
+        int remainingAttempts,
+        String status
 ) {
 }
