@@ -5,11 +5,11 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskRequestDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.CreateTaskResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskAttemptResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers.TaskDTOMapper;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.CreateTaskRequestDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.CreateTaskResponseDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.TaskAttemptResponseDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.TaskResponseDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.mappers.TaskDTOMapper;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -80,13 +80,7 @@ public class TaskController {
             @RequestParam(defaultValue = "10") int size
     ) {
         var query = new TaskPageQueryCriteria(page, size);
-        Page<@NotNull TaskResponseDTO> result =
-                queryTasksUseCase.listTasksPage(query).map(mapper::toResponseDTO);
-
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
+        Page<@NotNull TaskResponseDTO> result = queryTasksUseCase.listTasksPage(query).map(mapper::toResponseDTO);
         return ResponseEntity.ok(result);
     }
 

@@ -1,7 +1,7 @@
-package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.mappers;
+package com.udla.markenx.api.classroom.assignments.infrastructure.web.mappers;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos.TaskResponseDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.TaskResponseDTO;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.infrastructure.web.rest.dtos;
+package com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import org.jetbrains.annotations.Contract;
