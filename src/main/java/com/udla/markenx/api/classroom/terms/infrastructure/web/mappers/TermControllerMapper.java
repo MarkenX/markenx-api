@@ -18,8 +18,11 @@ public class TermControllerMapper {
                 query.id(),
                 query.startDate(),
                 query.endDate(),
-                query.status(),
-                query.toString()
+                new TermDetailResponseDTO.TermStatusResponseDTO(
+                        query.status(),
+                        query.statusLabel()
+                ),
+                query.label()
         );
     }
 }

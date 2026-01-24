@@ -95,11 +95,6 @@ public class TermController {
     ) {
         var criteria = new TermPageQueryCriteria(page, size);
         Page<TermDetailResponseDTO> terms = query.listTermsPage(criteria).map(mapper::toDetailResponseDTO);
-
-        if (terms.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
         return ResponseEntity.ok(terms);
     }
 }

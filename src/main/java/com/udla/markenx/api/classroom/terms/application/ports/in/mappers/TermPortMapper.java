@@ -12,6 +12,7 @@ public class TermPortMapper {
                 domain.getStartDate(),
                 domain.getEndDate(),
                 domain.getStatus().name(),
+                domain.getStatus().getLabel(),
                 domain.toString()
         );
     }

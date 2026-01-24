@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class TaskStatusScheduler {
 
     private static final Set<String> PROCESSABLE_STATUSES = Set.of(
-            AssignmentStatus.NOT_STARTED.name(),
             AssignmentStatus.IN_PROGRESS.name()
     );
 

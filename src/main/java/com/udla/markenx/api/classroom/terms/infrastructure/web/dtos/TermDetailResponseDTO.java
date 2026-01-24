@@ -6,7 +6,13 @@ public record TermDetailResponseDTO(
         String id,
         LocalDate startDate,
         LocalDate endDate,
-        String status,
+        TermStatusResponseDTO status,
         String label
 ) {
+
+    public record TermStatusResponseDTO(
+            String code,
+            String label
+    ) {
+    }
 }

@@ -24,7 +24,7 @@ public class StudentResponseDTOMapper {
         );
     }
 
-    public StudentProfileResponseDTO toProfileResponseDTO(StudentProfilePortDTO port) {
+    public StudentProfileResponseDTO toProfileResponseDTO(@NonNull StudentProfilePortDTO port) {
         return new StudentProfileResponseDTO(
                 port.id(),
                 port.email(),

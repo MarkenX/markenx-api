@@ -11,6 +11,7 @@ public record TermPortDTO(
         LocalDate startDate,
         LocalDate endDate,
         String status,
+        String statusLabel,
         String label
 ) {
     public boolean isActive() {
