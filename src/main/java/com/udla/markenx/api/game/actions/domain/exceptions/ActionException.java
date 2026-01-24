@@ -6,6 +6,7 @@ import org.jspecify.annotations.NonNull;
 
 public class ActionException extends RuntimeException {
 
+    private static final String CODE = "ACTION_EXCEPTION";
     private static final String ENTITY_NAME = "Acción";
 
     public ActionException(String message) {
@@ -18,6 +19,6 @@ public class ActionException extends RuntimeException {
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundById(String id) {
-        return EntityNotFoundException.byId(ENTITY_NAME, id);
+        return EntityNotFoundException.byId(CODE, ENTITY_NAME, id);
     }
 }

@@ -9,6 +9,7 @@ import java.util.Set;
 
 public abstract class TermException extends RuntimeException {
 
+    private static final String CODE = "TERM_EXCEPTION";
     private static final String ENTITY_NAME = "Periodo académico";
     private static final String YEAR_CRITERIA = "año";
     private static final String STATUS_CRITERIA = "estatus";
@@ -23,21 +24,21 @@ public abstract class TermException extends RuntimeException {
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundById(String id) {
-        return EntityNotFoundException.byId(ENTITY_NAME, id);
+        return EntityNotFoundException.byId(CODE, ENTITY_NAME, id);
     }
 
     @Contract(" -> new")
     public static @NonNull EntitiesNotFoundException noneFound() {
-        return EntitiesNotFoundException.none(ENTITY_NAME);
+        return EntitiesNotFoundException.none(CODE, ENTITY_NAME);
     }
 
     @Contract("_ -> new")
     public static @NonNull EntitiesNotFoundException noneFoundByYear(int year) {
-        return EntitiesNotFoundException.byCriteria(ENTITY_NAME, YEAR_CRITERIA, year);
+        return EntitiesNotFoundException.byCriteria(CODE, ENTITY_NAME, YEAR_CRITERIA, year);
     }
 
     @Contract("_ -> new")
     public static @NonNull EntitiesNotFoundException noneFoundByStatuses(Set<String> statuses) {
-        return EntitiesNotFoundException.byCriteria(ENTITY_NAME, STATUS_CRITERIA, statuses);
+        return EntitiesNotFoundException.byCriteria(CODE, ENTITY_NAME, STATUS_CRITERIA, statuses);
     }
 }

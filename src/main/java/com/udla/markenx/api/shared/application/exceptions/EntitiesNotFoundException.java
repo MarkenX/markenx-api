@@ -19,22 +19,22 @@ public class EntitiesNotFoundException extends EntityException {
     private final String criteria;
     private final Object criteriaValue;
 
-    public EntitiesNotFoundException(String entityName, @Nullable String criteria, @Nullable Object criteriaValue) {
-        super(buildMessage(entityName, criteria, criteriaValue));
+    public EntitiesNotFoundException(String code, String entityName, @Nullable String criteria, @Nullable Object criteriaValue) {
+        super(code, buildMessage(entityName, criteria, criteriaValue));
         this.entityName = entityName;
         this.criteria = criteria;
         this.criteriaValue = criteriaValue;
     }
 
-    public EntitiesNotFoundException(String entityName, Map<String, Object> criteria) {
-        super(buildMessage(entityName, criteria));
+    public EntitiesNotFoundException(String code, String entityName, Map<String, Object> criteria) {
+        super(code, buildMessage(entityName, criteria));
         this.entityName = entityName;
         this.criteria = "multiple";
         this.criteriaValue = criteria;
     }
 
-    public EntitiesNotFoundException(String entityName) {
-        super(buildMessage(entityName, null, null));
+    public EntitiesNotFoundException(String code, String entityName) {
+        super(code, buildMessage(entityName, null, null));
         this.entityName = entityName;
         this.criteria = null;
         this.criteriaValue = null;
@@ -121,18 +121,15 @@ public class EntitiesNotFoundException extends EntityException {
         return criteriaValue;
     }
 
-    @Contract("_ -> new")
-    public static @NonNull EntitiesNotFoundException none(String entityName) {
-        return new EntitiesNotFoundException(entityName);
+    public static @NonNull EntitiesNotFoundException none(String code, String entityName) {
+        return new EntitiesNotFoundException(code, entityName);
     }
 
-    @Contract("_, _, _ -> new")
-    public static @NonNull EntitiesNotFoundException byCriteria(String entityName, String criteria, Object value) {
-        return new EntitiesNotFoundException(entityName, criteria, value);
+    public static @NonNull EntitiesNotFoundException byCriteria(String code, String entityName, String criteria, Object value) {
+        return new EntitiesNotFoundException(code, entityName, criteria, value);
     }
 
-    @Contract("_, _ -> new")
-    public static @NonNull EntitiesNotFoundException byMultipleCriteria(String entityName, Map<String, Object> criteria) {
-        return new EntitiesNotFoundException(entityName, criteria);
+    public static @NonNull EntitiesNotFoundException byMultipleCriteria(String code, String entityName, Map<String, Object> criteria) {
+        return new EntitiesNotFoundException(code, entityName, criteria);
     }
 }

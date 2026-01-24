@@ -6,6 +6,7 @@ import org.jspecify.annotations.NonNull;
 
 public class GameEventException extends RuntimeException {
 
+    private static final String CODE = "GAME_EVENT_EXCEPTION";
     private static final String ENTITY_NAME = "Evento de juego";
 
     public GameEventException(String message) {
@@ -18,7 +19,7 @@ public class GameEventException extends RuntimeException {
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundById(String id) {
-        return EntityNotFoundException.byId(ENTITY_NAME, id);
+        return EntityNotFoundException.byId(CODE, ENTITY_NAME, id);
     }
 
 }

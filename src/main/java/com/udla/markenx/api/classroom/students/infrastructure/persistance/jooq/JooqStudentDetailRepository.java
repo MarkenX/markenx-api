@@ -72,7 +72,7 @@ public class JooqStudentDetailRepository implements StudentDetailQueryRepository
     @Override
     public StudentDetailPortDTO findByIdOrThrow(String id) {
         return findById(id)
-                .orElseThrow(() -> new EntityNotFoundException(StudentUserReadDTO.class.getName(), "id", id));
+                .orElseThrow(() -> StudentException.notFoundById(id));
     }
 
     @Override

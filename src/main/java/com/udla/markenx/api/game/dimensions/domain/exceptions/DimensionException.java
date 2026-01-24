@@ -6,6 +6,7 @@ import org.jspecify.annotations.NonNull;
 
 public class DimensionException extends RuntimeException {
 
+    private static final String CODE = "DIMENSION_EXCEPTION";
     private static final String ENTITY_NAME = "Dimensión";
 
     public DimensionException(String message) {
@@ -18,6 +19,6 @@ public class DimensionException extends RuntimeException {
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundById(String id) {
-        return EntityNotFoundException.byId(ENTITY_NAME, id);
+        return EntityNotFoundException.byId(CODE, ENTITY_NAME, id);
     }
 }

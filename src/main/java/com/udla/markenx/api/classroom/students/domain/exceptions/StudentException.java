@@ -7,6 +7,7 @@ import org.jspecify.annotations.NonNull;
 
 public abstract class StudentException extends RuntimeException {
 
+    private static final String CODE = "STUDENT_EXCEPTION";
     private static final String ENTITY_NAME = "Estudiante";
     private static final String EMAIL_CRITERIA = "correo";
 
@@ -20,16 +21,16 @@ public abstract class StudentException extends RuntimeException {
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundById(String id) {
-        return EntityNotFoundException.byId(ENTITY_NAME, id);
+        return EntityNotFoundException.byId(CODE, ENTITY_NAME, id);
     }
 
     @Contract("_ -> new")
     public static @NonNull EntityNotFoundException notFoundByEmail(String email) {
-        return EntityNotFoundException.byCriteria(ENTITY_NAME, EMAIL_CRITERIA, email);
+        return EntityNotFoundException.byCriteria(CODE, ENTITY_NAME, EMAIL_CRITERIA, email);
     }
 
     @Contract(" -> new")
     public static @NonNull EntitiesNotFoundException noneFound() {
-        return EntitiesNotFoundException.none(ENTITY_NAME);
+        return EntitiesNotFoundException.none(CODE, ENTITY_NAME);
     }
 }
