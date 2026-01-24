@@ -55,10 +55,15 @@ public class TaskController {
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get a task by id")
-    @ApiResponses(value = {
+    @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No task found")
+            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
+
     public TaskResponseDTO getById(@PathVariable String id) {
         var query = new TaskIdQuery(id);
         return mapper.toResponseDTO(queryTasksUseCase.getTaskById(query));
