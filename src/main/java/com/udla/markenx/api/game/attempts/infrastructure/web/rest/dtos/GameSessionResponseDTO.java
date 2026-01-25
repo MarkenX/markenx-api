@@ -1,6 +1,7 @@
 package com.udla.markenx.api.game.attempts.infrastructure.web.rest.dtos;
 
 import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
+import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -8,6 +9,20 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Response DTO for a game session (attempt).
+ *
+ * @param id The attempt ID
+ * @param taskId The associated task ID
+ * @param studentId The student ID
+ * @param sessionDate When the session occurred
+ * @param finalAcceptance The final acceptance rate (0.0-1.0)
+ * @param remainingBudget The remaining budget at end of session
+ * @param totalTurnsUsed Number of turns used
+ * @param profileDiscoveryPercentage Profile discovery percentage (0.0-1.0)
+ * @param outcome The attempt outcome (WIN, LOSE, or IN_PROGRESS)
+ * @param history Turn-by-turn history
+ */
 public record GameSessionResponseDTO(
         String id,
         String taskId,
@@ -17,7 +32,7 @@ public record GameSessionResponseDTO(
         BigDecimal remainingBudget,
         int totalTurnsUsed,
         double profileDiscoveryPercentage,
-        String finalOutcome,
+        AttemptOutcome outcome,
         List<TurnHistoryResponseDTO> history
 ) {
     public record TurnHistoryResponseDTO(
@@ -43,6 +58,10 @@ public record GameSessionResponseDTO(
                     .toList()
                 : List.of();
 
+        AttemptOutcome outcome = AttemptOutcome.from(
+                AttemptStatus.valueOf(response.finalOutcome())
+        );
+
         return new GameSessionResponseDTO(
                 response.id(),
                 response.taskId(),
@@ -52,7 +71,7 @@ public record GameSessionResponseDTO(
                 response.remainingBudget(),
                 response.totalTurnsUsed(),
                 response.profileDiscoveryPercentage(),
-                response.finalOutcome(),
+                outcome,
                 history
         );
     }

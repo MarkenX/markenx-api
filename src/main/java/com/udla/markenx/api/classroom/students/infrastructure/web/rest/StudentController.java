@@ -37,7 +37,6 @@ public class StudentController {
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentsProfileUseCase queryStudentsProfileUseCase;
-    private final QueryStudentTasksProgressUseCase queryStudentTasksProgressUseCase;
     private final QueryStudentTasksProgressDetailUseCase queryStudentTasksProgressDetailUseCase;
 
     @PostMapping
@@ -114,13 +113,13 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student or task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public StudentTaskProgressResponseDTO getTaskProgress(
+    public StudentTaskWithProgressResponseDTO getTaskProgress(
             @PathVariable String studentId,
             @PathVariable String taskId
     ) {
         var query = new StudentTaskProgressQuery(studentId, taskId);
-        var progress = queryStudentTasksProgressUseCase.getProgress(query);
-        return StudentTaskProgressResponseDTO.from(progress);
+        var taskWithProgress = queryStudentTasksProgressDetailUseCase.getTaskWithProgress(query);
+        return StudentTaskWithProgressResponseDTO.from(taskWithProgress);
     }
 
     @GetMapping("/{studentId}/tasks")

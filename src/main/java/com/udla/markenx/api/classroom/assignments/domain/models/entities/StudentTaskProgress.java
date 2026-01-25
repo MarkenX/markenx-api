@@ -103,6 +103,13 @@ public class StudentTaskProgress {
     /**
      * Registers the result of an attempt and updates status accordingly.
      *
+     * <p>Status transitions:</p>
+     * <ul>
+     *   <li>If score >= minScoreToPass → COMPLETED (WIN)</li>
+     *   <li>If all attempts exhausted with LOSE outcomes → FAILED</li>
+     *   <li>Otherwise → IN_PROGRESS</li>
+     * </ul>
+     *
      * @param score The score achieved in the attempt
      * @param minScoreToPass The minimum score required to pass
      * @param maxAttempts The maximum attempts allowed
@@ -114,7 +121,7 @@ public class StudentTaskProgress {
             int maxAttempts,
             @NonNull LocalDateTime deadline
     ) {
-        if (isCompleted() || isFailed()) {
+        if (isCompleted() || isFailed() || isOutdated()) {
             return;
         }
 
@@ -123,7 +130,8 @@ public class StudentTaskProgress {
             return;
         }
 
-        if (isOverdue(deadline) || currentAttempt >= maxAttempts) {
+        // All attempts exhausted with LOSE outcomes → FAILED
+        if (currentAttempt >= maxAttempts) {
             transitionTo(AssignmentStatus.FAILED);
             return;
         }
@@ -132,18 +140,36 @@ public class StudentTaskProgress {
     }
 
     /**
-     * Marks this progress as failed if the deadline has passed and not completed.
+     * Marks this progress based on deadline expiration.
+     *
+     * <p>Status transitions when overdue:</p>
+     * <ul>
+     *   <li>If no attempts made (currentAttempt == 0) → OUTDATED</li>
+     *   <li>If attempts made but not completed → FAILED</li>
+     * </ul>
      *
      * @param deadline The task deadline
      */
-    public void markAsFailedIfOverdue(@NonNull LocalDateTime deadline) {
-        if (isCompleted()) {
+    public void markAsExpiredIfOverdue(@NonNull LocalDateTime deadline) {
+        if (isCompleted() || isFailed() || isOutdated()) {
             return;
         }
 
         if (isOverdue(deadline)) {
-            transitionTo(AssignmentStatus.FAILED);
+            if (currentAttempt == 0) {
+                transitionTo(AssignmentStatus.OUTDATED);
+            } else {
+                transitionTo(AssignmentStatus.FAILED);
+            }
         }
+    }
+
+    /**
+     * @deprecated Use {@link #markAsExpiredIfOverdue(LocalDateTime)} instead.
+     */
+    @Deprecated(forRemoval = true)
+    public void markAsFailedIfOverdue(@NonNull LocalDateTime deadline) {
+        markAsExpiredIfOverdue(deadline);
     }
 
     public boolean isCompleted() {
@@ -160,6 +186,10 @@ public class StudentTaskProgress {
 
     public boolean isInProgress() {
         return this.status == AssignmentStatus.IN_PROGRESS;
+    }
+
+    public boolean isOutdated() {
+        return this.status == AssignmentStatus.OUTDATED;
     }
 
     // endregion

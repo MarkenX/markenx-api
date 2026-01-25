@@ -594,6 +594,101 @@ GET /api/students/{studentId}/attempts
 
 ---
 
+### Obtener Progreso de un Estudiante en una Tarea
+
+```
+GET /api/students/{studentId}/tasks/{taskId}/progress
+```
+
+**Descripción:** Obtiene el progreso de un estudiante en una tarea específica. Retorna la misma estructura que la lista de tareas con progreso, pero para una sola tarea.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+| taskId | string | UUID de la tarea |
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "string (UUID)",
+  "label": "string (e.g., TSK-0001)",
+  "title": "string",
+  "summary": "string",
+  "deadline": "YYYY-MM-DDTHH:mm:ss",
+  "minScoreToPass": "number (0.0-1.0)",
+  "status": "NOT_STARTED | IN_PROGRESS | COMPLETED | FAILED | OUTDATED",
+  "currentAttempt": "number (integer)",
+  "maxAttempts": "number (integer)",
+  "remainingAttempts": "number (integer)",
+  "scenarioId": "string (UUID)"
+}
+```
+
+**Estados del progreso (status):**
+
+| Estado | Descripción |
+|--------|-------------|
+| `NOT_STARTED` | No se han realizado intentos |
+| `IN_PROGRESS` | Al menos un intento realizado, sin completar ni agotar intentos |
+| `COMPLETED` | Al menos un intento con outcome WIN |
+| `FAILED` | Todos los intentos agotados con outcome LOSE |
+| `OUTDATED` | La tarea expiró sin ningún intento realizado |
+
+**Errores posibles:**
+
+- `401 Unauthorized` - No autenticado
+- `403 Forbidden` - No autorizado
+- `404 Not Found` - El estudiante o la tarea no existe
+- `500 Internal Server Error` - Error interno del servidor
+
+---
+
+### Obtener Todas las Tareas con Progreso de un Estudiante
+
+```
+GET /api/students/{studentId}/tasks
+```
+
+**Descripción:** Obtiene todas las tareas del curso del estudiante con su progreso específico en cada una.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": "string (UUID)",
+    "label": "string (e.g., TSK-0001)",
+    "title": "string",
+    "summary": "string",
+    "deadline": "YYYY-MM-DDTHH:mm:ss",
+    "minScoreToPass": "number (0.0-1.0)",
+    "status": "NOT_STARTED | IN_PROGRESS | COMPLETED | FAILED | OUTDATED",
+    "currentAttempt": "number (integer)",
+    "maxAttempts": "number (integer)",
+    "remainingAttempts": "number (integer)",
+    "scenarioId": "string (UUID)"
+  }
+]
+```
+
+**Estados del progreso (status):** Ver descripción en endpoint anterior.
+
+**Errores posibles:**
+
+- `401 Unauthorized` - No autenticado
+- `403 Forbidden` - No autorizado
+- `404 Not Found` - El estudiante no existe
+- `500 Internal Server Error` - Error interno del servidor
+
+---
+
 ### Listar Todos los Estudiantes
 
 ```
@@ -1034,8 +1129,7 @@ POST /api/attempts
 ```
 
 **Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El
-campo `finalOutcome` se calcula automáticamente comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la
-tarea.
+campo `outcome` se calcula automáticamente comparando `finalAcceptance` con el `minScoreToPass` de la tarea.
 
 **Request Body:**
 
@@ -1107,7 +1201,7 @@ tarea.
   "remainingBudget": 120.00,
   "totalTurnsUsed": 5,
   "profileDiscoveryPercentage": 0.75,
-  "finalOutcome": "APPROVED",
+  "outcome": "WIN",
   "history": [
     {
       "turnNumber": 1,
@@ -1122,11 +1216,15 @@ tarea.
 }
 ```
 
-**Nota sobre `finalOutcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request.
-Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea:
+**Nota sobre `outcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request.
 
-- Si `profileDiscoveryPercentage >= minScoreToPass` → `APPROVED`
-- Si `profileDiscoveryPercentage < minScoreToPass` → `DISAPPROVED`
+**Valores del outcome:**
+
+| Valor | Descripción |
+|-------|-------------|
+| `WIN` | El intento fue exitoso (`finalAcceptance >= minScoreToPass`) |
+| `LOSE` | El intento no fue exitoso (`finalAcceptance < minScoreToPass`) |
+| `IN_PROGRESS` | El intento aún no tiene resultado (solo para sesiones en curso) |
 
 **Errores posibles:**
 
@@ -1161,7 +1259,7 @@ GET /api/attempts/{id}
   "remainingBudget": 120.00,
   "totalTurnsUsed": 5,
   "profileDiscoveryPercentage": 0.75,
-  "finalOutcome": "APPROVED",
+  "outcome": "WIN",
   "history": [
     {
       "turnNumber": 1,
@@ -1215,10 +1313,12 @@ consolidado del desempeño del estudiante en la sesión de juego.
   "finalAcceptance": "number (0.0-1.0)",
   "remainingBudget": "number (BigDecimal)",
   "totalTurnsUsed": "number (integer)",
-  "finalOutcome": "APPROVED | DISAPPROVED",
+  "outcome": "WIN | LOSE",
   "evaluatedAt": "YYYY-MM-DDTHH:mm:ss"
 }
 ```
+
+**Nota:** El campo `outcome` solo puede ser `WIN` o `LOSE` para métricas, ya que solo se calculan para intentos completados.
 
 **Errores posibles:**
 

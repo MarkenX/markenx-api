@@ -22,7 +22,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TaskStatusScheduler {
 
+    /**
+     * Statuses that can transition when deadline expires:
+     * - NOT_STARTED → OUTDATED (no attempts made)
+     * - IN_PROGRESS → FAILED (attempts made but not completed)
+     */
     private static final Set<String> PROCESSABLE_STATUSES = Set.of(
+            AssignmentStatus.NOT_STARTED.name(),
             AssignmentStatus.IN_PROGRESS.name()
     );
 
@@ -50,7 +56,7 @@ public class TaskStatusScheduler {
                 .map(java.util.Optional::get)
                 .collect(Collectors.toMap(Task::getId, Function.identity()));
 
-        // 3. Check each progress and mark as failed if task is overdue
+        // 3. Check each progress and mark as expired if task is overdue
         int updatedCount = 0;
         for (StudentTaskProgress progress : progressRecords) {
             Task task = tasksById.get(progress.getTaskId());
@@ -59,7 +65,7 @@ public class TaskStatusScheduler {
             }
 
             AssignmentStatus previousStatus = progress.getStatus();
-            progress.markAsFailedIfOverdue(task.getDeadline().value());
+            progress.markAsExpiredIfOverdue(task.getDeadline().value());
 
             if (progress.getStatus() != previousStatus) {
                 progressCommandRepository.save(progress);
@@ -70,7 +76,7 @@ public class TaskStatusScheduler {
         }
 
         if (updatedCount > 0) {
-            log.info("Updated {} progress records to FAILED status due to overdue deadlines", updatedCount);
+            log.info("Updated {} progress records due to overdue deadlines", updatedCount);
         }
     }
 }

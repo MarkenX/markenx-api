@@ -16,10 +16,11 @@ import java.util.List;
  * @param summary The task summary
  * @param deadline The task deadline
  * @param minScoreToPass The minimum score required to pass (0.0-1.0)
- * @param status The task status
+ * @param status The task progress status
  * @param currentAttempt The student's current attempt number (0 if no attempts yet)
  * @param maxAttempts The maximum attempts allowed for the task
  * @param remainingAttempts The number of remaining attempts for the student
+ * @param scenarioId The ID of the scenario associated with the task
  */
 public record StudentTaskWithProgressResponseDTO(
         String id,
@@ -28,10 +29,11 @@ public record StudentTaskWithProgressResponseDTO(
         String summary,
         LocalDateTime deadline,
         double minScoreToPass,
-        String status,
+        TaskProgressStatus status,
         int currentAttempt,
         int maxAttempts,
-        int remainingAttempts
+        int remainingAttempts,
+        String scenarioId
 ) {
 
     @Contract("_ -> new")
@@ -43,10 +45,11 @@ public record StudentTaskWithProgressResponseDTO(
                 dto.summary(),
                 dto.deadline(),
                 dto.minScoreToPass(),
-                dto.status(),
+                TaskProgressStatus.fromName(dto.status()),
                 dto.currentAttempt(),
                 dto.maxAttempts(),
-                dto.remainingAttempts()
+                dto.remainingAttempts(),
+                dto.scenarioId()
         );
     }
 
