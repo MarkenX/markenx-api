@@ -29,6 +29,7 @@ public interface StudentAttemptQueryPort {
             double finalAcceptance,
             BigDecimal remainingBudget,
             int totalTurnsUsed,
+            String status,
             String finalOutcome,
             LocalDateTime evaluatedAt
     ) {}

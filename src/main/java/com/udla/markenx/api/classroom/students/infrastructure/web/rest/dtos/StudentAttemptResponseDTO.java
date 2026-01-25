@@ -12,7 +12,7 @@ import java.util.List;
  * Used by GET /students/{id}/attempts endpoint.
  */
 public record StudentAttemptResponseDTO(
-        String attemptId,
+        String id,
         String taskId,
         LocalDateTime startedAt,
         LocalDateTime finishedAt,

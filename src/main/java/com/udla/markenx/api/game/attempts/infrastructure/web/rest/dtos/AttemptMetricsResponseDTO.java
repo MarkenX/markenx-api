@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 
 /**
  * Response DTO for attempt metrics.
- * Used by GET /attempts/{attemptId}/metrics endpoint.
+ * Used by GET /attempts/{id}/metrics endpoint.
  *
  * <p>Note: The outcome field only contains WIN or LOSE values,
  * as metrics are only available for completed attempts.</p>

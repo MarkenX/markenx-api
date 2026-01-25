@@ -23,7 +23,7 @@ public class StudentPortMapper {
                 data.taskId(),
                 data.evaluatedAt(),
                 data.evaluatedAt(),
-                data.finalOutcome(),
+                data.status(),
                 data.finalOutcome(),
                 data.finalAcceptance());
     }

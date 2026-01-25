@@ -28,6 +28,7 @@ public class StudentAttemptQueryAdapter implements StudentAttemptQueryPort {
                         dto.finalAcceptance(),
                         dto.remainingBudget(),
                         dto.totalTurnsUsed(),
+                        dto.status(),
                         dto.finalOutcome(),
                         dto.evaluatedAt()
                 ))
