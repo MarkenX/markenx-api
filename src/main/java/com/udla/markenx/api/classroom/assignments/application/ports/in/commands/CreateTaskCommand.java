@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.application.ports.in.commands;
 
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.CreateTaskRequestDTO;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.requests.CreateTaskRequestDTO;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 

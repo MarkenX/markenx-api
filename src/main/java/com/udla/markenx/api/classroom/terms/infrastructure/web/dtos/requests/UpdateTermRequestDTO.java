@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.terms.infrastructure.web.dtos;
+package com.udla.markenx.api.classroom.terms.infrastructure.web.dtos.requests;
 
 import java.time.LocalDate;
 

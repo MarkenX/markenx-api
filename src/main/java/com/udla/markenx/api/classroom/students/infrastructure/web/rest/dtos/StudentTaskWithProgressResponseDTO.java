@@ -1,6 +1,11 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
 
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Response DTO for a task with student-specific progress.
@@ -28,4 +33,24 @@ public record StudentTaskWithProgressResponseDTO(
         int maxAttempts,
         int remainingAttempts
 ) {
+
+    @Contract("_ -> new")
+    public static @NonNull StudentTaskWithProgressResponseDTO from(@NonNull StudentTaskProgressDetailPortDTO dto) {
+        return new StudentTaskWithProgressResponseDTO(
+                dto.taskId(),
+                dto.taskLabel(),
+                dto.title(),
+                dto.summary(),
+                dto.deadline(),
+                dto.minScoreToPass(),
+                dto.status(),
+                dto.currentAttempt(),
+                dto.maxAttempts(),
+                dto.remainingAttempts()
+        );
+    }
+
+    public static @NonNull List<StudentTaskWithProgressResponseDTO> from(@NonNull List<StudentTaskProgressDetailPortDTO> list) {
+        return list.stream().map(StudentTaskWithProgressResponseDTO::from).toList();
+    }
 }

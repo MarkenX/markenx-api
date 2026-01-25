@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos;
+package com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.responses;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.TaskPortDTO;
 import org.jetbrains.annotations.Contract;
@@ -9,7 +9,7 @@ public record CreateTaskResponseDTO(
         String label
 ) {
     @Contract("_ -> new")
-    public static @NonNull CreateTaskResponseDTO from(@NonNull TaskPortDTO domain) {
-        return new CreateTaskResponseDTO(domain.id(), domain.label());
+    public static @NonNull CreateTaskResponseDTO from(@NonNull TaskPortDTO task) {
+        return new CreateTaskResponseDTO(task.id(), task.label());
     }
 }

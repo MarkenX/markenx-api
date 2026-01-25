@@ -2,6 +2,8 @@ package com.udla.markenx.api.classroom.courses.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
+import com.udla.markenx.api.classroom.courses.application.ports.out.CourseQueryRepository;
+import com.udla.markenx.api.classroom.courses.domain.models.aggregates.Course;
 import com.udla.markenx.api.classroom.terms.application.ports.in.dtos.TermPortDTO;
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.QueryTermsUseCase;
 import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
@@ -14,7 +16,14 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Seeder idempotente para cursos.
+ * Solo inserta cursos que no existen (verificados por nombre y término).
+ * Es seguro ejecutar múltiples veces sin duplicar datos.
+ */
 @Slf4j
 @Component
 @Profile("dev")
@@ -29,6 +38,7 @@ public class CourseSeeder extends BaseSeeder implements CommandLineRunner {
 
     private final CreateCourseUseCase createCourseUseCase;
     private final QueryTermsUseCase queryTermsUseCase;
+    private final CourseQueryRepository courseQueryRepository;
 
     @Override
     public String name() {
@@ -37,7 +47,8 @@ public class CourseSeeder extends BaseSeeder implements CommandLineRunner {
 
     @Override
     protected void doSeed() {
-        upcomingTerms().forEach(this::seedCoursesForTerm);
+        Set<String> existingCourseKeys = getExistingCourseKeys();
+        upcomingTerms().forEach(term -> seedCoursesForTerm(term, existingCourseKeys));
     }
 
     @Override
@@ -51,14 +62,40 @@ public class CourseSeeder extends BaseSeeder implements CommandLineRunner {
                 .toList();
     }
 
-    private void seedCoursesForTerm(TermPortDTO term) {
-        COURSE_NAMES.forEach(courseName ->
-                createCourse(courseName, term.id())
-        );
+    /**
+     * Obtiene las claves (nombre-termId) de los cursos existentes.
+     */
+    private Set<String> getExistingCourseKeys() {
+        return courseQueryRepository.findAll().stream()
+                .map(this::toCourseKey)
+                .collect(Collectors.toSet());
+    }
+
+    private String toCourseKey(@NonNull Course course) {
+        return course.getName() + "-" + course.getTermId();
+    }
+
+    private void seedCoursesForTerm(TermPortDTO term, Set<String> existingKeys) {
+        COURSE_NAMES.stream()
+                .filter(name -> !courseExists(name, term.id(), existingKeys))
+                .forEach(courseName -> createCourse(courseName, term.id()));
+    }
+
+    /**
+     * Verifica si un curso ya existe usando su clave natural (nombre-termId).
+     */
+    private boolean courseExists(String name, String termId, Set<String> existingKeys) {
+        String key = name + "-" + termId;
+        boolean exists = existingKeys.contains(key);
+        if (exists) {
+            log.debug("Course already exists, skipping: name={}, termId={}", name, termId);
+        }
+        return exists;
     }
 
     private void createCourse(String courseName, String termId) {
         var command = new CreateCourseCommand(courseName, termId, true);
         createCourseUseCase.handle(command);
+        log.debug("Course created: name={}, termId={}", courseName, termId);
     }
 }

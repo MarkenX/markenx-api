@@ -62,12 +62,12 @@ public class AttemptQueryService implements AttemptQueryUseCase {
     }
 
     @Override
-    public List<AttemptPortDTO> getByTaskId(String taskId) {
+    public List<AttemptPortDTO> listAttemptsByTaskId(String taskId) {
         return repository.findByTaskId(taskId).stream().map(mapper::toDTO).toList();
     }
 
     @Override
-    public List<AttemptPortDTO> getByStudentId(String studentId) {
+    public List<AttemptPortDTO> listAttemptsByStudentId(String studentId) {
         return repository.findByStudentId(studentId).stream().map(mapper::toDTO).toList();
     }
 }

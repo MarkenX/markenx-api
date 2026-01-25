@@ -2,8 +2,8 @@ package com.udla.markenx.api.classroom.students.application.ports.in.mappers;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentAttemptPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentAttemptQueryPort.StudentAttemptData;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
-import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import org.jspecify.annotations.NonNull;
 
 public class StudentPortMapper {
@@ -17,14 +17,14 @@ public class StudentPortMapper {
         );
     }
 
-    public StudentAttemptPortDTO toStudentAttemptPortDTO(@NonNull AttemptPortDTO port) {
+    public StudentAttemptPortDTO toStudentAttemptPortDTO(@NonNull StudentAttemptData data) {
         return new StudentAttemptPortDTO(
-                port.attemptId(),
-                port.taskId(),
-                port.evaluatedAt(),
-                port.evaluatedAt(),
-                port.finalOutcome(),
-                port.finalOutcome(),
-                port.finalAcceptance());
+                data.attemptId(),
+                data.taskId(),
+                data.evaluatedAt(),
+                data.evaluatedAt(),
+                data.finalOutcome(),
+                data.finalOutcome(),
+                data.finalAcceptance());
     }
 }

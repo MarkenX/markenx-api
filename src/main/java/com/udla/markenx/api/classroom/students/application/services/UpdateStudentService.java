@@ -50,7 +50,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = queryRepository.findByIdOrThrow(studentId);
         student.markIdentityCreationFailed();
         student.disable();
-        commandRepository.update(student);
+        commandRepository.save(student);
 
         events.publishEvent(
                 new StudentIdentityFailedEvent(studentId)
@@ -64,7 +64,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         student.assignUser(userId);
         student.markIdentityCreated();
 
-        commandRepository.update(student);
+        commandRepository.save(student);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         student.update(command.firstName(), command.lastName());
         student.changeCourse(command.courseId());
 
-        commandRepository.update(student);
+        commandRepository.save(student);
         return student;
     }
 
@@ -99,7 +99,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
     public void onUserDisabled(String studentId) {
         Student student = queryRepository.findByIdOrThrow(studentId);
         student.disable();
-        commandRepository.update(student);
+        commandRepository.save(student);
     }
 
     private void validateCanDisable(@NonNull Student student) {

@@ -2,13 +2,11 @@ package com.udla.markenx.api.classroom.courses.infrastructure.web.rest;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskCourseIdQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.QueryTasksUseCase;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.TaskResponseDTO;
-import com.udla.markenx.api.classroom.assignments.infrastructure.web.mappers.TaskDTOMapper;
+import com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.responses.TaskResponseDTO;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeTermCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.ChangeStatusCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.CreateCourseCommand;
 import com.udla.markenx.api.classroom.courses.application.ports.in.commands.UpdateCourseCommand;
-import com.udla.markenx.api.classroom.courses.infrastructure.web.mappers.CourseDTOMapper;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.CreateCourseUseCase;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.UpdateCourseUseCase;
@@ -18,11 +16,11 @@ import com.udla.markenx.api.classroom.courses.infrastructure.web.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,23 +30,26 @@ import java.util.List;
 @RequestMapping("courses")
 public class CourseController {
 
-    private final CourseDTOMapper mapper;
-    private final TaskDTOMapper taskMapper;
     private final CreateCourseUseCase createCourseUseCase;
     private final UpdateCourseUseCase updateCourseUseCase;
     private final QueryCourseUseCase queryCourseUseCase;
-    private final QueryCourseUseCase courseQueryUseCase;
     private final QueryTasksUseCase queryTasksUseCase;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new course")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Course created successfully")
+            @ApiResponse(responseCode = "201", description = "Course created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "Course already exists or conflict"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public CourseResponseDTO create(@RequestBody CreateCourseRequestDTO dto) {
+    public CourseResponseDTO create(@RequestBody @Valid CreateCourseRequestDTO dto) {
         var command = new CreateCourseCommand(dto.name(), dto.academicTermId(), false);
-        return mapper.toDTO(createCourseUseCase.handle(command));
+        return CourseResponseDTO.from(createCourseUseCase.handle(command));
     }
 
     @GetMapping("/{id}")
@@ -56,41 +57,52 @@ public class CourseController {
     @Operation(summary = "Get a course by id")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Course retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No course found")
+            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Course not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public CourseResponseDTO getById(@PathVariable String id) {
         var query = new CourseIdQuery(id);
-        return mapper.toDTO(queryCourseUseCase.getCourseById(query));
+        return CourseResponseDTO.from(queryCourseUseCase.getCourseById(query));
     }
 
     @GetMapping("/{courseId}/tasks")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all tasks for a course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tasks retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No tasks found for course")
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Course not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<TaskResponseDTO>> getTasksByCourseId(@PathVariable String courseId) {
+    public List<TaskResponseDTO> getTasksByCourseId(@PathVariable String courseId) {
         var criteria = new TaskCourseIdQueryCriteria(courseId);
         var tasks = queryTasksUseCase.listTasksByCourseId(criteria);
-        if (tasks.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(tasks.stream().map(taskMapper::toResponseDTO).toList());
+        return tasks.stream().map(TaskResponseDTO::from).toList();
     }
 
     @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Change course status")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Course disabled successfully"),
-            @ApiResponse(responseCode = "404", description = "No course found")
+            @ApiResponse(responseCode = "200", description = "Course status updated successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or malformed JSON"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Course not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid status change or conflict"),
+            @ApiResponse(responseCode = "422", description = "Domain rule violation"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public CourseResponseDTO changeStatus(
             @PathVariable String id,
-            @RequestBody UpdateCourseStatusRequestDTO request
+            @RequestBody @Valid UpdateCourseStatusRequestDTO request
     ) {
         var command = new ChangeStatusCommand(id, request.status());
-        return mapper.toDTO(updateCourseUseCase.changeStatus(command));
+        return CourseResponseDTO.from(updateCourseUseCase.changeStatus(command));
     }
 
     @PutMapping("/{id}/change-academic-term")
@@ -98,14 +110,20 @@ public class CourseController {
     @Operation(summary = "Change course related academic term")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Academic term changed successfully"),
-            @ApiResponse(responseCode = "404", description = "No course found")
+            @ApiResponse(responseCode = "400", description = "Invalid request body or malformed JSON"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Course not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict with academic term"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public CourseResponseDTO changeAcademicTerm(
             @PathVariable String id,
-            @RequestBody UpdateCourseAcademicTermRequestDTO request
+            @RequestBody @Valid UpdateCourseAcademicTermRequestDTO request
     ) {
         var command = new ChangeTermCommand(id, request.academicTermId());
-        return mapper.toDTO(updateCourseUseCase.changeTerm(command));
+        return CourseResponseDTO.from(updateCourseUseCase.changeTerm(command));
     }
 
     @PutMapping("/{id}")
@@ -113,34 +131,37 @@ public class CourseController {
     @Operation(summary = "Update course")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Course updated successfully"),
-            @ApiResponse(responseCode = "404", description = "No course found")
+            @ApiResponse(responseCode = "400", description = "Invalid request body or malformed JSON"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Course not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict with existing course"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public CourseResponseDTO update(
             @PathVariable String id,
-            @RequestBody UpdateCourseRequestDTO request
+            @RequestBody @Valid UpdateCourseRequestDTO request
     ) {
         var command = new UpdateCourseCommand(id, request.name());
-        return mapper.toDTO(updateCourseUseCase.update(command));
+        return CourseResponseDTO.from(updateCourseUseCase.update(command));
     }
 
     @GetMapping
-    @Operation(summary = "Get all courses")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all courses (paged)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Courses retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No courses found")
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<@NotNull Page<@NotNull CourseResponseDTO>> getAll(
+    public Page<@NotNull CourseResponseDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
         var query = new CoursePageQueryCriteria(page, size);
-        Page<@NotNull CourseResponseDTO> result =
-                courseQueryUseCase.listCoursesPage(query).map(mapper::toDTO);
-
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(result);
+        return CourseResponseDTO.from(queryCourseUseCase.listCoursesPage(query));
     }
 }

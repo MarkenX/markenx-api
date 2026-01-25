@@ -39,7 +39,7 @@ public class DisableUserIdentityHandler implements DisableUserIdentityUseCase {
         return Mono.fromRunnable(() -> {
             userQueryRepository.findById(userId).ifPresent(user -> {
                 user.disable();
-                userCommandRepository.update(user);
+                userCommandRepository.save(user);
             });
         });
     }
@@ -58,7 +58,7 @@ public class DisableUserIdentityHandler implements DisableUserIdentityUseCase {
 
         userQueryRepository.findById(event.identityId()).ifPresent(user -> {
             user.enable();
-            userCommandRepository.update(user);
+            userCommandRepository.save(user);
         });
 
         events.publishEvent(new IdentityDisableFailedEvent(event.sourceEntityId(), ex.getMessage()));

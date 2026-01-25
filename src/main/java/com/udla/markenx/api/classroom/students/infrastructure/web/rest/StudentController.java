@@ -9,19 +9,11 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.CreateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentAttemptResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentProfileResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentTaskProgressResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentTaskWithProgressResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.UpdateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentResponseDTOMapper;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.mappers.StudentUserReadDTOMapper;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -40,7 +32,6 @@ import java.util.List;
 @RequestMapping("students")
 public class StudentController {
 
-    // region Use Cases
     private final RegisterStudentUseCase registerStudentUseCase;
     private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
@@ -48,24 +39,23 @@ public class StudentController {
     private final QueryStudentsProfileUseCase queryStudentsProfileUseCase;
     private final QueryStudentTasksProgressUseCase queryStudentTasksProgressUseCase;
     private final QueryStudentTasksProgressDetailUseCase queryStudentTasksProgressDetailUseCase;
-    // endregion
-
-    // region Mappers
-    private final StudentResponseDTOMapper responseDTOMapper = new StudentResponseDTOMapper();
-    private final StudentUserReadDTOMapper userDTOMapper = new StudentUserReadDTOMapper();
-    private final StudentResponseDTOMapper studentResponseDTOMapper = new StudentResponseDTOMapper();
-    // endregion
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new student")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Student created successfully")
+            @ApiResponse(responseCode = "201", description = "Student created successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid request payload"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "409", description = "Student already exists or conflict"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public StudentResponseDTO create(@RequestBody CreateStudentRequestDTO dto) {
+    public StudentResponseDTO create(@RequestBody @Valid CreateStudentRequestDTO dto) {
         var command = new RegisterStudentCommand(
                 dto.firstName(), dto.lastName(), dto.courseId(), dto.email(), false);
-        return responseDTOMapper.toResponseDTO(registerStudentUseCase.handle(command), dto.email());
+        return StudentResponseDTO.from(registerStudentUseCase.handle(command), dto.email());
     }
 
     @GetMapping("/me")
@@ -73,7 +63,8 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Student profile retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Not authenticated"),
-            @ApiResponse(responseCode = "404", description = "Student not found for authenticated user")
+            @ApiResponse(responseCode = "404", description = "Student not found for authenticated user"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public ResponseEntity<StudentProfileResponseDTO> getProfile(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
@@ -86,7 +77,7 @@ public class StudentController {
         }
 
         var query = new StudentProfileQuery(email);
-        return ResponseEntity.ok(studentResponseDTOMapper.toProfileResponseDTO(
+        return ResponseEntity.ok(StudentProfileResponseDTO.from(
                 queryStudentsProfileUseCase.getByEmail(query)
         ));
     }
@@ -99,102 +90,97 @@ public class StudentController {
     }
 
     @GetMapping("/{studentId}/attempts")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all attempts for a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Attempts retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No attempts found for student")
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<StudentAttemptResponseDTO>> getAttemptsByStudentId(@PathVariable String studentId) {
+    public List<StudentAttemptResponseDTO> getAttemptsByStudentId(@PathVariable String studentId) {
         var query = new StudentAttemptsQuery(studentId);
-        return ResponseEntity.ok(queryStudentAttemptsUseCase.getAll(query).stream()
-                .map(studentResponseDTOMapper::toAttemptResponseDTO).toList());
+        return StudentAttemptResponseDTO.from(queryStudentAttemptsUseCase.getAll(query));
     }
 
     @GetMapping("/{studentId}/tasks/{taskId}/progress")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get student's progress on a specific task")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Progress retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Task not found")
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student or task not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<StudentTaskProgressResponseDTO> getTaskProgress(
+    public StudentTaskProgressResponseDTO getTaskProgress(
             @PathVariable String studentId,
             @PathVariable String taskId
     ) {
         var query = new StudentTaskProgressQuery(studentId, taskId);
         var progress = queryStudentTasksProgressUseCase.getProgress(query);
-        return ResponseEntity.ok(new StudentTaskProgressResponseDTO(
-                progress.studentId(),
-                progress.taskId(),
-                progress.currentAttempt(),
-                progress.maxAttempts(),
-                progress.remainingAttempts(),
-                progress.status()
-        ));
+        return StudentTaskProgressResponseDTO.from(progress);
     }
 
     @GetMapping("/{studentId}/tasks")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Get all tasks for a student with their specific progress")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Tasks with progress retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<List<StudentTaskWithProgressResponseDTO>> getAllTasksWithProgress(
+    public List<StudentTaskWithProgressResponseDTO> getAllTasksWithProgress(
             @PathVariable String studentId
     ) {
         var query = new StudentAllTasksProgressQuery(studentId);
         var tasksWithProgress = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
-        return ResponseEntity.ok(tasksWithProgress.stream()
-                .map(task -> new StudentTaskWithProgressResponseDTO(
-                        task.taskId(),
-                        task.taskLabel(),
-                        task.title(),
-                        task.summary(),
-                        task.deadline(),
-                        task.minScoreToPass(),
-                        task.status(),
-                        task.currentAttempt(),
-                        task.maxAttempts(),
-                        task.remainingAttempts()
-                ))
-                .toList());
+        return StudentTaskWithProgressResponseDTO.from(tasksWithProgress);
     }
 
     @GetMapping
-    @Operation(summary = "Get all students")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get all students (paged)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Students retrieved successfully"),
-            @ApiResponse(responseCode = "404", description = "No students found")
+            @ApiResponse(responseCode = "400", description = "Invalid pagination parameters"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public ResponseEntity<@NotNull Page<@NotNull StudentUserReadDTO>> getAll(
+    public Page<@NotNull StudentUserReadDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        Page<@NotNull StudentUserReadDTO> result = queryStudentsDetailUseCase.listStudentsPage(query)
-                .map(userDTOMapper::toDTO);
-
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(result);
+        return StudentUserReadDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
     }
 
     @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update a student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Student updated successfully"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "400", description = "Invalid request body or malformed JSON"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "409", description = "Conflict with existing student"),
+            @ApiResponse(responseCode = "422", description = "Domain validation failed"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public StudentResponseDTO update(
             @PathVariable String id,
-            @RequestBody UpdateStudentRequestDTO dto) {
+            @RequestBody @Valid UpdateStudentRequestDTO dto) {
         var command = new UpdateStudentCommand(
                 id,
                 dto.firstName(),
                 dto.lastName(),
                 dto.courseId());
         var student = updateStudentUseCase.update(command);
-        return responseDTOMapper.toResponseDTO(student, null);
+        return StudentResponseDTO.from(student, null);
     }
 
     @DeleteMapping("/{id}")
@@ -203,7 +189,10 @@ public class StudentController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "202", description = "Student disable request accepted"),
             @ApiResponse(responseCode = "400", description = "Student cannot be disabled"),
-            @ApiResponse(responseCode = "404", description = "Student not found")
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
     })
     public void disable(@PathVariable String id) {
         var command = new DisableStudentCommand(id);

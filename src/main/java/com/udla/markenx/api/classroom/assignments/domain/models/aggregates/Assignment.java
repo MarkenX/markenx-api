@@ -24,7 +24,7 @@ public abstract class Assignment extends Entity {
     protected AssignmentDeadline deadline;
     protected AssignmentScore minScoreToPass;
 
-    private String courseId;
+    private final String courseId;
 
     // region Constructors
 
@@ -103,14 +103,6 @@ public abstract class Assignment extends Entity {
 
     public void reschedule(AssignmentDeadline newDeadline) {
         this.deadline = newDeadline;
-    }
-
-    public void changeMinimumScoreToPass(AssignmentScore newMinScoreToPass) {
-        this.minScoreToPass = newMinScoreToPass;
-    }
-
-    public void changeAcademicTerm(String academicTermId) {
-        this.courseId = validateCourseId(academicTermId);
     }
 
     // endregion

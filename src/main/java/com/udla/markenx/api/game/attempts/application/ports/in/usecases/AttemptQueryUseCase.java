@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface AttemptQueryUseCase {
     GameSessionResponse getById(GetAttemptByIdQuery query);
-    List<AttemptPortDTO> getByTaskId(String taskId);
-    List<AttemptPortDTO> getByStudentId(String studentId);
+    List<AttemptPortDTO> listAttemptsByTaskId(String taskId);
+    List<AttemptPortDTO> listAttemptsByStudentId(String studentId);
 }

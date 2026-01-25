@@ -17,8 +17,7 @@ import com.udla.markenx.api.classroom.courses.application.ports.in.queries.IsAct
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.ValidateCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentsByCourseQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsByCourseUseCase;
-import com.udla.markenx.api.game.scenarios.application.ports.incoming.ValidateScenarioUseCase;
-import com.udla.markenx.api.game.scenarios.application.queries.ScenarioExistsQuery;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.ScenarioValidationPort;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ import java.util.List;
 public class CreateTaskHandler implements CreateTaskUseCase {
 
     private final ValidateCourseUseCase validateCourseUseCase;
-    private final ValidateScenarioUseCase validateScenarioUseCase;
+    private final ScenarioValidationPort scenarioValidationPort;
     private final QueryStudentsByCourseUseCase queryStudentsByCourseUseCase;
     private final TaskCommandRepository repository;
     private final StudentTaskProgressCommandRepository progressRepository;
@@ -46,8 +45,7 @@ public class CreateTaskHandler implements CreateTaskUseCase {
         }
 
         // Validate scenario exists
-        var scenarioQuery = new ScenarioExistsQuery(command.scenarioId());
-        if (!validateScenarioUseCase.exists(scenarioQuery)) {
+        if (!scenarioValidationPort.existsById(command.scenarioId())) {
             throw new ScenarioNotFoundException(command.scenarioId());
         }
 

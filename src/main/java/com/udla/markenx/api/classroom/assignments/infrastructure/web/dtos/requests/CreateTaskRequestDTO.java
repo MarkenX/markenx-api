@@ -1,10 +1,8 @@
-package com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos;
+package com.udla.markenx.api.classroom.assignments.infrastructure.web.dtos.requests;
 
 import java.time.LocalDateTime;
 
-public record TaskResponseDTO(
-        String id,
-        String label,
+public record CreateTaskRequestDTO(
         String title,
         String summary,
         LocalDateTime deadline,

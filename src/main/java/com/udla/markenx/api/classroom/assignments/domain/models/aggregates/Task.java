@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentDeadlineAlreadyExpiredException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidMaxAttemptsException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidScenarioIdException;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
@@ -18,7 +19,7 @@ import java.time.LocalDateTime;
 public class Task extends Assignment {
 
     private int maxAttempts;
-    private String scenarioId;
+    private final String scenarioId;
 
     // region Constructors
 
@@ -136,6 +137,20 @@ public class Task extends Assignment {
     }
 
     // endregion
+
+    public void update(
+            String title,
+            String summary,
+            LocalDateTime newDeadline,
+            int maxAttempts
+    ) {
+        if (this.deadline.isOverdue()) {
+            throw new AssignmentDeadlineAlreadyExpiredException();
+        }
+        this.reschedule(AssignmentDeadline.future(newDeadline));
+        this.updateInfo(new AssignmentInfo(title, summary));
+        this.setMaxAttempts(maxAttempts);
+    }
 
     @Override
     public String toString() {

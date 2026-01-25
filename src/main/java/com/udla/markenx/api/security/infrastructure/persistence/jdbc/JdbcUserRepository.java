@@ -7,24 +7,33 @@ import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Implementación JDBC del repositorio de comandos para User.
+ * El método save() implementa semántica UPSERT: inserta si no existe, actualiza si existe.
+ */
 @Repository
 @RequiredArgsConstructor
 public class JdbcUserRepository implements UserCommandRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
+    /**
+     * Guarda un usuario usando semántica UPSERT.
+     * Verifica existencia por ID y decide si insertar o actualizar.
+     *
+     * @param user la entidad a persistir
+     * @return la entidad persistida
+     */
     @Override
+    @Transactional
     public User save(@NonNull User user) {
-        jdbcTemplate.update("""
-            INSERT INTO users
-            (id, lifecycle_status, email)
-            VALUES (?, ?, ?)
-            """,
-                user.getId(),
-                user.getLifecycleStatus().name(),
-                user.getEmail()
-        );
+        if (existsById(user.getId())) {
+            update(user);
+        } else {
+            insert(user);
+        }
         return user;
     }
 
@@ -40,8 +49,28 @@ public class JdbcUserRepository implements UserCommandRepository {
         );
     }
 
-    @Override
-    public void update(@NonNull User user) {
+    private boolean existsById(String id) {
+        Integer count = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM users WHERE id = ?",
+                Integer.class,
+                id
+        );
+        return count != null && count > 0;
+    }
+
+    private void insert(@NonNull User user) {
+        jdbcTemplate.update("""
+            INSERT INTO users
+            (id, lifecycle_status, email)
+            VALUES (?, ?, ?)
+            """,
+                user.getId(),
+                user.getLifecycleStatus().name(),
+                user.getEmail()
+        );
+    }
+
+    private void update(@NonNull User user) {
         jdbcTemplate.update("""
             UPDATE users
             SET lifecycle_status = ?, email = ?

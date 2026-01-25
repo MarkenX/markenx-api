@@ -62,7 +62,7 @@ public class TaskStatusScheduler {
             progress.markAsFailedIfOverdue(task.getDeadline().value());
 
             if (progress.getStatus() != previousStatus) {
-                progressCommandRepository.saveOrUpdate(progress);
+                progressCommandRepository.save(progress);
                 updatedCount++;
                 log.debug("Updated progress status for student {} on task {} from {} to {}",
                         progress.getStudentId(), progress.getTaskId(), previousStatus, progress.getStatus());

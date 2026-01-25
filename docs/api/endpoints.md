@@ -1025,12 +1025,12 @@ GET /api/scenarios
 
 ## Módulo Attempts
 
-Base path: `/api/v1/attempts`
+Base path: `/api/attempts`
 
 ### Registrar Resultado de Partida
 
 ```
-POST /api/v1/attempts
+POST /api/attempts
 ```
 
 **Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El
@@ -1138,7 +1138,7 @@ Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de 
 ### Obtener Resultado de Partida por ID
 
 ```
-GET /api/v1/attempts/{id}
+GET /api/attempts/{id}
 ```
 
 **Descripción:** Obtiene los detalles completos de una sesión de juego registrada, incluyendo el historial de turnos.
@@ -1233,8 +1233,12 @@ consolidado del desempeño del estudiante en la sesión de juego.
 | 200    | OK - Solicitud exitosa                                     |
 | 201    | Created - Recurso creado exitosamente                      |
 | 202    | Accepted - Solicitud aceptada para procesamiento asíncrono |
-| 400    | Bad Request - Error de validación o regla de negocio       |
+| 400    | Bad Request - Request inválido o malformado                |
+| 401    | Unauthorized - No autenticado                              |
+| 403    | Forbidden - No autorizado                                  |
 | 404    | Not Found - Recurso no encontrado                          |
+| 409    | Conflict - Conflicto de estado o recurso duplicado         |
+| 422    | Unprocessable Entity - Validación de dominio fallida       |
 | 500    | Internal Server Error - Error interno del servidor         |
 
 ---

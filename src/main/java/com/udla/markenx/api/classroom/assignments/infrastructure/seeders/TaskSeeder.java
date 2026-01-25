@@ -2,6 +2,8 @@ package com.udla.markenx.api.classroom.assignments.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.commands.CreateTaskCommand;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.CreateTaskUseCase;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
+import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.infrastructure.seeders.factories.TaskSeedFactory;
 import com.udla.markenx.api.classroom.assignments.infrastructure.seeders.valueobjects.TaskSeedDefinition;
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
@@ -21,7 +23,14 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
+/**
+ * Seeder idempotente para tareas.
+ * Solo inserta tareas que no existen (verificadas por título y curso como clave natural).
+ * Es seguro ejecutar múltiples veces sin duplicar datos.
+ */
 @Slf4j
 @Component
 @Profile("dev")
@@ -32,6 +41,7 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
     private final QueryCourseUseCase queryCourseUseCase;
     private final CreateTaskUseCase createTaskUseCase;
     private final ScenarioQueryUseCase scenarioQueryUseCase;
+    private final TaskQueryRepository taskQueryRepository;
 
     @Override
     public String name() {
@@ -62,9 +72,37 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
         return queryCourseUseCase.listCourses();
     }
 
+    /**
+     * Obtiene las claves (título-courseId) de las tareas existentes para un curso.
+     */
+    private Set<String> getExistingTaskKeys(String courseId) {
+        return taskQueryRepository.findByCourseId(courseId).stream()
+                .map(this::toTaskKey)
+                .collect(Collectors.toSet());
+    }
+
+    private String toTaskKey(@NonNull Task task) {
+        return task.getInfo().title() + "-" + task.getCourseId();
+    }
+
     private void seedTasksForCourse(CoursePortDTO course, String scenarioId) {
-        TaskSeedFactory.forActiveCourse(referenceTime())
+        Set<String> existingKeys = getExistingTaskKeys(course.id());
+
+        TaskSeedFactory.forActiveCourse(referenceTime()).stream()
+                .filter(def -> !taskExists(def.title(), course.id(), existingKeys))
                 .forEach(def -> createTask(def, course.id(), scenarioId));
+    }
+
+    /**
+     * Verifica si una tarea ya existe usando título y courseId como clave natural.
+     */
+    private boolean taskExists(String title, String courseId, Set<String> existingKeys) {
+        String key = title + "-" + courseId;
+        boolean exists = existingKeys.contains(key);
+        if (exists) {
+            log.debug("Task already exists, skipping: title={}, courseId={}", title, courseId);
+        }
+        return exists;
     }
 
     private void createTask(@NonNull TaskSeedDefinition def, String courseId, String scenarioId) {
@@ -80,6 +118,7 @@ public class TaskSeeder extends BaseSeeder implements CommandLineRunner {
         );
 
         createTaskUseCase.handle(command);
+        log.debug("Task created: title={}, courseId={}", def.title(), courseId);
     }
 
     @Contract(" -> new")

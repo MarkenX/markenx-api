@@ -1,5 +1,9 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
 
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressPortDTO;
+import org.jetbrains.annotations.Contract;
+import org.jspecify.annotations.NonNull;
+
 /**
  * Response DTO for student task progress endpoint.
  *
@@ -18,4 +22,16 @@ public record StudentTaskProgressResponseDTO(
         int remainingAttempts,
         String status
 ) {
+
+    @Contract("_ -> new")
+    public static @NonNull StudentTaskProgressResponseDTO from(@NonNull StudentTaskProgressPortDTO dto) {
+        return new StudentTaskProgressResponseDTO(
+                dto.studentId(),
+                dto.taskId(),
+                dto.currentAttempt(),
+                dto.maxAttempts(),
+                dto.remainingAttempts(),
+                dto.status()
+        );
+    }
 }

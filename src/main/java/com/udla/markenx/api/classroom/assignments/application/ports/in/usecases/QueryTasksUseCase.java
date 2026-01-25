@@ -4,6 +4,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.in.dtos.Task
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskCourseIdQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskPageQueryCriteria;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.TaskIdQuery;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

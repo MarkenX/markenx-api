@@ -4,32 +4,17 @@ import com.udla.markenx.api.classroom.assignments.domain.models.entities.Student
 import org.jspecify.annotations.NonNull;
 
 /**
- * Command repository for StudentTaskProgress write operations.
+ * Puerto de comandos para persistencia de StudentTaskProgress.
+ * Sigue semántica tipo JPA: save() maneja tanto inserción como actualización.
  */
 public interface StudentTaskProgressCommandRepository {
 
     /**
-     * Saves a new student task progress record.
+     * Guarda el progreso de un estudiante en una tarea.
+     * Si no existe, lo inserta; si ya existe, lo actualiza.
      *
-     * @param progress The progress to save
-     * @return The saved progress
+     * @param progress el progreso a persistir
+     * @return el progreso persistido
      */
     StudentTaskProgress save(@NonNull StudentTaskProgress progress);
-
-    /**
-     * Updates an existing student task progress record.
-     *
-     * @param progress The progress to update
-     * @return The updated progress
-     */
-    StudentTaskProgress update(@NonNull StudentTaskProgress progress);
-
-    /**
-     * Saves or updates a student task progress record.
-     * Creates a new record if one doesn't exist, otherwise updates the existing one.
-     *
-     * @param progress The progress to save or update
-     * @return The saved/updated progress
-     */
-    StudentTaskProgress saveOrUpdate(@NonNull StudentTaskProgress progress);
 }
