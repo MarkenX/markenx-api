@@ -275,7 +275,7 @@ class StudentTest {
         @DisplayName("givenPersistedData_whenReconstructingStudent_thenAllFieldsAreSet")
         void givenPersistedData_whenReconstructingStudent_thenAllFieldsAreSet() {
             // Given
-            String id = "student-id-123";
+            String id = "student-attemptId-123";
             LifecycleStatus lifecycleStatus = LifecycleStatus.ACTIVE;
             long code = 1001L;
             String firstName = "Carlos";

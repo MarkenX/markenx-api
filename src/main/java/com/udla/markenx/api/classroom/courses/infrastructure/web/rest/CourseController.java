@@ -54,10 +54,10 @@ public class CourseController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get a course by id")
+    @Operation(summary = "Get a course by attemptId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Course retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Course not found"),

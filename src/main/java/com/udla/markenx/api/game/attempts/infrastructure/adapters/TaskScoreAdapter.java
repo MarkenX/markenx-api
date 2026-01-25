@@ -24,7 +24,7 @@ public class TaskScoreAdapter implements TaskScoreProvider {
                 .fetchOneInto(Double.class);
 
         if (score == null) {
-            throw new IllegalArgumentException("Task not found with id: " + taskId);
+            throw new IllegalArgumentException("Task not found with attemptId: " + taskId);
         }
 
         return score;

@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 
 /**
  * Response DTO for attempt metrics.
- * Used by GET /attempts/{id}/metrics endpoint.
+ * Used by GET /attempts/{attemptId}/metrics endpoint.
  *
- * <p>Note: The outcome field only contains WIN or LOSE values,
+ * <p>Note: The finalOutcome field only contains WIN or LOSE values,
  * as metrics are only available for completed attempts.</p>
  *
  * @param attemptId The attempt ID
@@ -21,8 +21,8 @@ import java.time.LocalDateTime;
  * @param finalAcceptance Final acceptance rate (0.0-1.0)
  * @param remainingBudget Remaining budget at end of attempt
  * @param totalTurnsUsed Number of turns used
- * @param outcome The attempt outcome (WIN or LOSE only)
- * @param evaluatedAt When the attempt was evaluated
+ * @param finalOutcome The attempt finalOutcome (WIN or LOSE only)
+ * @param sessionDate When the attempt was evaluated
  */
 public record AttemptMetricsResponseDTO(
         String attemptId,
@@ -31,8 +31,8 @@ public record AttemptMetricsResponseDTO(
         double finalAcceptance,
         BigDecimal remainingBudget,
         int totalTurnsUsed,
-        AttemptOutcome outcome,
-        LocalDateTime evaluatedAt
+        AttemptOutcome finalOutcome,
+        LocalDateTime sessionDate
 ) {
 
     @Contract("_ -> new")

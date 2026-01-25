@@ -11,7 +11,7 @@ import org.jspecify.annotations.NonNull;
  * <ul>
  *   <li>{@code NOT_STARTED} - No attempts made yet</li>
  *   <li>{@code IN_PROGRESS} - At least one attempt made, but not yet completed or failed</li>
- *   <li>{@code COMPLETED} - At least one attempt has outcome WIN</li>
+ *   <li>{@code COMPLETED} - At least one attempt has finalOutcome WIN</li>
  *   <li>{@code FAILED} - All attempts exhausted with LOSE outcomes</li>
  *   <li>{@code OUTDATED} - Task expired with no attempts made</li>
  * </ul>
@@ -25,13 +25,13 @@ public enum TaskProgressStatus {
 
     /**
      * At least one attempt has been made, but the task is not yet completed or failed.
-     * Attempts remain and no WIN outcome achieved.
+     * Attempts remain and no WIN finalOutcome achieved.
      */
     IN_PROGRESS,
 
     /**
      * The task has been successfully completed.
-     * At least one attempt has outcome WIN.
+     * At least one attempt has finalOutcome WIN.
      */
     COMPLETED,
 

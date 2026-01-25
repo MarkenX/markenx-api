@@ -59,7 +59,7 @@ public class ScenarioSeeder extends BaseSeeder implements CommandLineRunner {
 
         CreateScenarioCommand command = buildSampleScenarioCommand();
         ScenarioResponse saved = createScenarioUseCase.handle(command);
-        log.info("Scenario created: title={}, id={}", saved.title(), saved.id());
+        log.info("Scenario created: title={}, attemptId={}", saved.title(), saved.id());
     }
 
     @Override

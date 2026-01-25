@@ -21,7 +21,7 @@ public class AttemptResultListener {
 
     @EventListener
     public void on(AttemptResultRegisteredEvent event) {
-        log.info("Received AttemptResultRegisteredEvent: id={}, id={}, studentId={}, score={}, approved={}",
+        log.info("Received AttemptResultRegisteredEvent: attemptId={}, attemptId={}, studentId={}, score={}, approved={}",
                 event.attemptId(), event.taskId(), event.studentId(), event.profileScore(), event.isApproved());
 
         var command = new RegisterTaskAttemptResultCommand(

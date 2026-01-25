@@ -38,7 +38,7 @@ public record TermPortDTO(
 
     @Override
     public @NonNull String toString() {
-        return "Term-%s (id=%s, %s..%s, status=%s)"
+        return "Term-%s (attemptId=%s, %s..%s, status=%s)"
                 .formatted(label, id, startDate, endDate, status);
     }
 }

@@ -49,7 +49,7 @@ public class AttemptController {
     @Operation(summary = "Get a game session result by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Game session retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Attempt not found"),
@@ -66,7 +66,7 @@ public class AttemptController {
     @Operation(summary = "Get performance metrics for an attempt")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Metrics retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Attempt not found"),

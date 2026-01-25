@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Response DTO for student attempts.
- * Used by GET /students/{id}/attempts endpoint.
+ * Used by GET /students/{attemptId}/attempts endpoint.
  */
 public record StudentAttemptResponseDTO(
         String id,

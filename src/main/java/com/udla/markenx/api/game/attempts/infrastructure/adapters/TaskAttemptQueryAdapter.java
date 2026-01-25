@@ -25,6 +25,7 @@ public class TaskAttemptQueryAdapter implements TaskAttemptQueryPort {
                         dto.attemptId(),
                         dto.taskId(),
                         dto.evaluatedAt(),
+                        dto.status(),
                         dto.finalOutcome(),
                         dto.finalAcceptance()
                 ))

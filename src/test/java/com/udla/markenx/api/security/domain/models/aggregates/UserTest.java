@@ -138,7 +138,7 @@ class UserTest {
         @DisplayName("givenPersistedData_whenReconstructingUser_thenAllFieldsAreSet")
         void givenPersistedData_whenReconstructingUser_thenAllFieldsAreSet() {
             // Given
-            String id = "user-id-123";
+            String id = "user-attemptId-123";
             LifecycleStatus status = LifecycleStatus.ACTIVE;
             Email email = Email.of("persisted@udla.edu.ec", ALLOWED_DOMAINS);
             Role role = Role.ADMIN;
@@ -157,7 +157,7 @@ class UserTest {
         @DisplayName("givenDisabledPersistedData_whenReconstructingUser_thenUserIsDisabled")
         void givenDisabledPersistedData_whenReconstructingUser_thenUserIsDisabled() {
             // Given
-            String id = "user-id-456";
+            String id = "user-attemptId-456";
             LifecycleStatus status = LifecycleStatus.DISABLED;
             Email email = Email.of("disabled@udla.edu.ec", ALLOWED_DOMAINS);
             Role role = Role.STUDENT;

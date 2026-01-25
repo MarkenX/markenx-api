@@ -50,7 +50,7 @@ public class ScenarioController {
     @Operation(summary = "Get scenario by ID with all relations")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Scenario retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Scenario not found"),

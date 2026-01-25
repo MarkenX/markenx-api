@@ -412,7 +412,7 @@ class TermTest {
         @DisplayName("givenTwoTermsWithSameId_whenComparing_thenAreEqual")
         void givenTwoTermsWithSameId_whenComparing_thenAreEqual() {
             // Given
-            String sameId = "shared-id";
+            String sameId = "shared-attemptId";
             Term term1 = new Term(sameId, LifecycleStatus.ACTIVE,
                     LocalDate.of(2024, 3, 1), LocalDate.of(2024, 7, 1),
                     2024, 1, TermStatus.ACTIVE);
@@ -429,10 +429,10 @@ class TermTest {
         @DisplayName("givenTwoTermsWithDifferentIds_whenComparing_thenAreNotEqual")
         void givenTwoTermsWithDifferentIds_whenComparing_thenAreNotEqual() {
             // Given
-            Term term1 = new Term("id-1", LifecycleStatus.ACTIVE,
+            Term term1 = new Term("attemptId-1", LifecycleStatus.ACTIVE,
                     LocalDate.of(2024, 3, 1), LocalDate.of(2024, 7, 1),
                     2024, 1, TermStatus.ACTIVE);
-            Term term2 = new Term("id-2", LifecycleStatus.ACTIVE,
+            Term term2 = new Term("attemptId-2", LifecycleStatus.ACTIVE,
                     LocalDate.of(2024, 3, 1), LocalDate.of(2024, 7, 1),
                     2024, 1, TermStatus.ACTIVE);
 

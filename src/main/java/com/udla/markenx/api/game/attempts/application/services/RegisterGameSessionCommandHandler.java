@@ -91,7 +91,7 @@ public class RegisterGameSessionCommandHandler implements RegisterGameSessionUse
                 attempt.getStatus() == AttemptStatus.APPROVED
         );
 
-        log.info("Publishing AttemptResultRegisteredEvent: id={}, id={}, approved={}",
+        log.info("Publishing AttemptResultRegisteredEvent: attemptId={}, attemptId={}, approved={}",
                 event.attemptId(), event.taskId(), event.isApproved());
 
         eventPublisher.publishEvent(event);

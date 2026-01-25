@@ -287,7 +287,7 @@ class AttemptTest {
         @DisplayName("givenPersistedData_whenReconstructingAttempt_thenAllFieldsAreSet")
         void givenPersistedData_whenReconstructingAttempt_thenAllFieldsAreSet() {
             // Given
-            String id = "attempt-id-123";
+            String id = "attempt-attemptId-123";
             int currentTurn = 8;
             BigDecimal budgetRemaining = new BigDecimal("750.50");
             double approvalRate = 0.85;
@@ -334,7 +334,7 @@ class AttemptTest {
         @DisplayName("givenTwoAttemptsWithSameId_whenComparing_thenAreEqual")
         void givenTwoAttemptsWithSameId_whenComparing_thenAreEqual() {
             // Given
-            String sameId = "shared-id";
+            String sameId = "shared-attemptId";
             Attempt attempt1 = new Attempt(
                     sameId, 5, new BigDecimal("1000"), 0.8, 0.9,
                     AttemptStatus.APPROVED, "task-1", "student-1",
@@ -356,12 +356,12 @@ class AttemptTest {
         void givenTwoAttemptsWithDifferentIds_whenComparing_thenAreNotEqual() {
             // Given
             Attempt attempt1 = new Attempt(
-                    "id-1", 5, new BigDecimal("1000"), 0.8, 0.9,
+                    "attemptId-1", 5, new BigDecimal("1000"), 0.8, 0.9,
                     AttemptStatus.APPROVED, VALID_TASK_ID, VALID_STUDENT_ID,
                     LocalDateTime.now(), Collections.emptyList()
             );
             Attempt attempt2 = new Attempt(
-                    "id-2", 5, new BigDecimal("1000"), 0.8, 0.9,
+                    "attemptId-2", 5, new BigDecimal("1000"), 0.8, 0.9,
                     AttemptStatus.APPROVED, VALID_TASK_ID, VALID_STUDENT_ID,
                     LocalDateTime.now(), Collections.emptyList()
             );

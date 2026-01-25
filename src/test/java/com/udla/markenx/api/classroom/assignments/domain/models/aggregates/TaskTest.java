@@ -210,7 +210,7 @@ class TaskTest {
         @DisplayName("givenPersistedData_whenReconstructingTask_thenAllFieldsAreSet")
         void givenPersistedData_whenReconstructingTask_thenAllFieldsAreSet() {
             // Given
-            String id = "task-id-123";
+            String id = "task-attemptId-123";
             LifecycleStatus lifecycleStatus = LifecycleStatus.ACTIVE;
             long code = 1001L;
             String title = "Reconstructed Task";
@@ -274,7 +274,7 @@ class TaskTest {
         @DisplayName("givenTwoTasksWithSameId_whenComparing_thenAreEqual")
         void givenTwoTasksWithSameId_whenComparing_thenAreEqual() {
             // Given
-            String sameId = "shared-id";
+            String sameId = "shared-attemptId";
             Task task1 = new Task(sameId, LifecycleStatus.ACTIVE, 1L, "Title 1", "Summary 1",
                     LocalDateTime.now().plusDays(7), 0.7, "course-1", 3, "scenario-1");
             Task task2 = new Task(sameId, LifecycleStatus.ACTIVE, 2L, "Title 2", "Summary 2",
@@ -289,9 +289,9 @@ class TaskTest {
         @DisplayName("givenTwoTasksWithDifferentIds_whenComparing_thenAreNotEqual")
         void givenTwoTasksWithDifferentIds_whenComparing_thenAreNotEqual() {
             // Given
-            Task task1 = new Task("id-1", LifecycleStatus.ACTIVE, 1L, "Title", "Summary",
+            Task task1 = new Task("attemptId-1", LifecycleStatus.ACTIVE, 1L, "Title", "Summary",
                     LocalDateTime.now().plusDays(7), 0.7, "course", 3, "scenario");
-            Task task2 = new Task("id-2", LifecycleStatus.ACTIVE, 1L, "Title", "Summary",
+            Task task2 = new Task("attemptId-2", LifecycleStatus.ACTIVE, 1L, "Title", "Summary",
                     LocalDateTime.now().plusDays(7), 0.7, "course", 3, "scenario");
 
             // When & Then

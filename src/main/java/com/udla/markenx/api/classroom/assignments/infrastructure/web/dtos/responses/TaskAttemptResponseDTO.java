@@ -24,7 +24,7 @@ public record TaskAttemptResponseDTO(
                 data.taskId(),
                 data.evaluatedAt(),
                 data.evaluatedAt(),
-                data.finalOutcome(),
+                data.status(),
                 data.finalOutcome(),
                 data.finalAcceptance()
         );

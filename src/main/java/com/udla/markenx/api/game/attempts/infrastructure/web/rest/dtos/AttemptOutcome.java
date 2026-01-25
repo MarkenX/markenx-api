@@ -4,7 +4,7 @@ import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStat
 import org.jspecify.annotations.NonNull;
 
 /**
- * REST-layer enum representing the outcome of an attempt.
+ * REST-layer enum representing the finalOutcome of an attempt.
  * Maps from domain {@link AttemptStatus} for API responses.
  */
 public enum AttemptOutcome {
@@ -28,7 +28,7 @@ public enum AttemptOutcome {
      * Maps from domain AttemptStatus to REST AttemptOutcome.
      *
      * @param status the domain attempt status
-     * @return the corresponding REST outcome
+     * @return the corresponding REST finalOutcome
      */
     public static @NonNull AttemptOutcome from(@NonNull AttemptStatus status) {
         return switch (status) {
@@ -51,7 +51,7 @@ public enum AttemptOutcome {
             case APPROVED -> WIN;
             case DISAPPROVED -> LOSE;
             case UNKNOWN -> throw new IllegalArgumentException(
-                    "Cannot map UNKNOWN status to completed outcome");
+                    "Cannot map UNKNOWN status to completed finalOutcome");
         };
     }
 }

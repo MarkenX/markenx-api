@@ -47,8 +47,8 @@ public class JooqConsumerRepository implements ConsumerQueryRepository {
                 .select()
                 .from(table(TABLE).as("c"))
                 .join(table(SCENARIOS_TABLE).as("s"))
-                .on(field("s.consumer_id").eq(field("c.id")))
-                .where(field("s.id").eq(scenarioId))
+                .on(field("s.consumer_id").eq(field("c.attemptId")))
+                .where(field("s.attemptId").eq(scenarioId))
                 .fetchOptional()
                 .map(mapper::toDomain);
     }

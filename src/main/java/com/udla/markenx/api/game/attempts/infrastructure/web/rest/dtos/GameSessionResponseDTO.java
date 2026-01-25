@@ -20,7 +20,7 @@ import java.util.List;
  * @param remainingBudget The remaining budget at end of session
  * @param totalTurnsUsed Number of turns used
  * @param profileDiscoveryPercentage Profile discovery percentage (0.0-1.0)
- * @param outcome The attempt outcome (WIN, LOSE, or IN_PROGRESS)
+ * @param outcome The attempt finalOutcome (WIN, LOSE, or IN_PROGRESS)
  * @param history Turn-by-turn history
  */
 public record GameSessionResponseDTO(

@@ -109,7 +109,7 @@ public class KeycloakIdentityAdapter implements ExternalIdentityPort {
                         if (location == null) {
                             return Mono.error(new IllegalStateException("Keycloak did not return Location header after creating user"));
                         }
-                        var path = location.getPath(); // .../users/{id}
+                        var path = location.getPath(); // .../users/{attemptId}
                         var userId = path.substring(path.lastIndexOf('/') + 1);
                         log.debug("Keycloak user created. email={} userId={}", request.email(), userId);
                         return Mono.just(userId);

@@ -55,10 +55,10 @@ public class TaskController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get a task by id")
+    @Operation(summary = "Get a task by attemptId")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "Task retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Task not found"),

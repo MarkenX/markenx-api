@@ -25,6 +25,7 @@ public interface TaskAttemptQueryPort {
             String attemptId,
             String taskId,
             LocalDateTime evaluatedAt,
+            String status,
             String finalOutcome,
             double finalAcceptance
     ) {}

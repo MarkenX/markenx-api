@@ -28,7 +28,7 @@ class IdentifierTest {
         @DisplayName("givenValidValue_whenCreatingIdentifier_thenSucceeds")
         void givenValidValue_whenCreatingIdentifier_thenSucceeds() {
             // Given
-            String value = "valid-id-123";
+            String value = "valid-attemptId-123";
 
             // When
             TestIdentifier identifier = new TestIdentifier(value);
@@ -118,7 +118,7 @@ class IdentifierTest {
         @DisplayName("givenIdentifier_whenCallingToString_thenReturnsValue")
         void givenIdentifier_whenCallingToString_thenReturnsValue() {
             // Given
-            String value = "my-unique-id";
+            String value = "my-unique-attemptId";
             TestIdentifier identifier = new TestIdentifier(value);
 
             // When

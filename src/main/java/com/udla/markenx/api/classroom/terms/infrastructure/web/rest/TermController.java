@@ -50,10 +50,10 @@ public class TermController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get an academic term by id")
+    @Operation(summary = "Get an academic term by attemptId")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid id format"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Academic term not found"),
