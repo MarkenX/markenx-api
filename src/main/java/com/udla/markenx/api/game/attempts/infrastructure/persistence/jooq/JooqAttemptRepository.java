@@ -78,6 +78,18 @@ public class JooqAttemptRepository implements AttemptQueryRepository {
                 .map(this::mapToAttempt);
     }
 
+    @Override
+    public List<Attempt> findByTaskIdAndStudentId(String taskId, String studentId) {
+        return dsl
+                .select()
+                .from(table(ATTEMPTS_TABLE))
+                .where(field("task_id").eq(taskId))
+                .and(field("student_id").eq(studentId))
+                .orderBy(field("session_date").desc())
+                .fetch()
+                .map(this::mapToAttempt);
+    }
+
     private Attempt mapToAttempt(Record record) {
         return new Attempt(
                 record.get("id", String.class),

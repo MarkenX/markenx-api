@@ -47,7 +47,7 @@ public class JooqDimensionRepository implements DimensionQueryRepository {
                 .select()
                 .from(table(TABLE).as("d"))
                 .join(table(SCENARIO_DIMENSIONS_TABLE).as("sd"))
-                .on(field("sd.dimension_id").eq(field("d.attemptId")))
+                .on(field("sd.dimension_id").eq(field("d.id")))
                 .where(field("sd.scenario_id").eq(scenarioId))
                 .fetch()
                 .map(mapper::toDomain);

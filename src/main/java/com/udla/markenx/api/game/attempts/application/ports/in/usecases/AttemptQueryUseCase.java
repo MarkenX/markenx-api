@@ -10,4 +10,5 @@ public interface AttemptQueryUseCase {
     GameSessionResponse getById(GetAttemptByIdQuery query);
     List<AttemptPortDTO> listAttemptsByTaskId(String taskId);
     List<AttemptPortDTO> listAttemptsByStudentId(String studentId);
+    List<AttemptPortDTO> listAttemptsByTaskIdAndStudentId(String taskId, String studentId);
 }

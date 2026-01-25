@@ -49,11 +49,12 @@ public class JooqGameEventRepository implements GameEventQueryRepository {
                 .select()
                 .from(table(TABLE).as("e"))
                 .join(table(SCENARIO_EVENTS_TABLE).as("se"))
-                .on(field("se.event_id").eq(field("e.attemptId")))
+                .on(field("se.event_id").eq(field("e.id")))
                 .where(field("se.scenario_id").eq(scenarioId))
                 .fetch()
                 .map(mapper::toDomain);
     }
+
 
     @Override
     public List<EventEffect> findEffectsByEventId(String eventId) {

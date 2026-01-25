@@ -126,7 +126,7 @@ public class TaskController {
 
     @GetMapping("/{id}/attempts")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get all attempts for a task")
+    @Operation(summary = "Get all attempts for a task, optionally filtered by student")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Attempts retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
@@ -134,8 +134,13 @@ public class TaskController {
             @ApiResponse(responseCode = "404", description = "Task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public List<TaskAttemptResponseDTO> getAttemptsByTaskId(@PathVariable String id) {
-        var attempts = taskAttemptQueryPort.findAttemptsByTaskId(id);
+    public List<TaskAttemptResponseDTO> getAttemptsByTaskId(
+            @PathVariable String id,
+            @RequestParam(required = false) String studentId
+    ) {
+        var attempts = studentId != null
+                ? taskAttemptQueryPort.findAttemptsByTaskIdAndStudentId(id, studentId)
+                : taskAttemptQueryPort.findAttemptsByTaskId(id);
         return TaskAttemptResponseDTO.from(attempts);
     }
 }

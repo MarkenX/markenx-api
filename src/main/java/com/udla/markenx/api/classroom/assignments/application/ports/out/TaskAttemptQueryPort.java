@@ -19,6 +19,15 @@ public interface TaskAttemptQueryPort {
     List<TaskAttemptData> findAttemptsByTaskId(String taskId);
 
     /**
+     * Finds all attempts associated with a task and student.
+     *
+     * @param taskId the task ID
+     * @param studentId the student ID
+     * @return list of attempt data for the task and student
+     */
+    List<TaskAttemptData> findAttemptsByTaskIdAndStudentId(String taskId, String studentId);
+
+    /**
      * Data transfer record containing attempt information relevant to tasks.
      */
     record TaskAttemptData(

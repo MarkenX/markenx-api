@@ -49,7 +49,7 @@ public class JooqActionRepository implements ActionQueryRepository {
                 .select()
                 .from(table(TABLE).as("a"))
                 .join(table(SCENARIO_ACTIONS_TABLE).as("sa"))
-                .on(field("sa.action_id").eq(field("a.attemptId")))
+                .on(field("sa.action_id").eq(field("a.id")))
                 .where(field("sa.scenario_id").eq(scenarioId))
                 .fetch()
                 .map(mapper::toDomain);

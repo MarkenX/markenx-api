@@ -70,4 +70,9 @@ public class AttemptQueryService implements AttemptQueryUseCase {
     public List<AttemptPortDTO> listAttemptsByStudentId(String studentId) {
         return repository.findByStudentId(studentId).stream().map(mapper::toDTO).toList();
     }
+
+    @Override
+    public List<AttemptPortDTO> listAttemptsByTaskIdAndStudentId(String taskId, String studentId) {
+        return repository.findByTaskIdAndStudentId(taskId, studentId).stream().map(mapper::toDTO).toList();
+    }
 }

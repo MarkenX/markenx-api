@@ -21,14 +21,25 @@ public class TaskAttemptQueryAdapter implements TaskAttemptQueryPort {
     @Override
     public List<TaskAttemptData> findAttemptsByTaskId(String taskId) {
         return attemptQueryUseCase.listAttemptsByTaskId(taskId).stream()
-                .map(dto -> new TaskAttemptData(
-                        dto.attemptId(),
-                        dto.taskId(),
-                        dto.evaluatedAt(),
-                        dto.status(),
-                        dto.finalOutcome(),
-                        dto.finalAcceptance()
-                ))
+                .map(this::toTaskAttemptData)
                 .toList();
+    }
+
+    @Override
+    public List<TaskAttemptData> findAttemptsByTaskIdAndStudentId(String taskId, String studentId) {
+        return attemptQueryUseCase.listAttemptsByTaskIdAndStudentId(taskId, studentId).stream()
+                .map(this::toTaskAttemptData)
+                .toList();
+    }
+
+    private TaskAttemptData toTaskAttemptData(com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO dto) {
+        return new TaskAttemptData(
+                dto.attemptId(),
+                dto.taskId(),
+                dto.evaluatedAt(),
+                dto.status(),
+                dto.finalOutcome(),
+                dto.finalAcceptance()
+        );
     }
 }
