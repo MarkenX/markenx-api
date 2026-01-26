@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.ChangeStudentStatusCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
@@ -7,9 +8,11 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
 import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityEnableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyDisabledException;
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyEnabledException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiveException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.models.valueobjects.StudentStatus;
@@ -100,6 +103,59 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = queryRepository.findByIdOrThrow(studentId);
         student.disable();
         commandRepository.save(student);
+    }
+
+    @Override
+    public void onUserEnabled(String studentId) {
+        Student student = queryRepository.findByIdOrThrow(studentId);
+        student.enable();
+        commandRepository.save(student);
+    }
+
+    @Override
+    public Student changeStatus(@NonNull ChangeStudentStatusCommand command) {
+        Student student = queryRepository.findByIdOrThrow(command.id());
+
+        switch (command.targetStatus()) {
+            case LifecycleStatus.ACTIVE -> enable(student);
+            case LifecycleStatus.DISABLED -> disableInternal(student);
+        }
+
+        return student;
+    }
+
+    private void enable(@NonNull Student student) {
+        validateCanEnable(student);
+
+        String email = getUserEmail(student.getUserId());
+
+        events.publishEvent(
+                new IdentityEnableRequestedEvent(
+                        student.getId(),
+                        student.getUserId(),
+                        email
+                )
+        );
+    }
+
+    private void disableInternal(@NonNull Student student) {
+        validateCanDisable(student);
+
+        String email = getUserEmail(student.getUserId());
+
+        events.publishEvent(
+                new IdentityDisableRequestedEvent(
+                        student.getId(),
+                        student.getUserId(),
+                        email
+                )
+        );
+    }
+
+    private void validateCanEnable(@NonNull Student student) {
+        if (student.getLifecycleStatus() == LifecycleStatus.ACTIVE) {
+            throw new StudentAlreadyEnabledException(student.getId());
+        }
     }
 
     private void validateCanDisable(@NonNull Student student) {

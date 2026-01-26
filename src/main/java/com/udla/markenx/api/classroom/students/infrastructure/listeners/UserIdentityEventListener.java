@@ -2,6 +2,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.listeners;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityDisabledEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityEnabledEvent;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisionedEvent;
 import com.udla.markenx.api.shared.domain.events.integration.IdentityProvisioningFailedEvent;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +28,10 @@ public class UserIdentityEventListener {
     @EventListener
     public void on(IdentityDisabledEvent event) {
         useCase.onUserDisabled(event.sourceEntityId());
+    }
+
+    @EventListener
+    public void on(IdentityEnabledEvent event) {
+        useCase.onUserEnabled(event.sourceEntityId());
     }
 }

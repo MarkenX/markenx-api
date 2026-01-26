@@ -128,8 +128,8 @@ public class GlobalControllerAdvice {
                 .status(status.value())
                 .error(status.getReasonPhrase())
                 .code(code)
-                .message(ex.getMessage() == null ? "Domain rule violated" : ex.getMessage())
-                .userMessage("")
+                .message("Domain rule violated")
+                .userMessage(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();
 

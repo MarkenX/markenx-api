@@ -221,6 +221,14 @@ public class KeycloakIdentityAdapter implements ExternalIdentityPort {
                 .retryWhen(retryPolicyDisable());
     }
 
+    @Override
+    public Mono<Void> enableIdentity(String email) {
+        return tokenClient.getAccessToken()
+                .flatMap(token -> findUserIdByUsername(token, email)
+                        .flatMap(userId -> enableUser(token, userId)))
+                .retryWhen(retryPolicyDisable());
+    }
+
     private @NonNull Mono<String> findUserIdByUsername(String token, String username) {
         return webClient.get()
                 .uri(SEARCH_BY_USERNAME_URI, keycloakProps.realm(), username)
@@ -253,6 +261,23 @@ public class KeycloakIdentityAdapter implements ExternalIdentityPort {
                         return Mono.empty();
                     }
                     return fail(resp, "Disable user failed (userId=" + userId + ")");
+                });
+    }
+
+    private @NonNull Mono<Void> enableUser(String token, String userId) {
+        UpdateUserRequest request = new UpdateUserRequest(true);
+
+        return webClient.put()
+                .uri(UPDATE_USER_URI, keycloakProps.realm(), userId)
+                .headers(h -> h.setBearerAuth(token))
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(request)
+                .exchangeToMono(resp -> {
+                    if (resp.statusCode().is2xxSuccessful() || resp.statusCode().value() == 204) {
+                        log.debug("User enabled. userId={}", userId);
+                        return Mono.empty();
+                    }
+                    return fail(resp, "Enable user failed (userId=" + userId + ")");
                 });
     }
 

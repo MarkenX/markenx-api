@@ -1,6 +1,6 @@
 package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.ChangeStudentStatusCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
@@ -182,19 +182,24 @@ public class StudentController {
         return StudentResponseDTO.from(student, null);
     }
 
-    @DeleteMapping("/{id}")
+    @PatchMapping("/{id}/status")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    @Operation(summary = "Disable a student")
+    @Operation(summary = "Change student status (enable/disable)")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "202", description = "Student disable request accepted"),
-            @ApiResponse(responseCode = "400", description = "Student cannot be disabled"),
+            @ApiResponse(responseCode = "202", description = "Student status change request accepted"),
+            @ApiResponse(responseCode = "400", description = "Invalid request body or malformed JSON"),
             @ApiResponse(responseCode = "401", description = "Unauthorized"),
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "409", description = "Invalid status change or conflict"),
+            @ApiResponse(responseCode = "422", description = "Domain rule violation"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public void disable(@PathVariable String id) {
-        var command = new DisableStudentCommand(id);
-        updateStudentUseCase.disable(command);
+    public StudentResponseDTO changeStatus(
+            @PathVariable String id,
+            @RequestBody @Valid UpdateStudentStatusRequestDTO request
+    ) {
+        var student = updateStudentUseCase.changeStatus(ChangeStudentStatusCommand.from(id, request));
+        return StudentResponseDTO.from(student, null);
     }
 }

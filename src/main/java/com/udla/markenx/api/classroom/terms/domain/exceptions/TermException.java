@@ -2,12 +2,13 @@ package com.udla.markenx.api.classroom.terms.domain.exceptions;
 
 import com.udla.markenx.api.shared.application.exceptions.EntitiesNotFoundException;
 import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
+import com.udla.markenx.api.shared.domain.exceptions.EntityException;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Set;
 
-public abstract class TermException extends RuntimeException {
+public abstract class TermException extends EntityException {
 
     private static final String CODE = "TERM_EXCEPTION";
     private static final String ENTITY_NAME = "Periodo académico";
@@ -15,11 +16,7 @@ public abstract class TermException extends RuntimeException {
     private static final String STATUS_CRITERIA = "estatus";
 
     protected TermException(String message) {
-        super(message);
-    }
-
-    protected TermException(String message, Throwable cause) {
-        super(message, cause);
+        super(CODE, message);
     }
 
     @Contract("_ -> new")
