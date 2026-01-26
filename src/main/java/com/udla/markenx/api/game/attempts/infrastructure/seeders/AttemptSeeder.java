@@ -2,12 +2,11 @@ package com.udla.markenx.api.game.attempts.infrastructure.seeders;
 
 import com.udla.markenx.api.classroom.assignments.application.ports.in.queries.IsTaskOutdatedQuery;
 import com.udla.markenx.api.classroom.assignments.application.ports.in.usecases.ValidateTaskUseCase;
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTasksProgressDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.game.attempts.application.ports.in.commands.RegisterGameSessionCommand;
 import com.udla.markenx.api.game.attempts.application.ports.in.usecases.RegisterGameSessionUseCase;
 import com.udla.markenx.api.game.attempts.application.ports.out.AttemptQueryRepository;
@@ -81,13 +80,13 @@ public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
     }
 
     private void seedAttemptsForStudent(@NonNull StudentDetailPortDTO student) {
-        var query = new StudentAllTasksProgressQuery(student.studentId());
+        var query = new StudentAllTasksProgressQuery(student.id());
         var tasks = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
-        Set<String> existingKeys = getExistingAttemptKeys(student.studentId());
+        Set<String> existingKeys = getExistingAttemptKeys(student.id());
 
         tasks.stream()
                 .filter(this::isValidTask)
-                .filter(task -> !attemptsExist(student.studentId(), task.taskId(), existingKeys))
+                .filter(task -> !attemptsExist(student.id(), task.taskId(), existingKeys))
                 .forEach(task -> seedAttempts(student, task));
     }
 
@@ -103,16 +102,16 @@ public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
         return exists;
     }
 
-    private void seedAttempts(@NonNull StudentDetailPortDTO student, @NonNull StudentTaskProgressDetailPortDTO task) {
+    private void seedAttempts(@NonNull StudentDetailPortDTO student, @NonNull StudentTaskPortDTO task) {
         var now = LocalDateTime.now();
 
         var success = AttemptSeedFactory.successful(now, 0);
         var failure = AttemptSeedFactory.failed(now, 1);
 
-        registerAttempt(task.taskId(), student.studentId(), success);
-        registerAttempt(task.taskId(), student.studentId(), failure);
+        registerAttempt(task.taskId(), student.id(), success);
+        registerAttempt(task.taskId(), student.id(), failure);
 
-        log.debug("Attempts seeded: studentId={}, taskId={}", student.studentId(), task.taskId());
+        log.debug("Attempts seeded: studentId={}, taskId={}", student.id(), task.taskId());
     }
 
     private void registerAttempt(
@@ -134,7 +133,7 @@ public class AttemptSeeder extends BaseSeeder implements CommandLineRunner {
         registerGameSessionUseCase.handle(command);
     }
 
-    private boolean isValidTask(@NonNull StudentTaskProgressDetailPortDTO task) {
+    private boolean isValidTask(@NonNull StudentTaskPortDTO task) {
         return !validateTaskUseCase.isOutdated(
                 new IsTaskOutdatedQuery(task.taskId())
         );

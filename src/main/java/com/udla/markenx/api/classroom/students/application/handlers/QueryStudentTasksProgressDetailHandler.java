@@ -5,7 +5,7 @@ import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQuer
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
 import com.udla.markenx.api.classroom.assignments.domain.models.entities.StudentTaskProgress;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentTasksProgressDetailUseCase;
@@ -33,7 +33,7 @@ public class QueryStudentTasksProgressDetailHandler implements QueryStudentTasks
     private final StudentTaskProgressQueryRepository progressRepository;
 
     @Override
-    public List<StudentTaskProgressDetailPortDTO> getAllTasksWithProgress(
+    public List<StudentTaskPortDTO> getAllTasksWithProgress(
             @NonNull StudentAllTasksProgressQuery query
     ) {
         // 1. Get student to retrieve their course
@@ -58,7 +58,7 @@ public class QueryStudentTasksProgressDetailHandler implements QueryStudentTasks
     }
 
     @Override
-    public StudentTaskProgressDetailPortDTO getTaskWithProgress(@NonNull StudentTaskProgressQuery query) {
+    public StudentTaskPortDTO getTaskWithProgress(@NonNull StudentTaskProgressQuery query) {
         // 1. Get task
         Task task = taskRepository.findByIdOrThrow(query.taskId());
 
@@ -70,14 +70,14 @@ public class QueryStudentTasksProgressDetailHandler implements QueryStudentTasks
         return mapToDTO(task, progress);
     }
 
-    private StudentTaskProgressDetailPortDTO mapToDTO(Task task, StudentTaskProgress progress) {
+    private StudentTaskPortDTO mapToDTO(Task task, StudentTaskProgress progress) {
         int currentAttempt = progress != null ? progress.getCurrentAttempt() : 0;
         int remainingAttempts = task.getMaxAttempts() - currentAttempt;
         String status = progress != null
                 ? progress.getStatus().name()
                 : AssignmentStatus.NOT_STARTED.name();
 
-        return new StudentTaskProgressDetailPortDTO(
+        return new StudentTaskPortDTO(
                 task.getId(),
                 task.toString(),
                 task.getInfo().title(),

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
+package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses;
 
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import org.jetbrains.annotations.Contract;

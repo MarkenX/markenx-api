@@ -1,6 +1,7 @@
-package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
+package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses;
 
-import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskPortDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.TaskProgressStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -37,7 +38,7 @@ public record StudentTaskWithProgressResponseDTO(
 ) {
 
     @Contract("_ -> new")
-    public static @NonNull StudentTaskWithProgressResponseDTO from(@NonNull StudentTaskProgressDetailPortDTO dto) {
+    public static @NonNull StudentTaskWithProgressResponseDTO from(@NonNull StudentTaskPortDTO dto) {
         return new StudentTaskWithProgressResponseDTO(
                 dto.taskId(),
                 dto.taskLabel(),
@@ -53,7 +54,7 @@ public record StudentTaskWithProgressResponseDTO(
         );
     }
 
-    public static @NonNull List<StudentTaskWithProgressResponseDTO> from(@NonNull List<StudentTaskProgressDetailPortDTO> list) {
+    public static @NonNull List<StudentTaskWithProgressResponseDTO> from(@NonNull List<StudentTaskPortDTO> list) {
         return list.stream().map(StudentTaskWithProgressResponseDTO::from).toList();
     }
 }
