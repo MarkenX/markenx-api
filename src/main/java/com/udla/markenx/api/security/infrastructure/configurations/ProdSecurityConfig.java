@@ -19,6 +19,7 @@ public class ProdSecurityConfig {
         http
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
+                    // Rutas públicas
                     .requestMatchers("/actuator/**").permitAll()
                     .requestMatchers("/onboarding/**").permitAll()
                     .anyRequest().authenticated()
