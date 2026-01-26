@@ -15,6 +15,7 @@ public record TaskPortDTO(
         double minScoreToPass,
         int maxAttempts,
         String courseId,
-        String scenarioId
+        String scenarioId,
+        String lifecycleStatus
 ) {
 }

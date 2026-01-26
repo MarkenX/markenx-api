@@ -16,7 +16,8 @@ public record TaskResponseDTO(
         double minScoreToPass,
         int maxAttempts,
         String courseId,
-        String scenarioId
+        String scenarioId,
+        String lifecycleStatus
 ) {
 
     @Contract("_ -> new")
@@ -30,7 +31,8 @@ public record TaskResponseDTO(
                 task.minScoreToPass(),
                 task.maxAttempts(),
                 task.courseId(),
-                task.scenarioId()
+                task.scenarioId(),
+                task.lifecycleStatus()
         );
     }
 

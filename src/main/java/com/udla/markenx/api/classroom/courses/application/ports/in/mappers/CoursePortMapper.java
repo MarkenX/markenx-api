@@ -9,7 +9,8 @@ public class CoursePortMapper {
         return new CoursePortDTO(
                 domain.getId().toString(),
                 domain.toString(),
-                domain.getTermId()
+                domain.getTermId(),
+                domain.getLifecycleStatus().name()
         );
     }
 }

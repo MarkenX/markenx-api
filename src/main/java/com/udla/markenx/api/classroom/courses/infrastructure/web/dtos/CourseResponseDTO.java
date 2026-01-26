@@ -8,7 +8,8 @@ import org.springframework.data.domain.Page;
 public record CourseResponseDTO(
         String id,
         String label,
-        String termId
+        String termId,
+        String lifecycleStatus
 ) {
 
     @Contract("_ -> new")
@@ -16,7 +17,8 @@ public record CourseResponseDTO(
         return new CourseResponseDTO(
                 course.id(),
                 course.label(),
-                course.termId()
+                course.termId(),
+                course.lifecycleStatus()
         );
     }
 

@@ -12,7 +12,8 @@ public record TermPortDTO(
         LocalDate endDate,
         String status,
         String statusLabel,
-        String label
+        String label,
+        String lifecycleStatus
 ) {
     public boolean isActive() {
         return statusEnum().orElse(null) == TermStatus.ACTIVE;

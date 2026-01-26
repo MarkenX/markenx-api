@@ -7,6 +7,7 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.mappers.TermPor
 import com.udla.markenx.api.classroom.terms.application.ports.in.usecases.UpdateTermUseCase;
 import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
+import com.udla.markenx.api.classroom.terms.domain.exceptions.TermActiveCannotBeDisabledException;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.terms.domain.services.TermDomainService;
@@ -38,6 +39,9 @@ public class UpdateTermService implements UpdateTermUseCase {
     @Override
     public TermPortDTO changeStatus(@NonNull ChangeTermStatusCommand command) {
         var term = queryRepository.findByIdOrThrow(command.id());
+        if (term.isActive()) {
+            throw new TermActiveCannotBeDisabledException();
+        }
         switch (command.targetStatus()) {
             case LifecycleStatus.ACTIVE -> term.enable();
             case LifecycleStatus.DISABLED -> term.disable();

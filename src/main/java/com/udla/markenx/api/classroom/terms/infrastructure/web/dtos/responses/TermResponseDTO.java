@@ -12,7 +12,8 @@ public record TermResponseDTO(
         LocalDate startDate,
         LocalDate endDate,
         TermStatusResponseDTO status,
-        String label
+        String label,
+        String lifecycleStatus
 ) {
 
     public record TermStatusResponseDTO(
@@ -31,7 +32,8 @@ public record TermResponseDTO(
                         term.status(),
                         term.statusLabel()
                 ),
-                term.label()
+                term.label(),
+                term.lifecycleStatus()
         );
     }
 

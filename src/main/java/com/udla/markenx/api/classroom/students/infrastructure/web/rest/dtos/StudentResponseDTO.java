@@ -9,7 +9,8 @@ public record StudentResponseDTO(
         String label,
         String fullName,
         String email,
-        String courseId
+        String courseId,
+        String lifecycleStatus
 ) {
 
     @Contract("_, _ -> new")
@@ -19,7 +20,8 @@ public record StudentResponseDTO(
                 student.toString(),
                 student.getFullName(),
                 email,
-                student.getCourseId()
+                student.getCourseId(),
+                student.getLifecycleStatus().name()
         );
     }
 }

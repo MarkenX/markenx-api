@@ -32,6 +32,9 @@ public class CreateTermHandler implements CreateTermUseCase {
         Term newTerm;
         if (command.isHistorical()) {
             newTerm = Term.createHistoricalTerm(command.year(), sequence, dateInterval);
+            if (newTerm.hasEnded()) {
+                newTerm.disable();
+            }
         } else {
             newTerm = Term.createTerm(command.year(), sequence, dateInterval);
         }
