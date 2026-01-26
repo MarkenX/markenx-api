@@ -6,7 +6,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 
 public record StudentUserReadDTO(
-    String studentId,
+    String id,
     String fullName,
     String email
 ) {

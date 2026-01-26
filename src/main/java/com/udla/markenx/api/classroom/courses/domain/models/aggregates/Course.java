@@ -4,6 +4,7 @@ import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidAcademicT
 import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseNameException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
@@ -46,7 +47,13 @@ public class Course extends Entity {
      * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
      * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
-    public Course(String id, String name, long code, String termId) {
+    public Course(
+            String id,
+            LifecycleStatus lifecycleStatus,
+            String name,
+            long code,
+            String termId) {
+        super(lifecycleStatus);
         this.id = new CourseId(id);
         this.name = validateName(name);
         this.code = validateCode(code);
