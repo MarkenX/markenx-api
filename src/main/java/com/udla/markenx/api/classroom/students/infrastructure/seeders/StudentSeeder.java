@@ -3,6 +3,7 @@ package com.udla.markenx.api.classroom.students.infrastructure.seeders;
 import com.udla.markenx.api.classroom.courses.application.ports.in.dtos.CoursePortDTO;
 import com.udla.markenx.api.classroom.courses.application.ports.in.usecases.QueryCourseUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.RegisterStudentUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
 import com.udla.markenx.api.classroom.students.infrastructure.seeders.factories.StudentSeedFactory;

@@ -2,6 +2,7 @@ package com.udla.markenx.api.classroom.students.application.services;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.QueryStudentsDetailUseCase;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import com.udla.markenx.api.classroom.students.application.ports.out.StudentDetailQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;

@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses;
+package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
 
 /**
  * Response DTO for the student's course information.

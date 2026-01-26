@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
  * @param remainingAttempts The number of remaining attempts for the student
  * @param scenarioId The ID of the scenario associated with the task
  */
-public record StudentTaskPortDTO(
+public record StudentTaskProgressDetailPortDTO(
         String taskId,
         String taskLabel,
         String title,

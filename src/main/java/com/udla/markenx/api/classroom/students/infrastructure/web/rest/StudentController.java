@@ -3,15 +3,13 @@ package com.udla.markenx.api.classroom.students.infrastructure.web.rest;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.ChangeStudentStatusCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.RegisterStudentCommand;
 import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.in.queries.*;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAllTasksProgressQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentAttemptsQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentProfileQuery;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.CreateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentStatusRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentAttemptResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentProfileResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentTaskWithProgressResponseDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -36,7 +34,6 @@ public class StudentController {
 
     private final RegisterStudentUseCase registerStudentUseCase;
     private final QueryStudentsDetailUseCase queryStudentsDetailUseCase;
-    private final QueryStudentsUseCase queryStudentsUseCase;
     private final UpdateStudentUseCase updateStudentUseCase;
     private final QueryStudentAttemptsUseCase queryStudentAttemptsUseCase;
     private final QueryStudentsProfileUseCase queryStudentsProfileUseCase;
@@ -153,11 +150,11 @@ public class StudentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public Page<@NotNull StudentResponseDTO> getAll(
+    public Page<@NotNull StudentUserReadDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        return StudentResponseDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
+        return StudentUserReadDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
     }
 
     @PutMapping("/{id}")
@@ -183,22 +180,6 @@ public class StudentController {
                 dto.courseId());
         var student = updateStudentUseCase.update(command);
         return StudentResponseDTO.from(student, null);
-    }
-
-    @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get an academic term by attemptId")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
-            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized"),
-            @ApiResponse(responseCode = "403", description = "Forbidden"),
-            @ApiResponse(responseCode = "404", description = "Academic term not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error")
-    })
-    public StudentResponseDTO getById(@PathVariable String id) {
-        var student = queryStudentsUseCase.getStudentById(StudentIdQuery.from(id));
-        return StudentResponseDTO.from(student);
     }
 
     @PatchMapping("/{id}/status")

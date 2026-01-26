@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.students.application.ports.out;
 
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

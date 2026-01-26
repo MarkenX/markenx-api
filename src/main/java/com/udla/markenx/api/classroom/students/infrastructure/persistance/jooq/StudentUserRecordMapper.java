@@ -1,5 +1,6 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import org.jooq.Record;
 import org.jspecify.annotations.NonNull;
 

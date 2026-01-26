@@ -4,7 +4,6 @@ public record StudentPortDTO(
         String id,
         String label,
         String fullName,
-        String email,
         String courseId
 ) {
 }
