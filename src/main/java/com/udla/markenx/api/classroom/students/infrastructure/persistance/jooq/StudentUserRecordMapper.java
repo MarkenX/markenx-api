@@ -10,7 +10,10 @@ public class StudentUserRecordMapper {
         return new StudentDetailPortDTO(
                 r.get("student_id", String.class),
                 r.get("email", String.class),
-                r.get("full_name", String.class)
+                r.get("full_name", String.class),
+                r.get("code", Integer.class),
+                r.get("course_id", String.class),
+                r.get("lifecycle_status", String.class)
         );
     }
 }

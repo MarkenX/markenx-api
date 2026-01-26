@@ -17,6 +17,11 @@ public class QueryStudentsDetailService implements QueryStudentsDetailUseCase {
     private final StudentDetailQueryRepository pagedRepository;
 
     @Override
+    public StudentDetailPortDTO getStudentById(@NonNull String id) {
+        return pagedRepository.findByIdOrThrow(id);
+    }
+
+    @Override
     public Page<StudentDetailPortDTO> listStudentsPage(@NonNull StudentPageQueryCriteria query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return pagedRepository.findAllPaginated(pageable);

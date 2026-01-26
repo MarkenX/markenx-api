@@ -5,6 +5,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.dtos.Student
 import org.springframework.data.domain.Page;
 
 public interface QueryStudentsDetailUseCase {
+    StudentDetailPortDTO getStudentById(String id);
     StudentDetailPortDTO findByEmail(String email);
     Page<StudentDetailPortDTO> listStudentsPage(StudentPageQueryCriteria query);
 }

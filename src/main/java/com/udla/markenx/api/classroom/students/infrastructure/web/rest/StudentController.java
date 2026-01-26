@@ -16,7 +16,6 @@ import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requ
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentProfileResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentTaskResponseDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentUserReadDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -157,11 +156,11 @@ public class StudentController {
             @ApiResponse(responseCode = "403", description = "Forbidden"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public Page<@NotNull StudentUserReadDTO> getAll(
+    public Page<@NotNull StudentResponseDTO> getAll(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         var query = new StudentPageQueryCriteria(page, size);
-        return StudentUserReadDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
+        return StudentResponseDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
     }
 
     @PutMapping("/{id}")
@@ -185,8 +184,9 @@ public class StudentController {
                 dto.firstName(),
                 dto.lastName(),
                 dto.courseId());
-        var student = updateStudentUseCase.update(command);
-        return StudentResponseDTO.from(student, null);
+        updateStudentUseCase.update(command);
+        var studentDetail = queryStudentsDetailUseCase.getStudentById(id);
+        return StudentResponseDTO.from(studentDetail);
     }
 
     @PatchMapping("/{id}/status")
@@ -206,7 +206,8 @@ public class StudentController {
             @PathVariable String id,
             @RequestBody @Valid UpdateStudentStatusRequestDTO request
     ) {
-        var student = updateStudentUseCase.changeStatus(ChangeStudentStatusCommand.from(id, request));
-        return StudentResponseDTO.from(student, null);
+        updateStudentUseCase.changeStatus(ChangeStudentStatusCommand.from(id, request));
+        var studentDetail = queryStudentsDetailUseCase.getStudentById(id);
+        return StudentResponseDTO.from(studentDetail);
     }
 }

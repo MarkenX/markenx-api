@@ -32,6 +32,15 @@ public class JooqStudentDetailRepository implements StudentDetailQueryRepository
     private static final Field<String> FULL_NAME =
             field(name("full_name"), String.class);
 
+    private static final Field<Integer> CODE =
+            field(name("code"), Integer.class);
+
+    private static final Field<String> COURSE_ID =
+            field(name("course_id"), String.class);
+
+    private static final Field<String> LIFECYCLE_STATUS =
+            field(name("lifecycle_status"), String.class);
+
     private final DSLContext dsl;
 
     private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
@@ -81,7 +90,7 @@ public class JooqStudentDetailRepository implements StudentDetailQueryRepository
         int total = dsl.fetchCount(STUDENT_SUMMARY);
 
         var records = dsl
-                .select(STUDENT_ID, EMAIL, FULL_NAME)
+                .select(STUDENT_ID, EMAIL, FULL_NAME, CODE, COURSE_ID, LIFECYCLE_STATUS)
                 .from(STUDENT_SUMMARY)
                 .orderBy(FULL_NAME.asc())
                 .limit(pageable.getPageSize())
@@ -92,7 +101,10 @@ public class JooqStudentDetailRepository implements StudentDetailQueryRepository
                 new StudentDetailPortDTO(
                         record.get(STUDENT_ID),
                         record.get(EMAIL),
-                        record.get(FULL_NAME)
+                        record.get(FULL_NAME),
+                        record.get(CODE),
+                        record.get(COURSE_ID),
+                        record.get(LIFECYCLE_STATUS)
                 )
         );
 
