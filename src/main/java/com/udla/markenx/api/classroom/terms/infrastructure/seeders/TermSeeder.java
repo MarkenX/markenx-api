@@ -15,16 +15,10 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Seeder idempotente para términos académicos.
- * Solo inserta términos que no existen (verificados por año y fechas como clave natural).
- * Es seguro ejecutar múltiples veces sin duplicar datos.
- */
 @Slf4j
 @Component
 @Profile("dev")
@@ -42,7 +36,7 @@ public class TermSeeder extends BaseSeeder implements CommandLineRunner {
 
     @Override
     protected void doSeed() {
-        seedTermsFor(today());
+        seedTermsFor();
     }
 
     @Override
@@ -54,10 +48,10 @@ public class TermSeeder extends BaseSeeder implements CommandLineRunner {
      * Siembra términos solo si no existen.
      * Utiliza año y fechas como clave natural para verificar existencia.
      */
-    private void seedTermsFor(LocalDate referenceDate) {
+    private void seedTermsFor() {
         Set<String> existingTermKeys = getExistingTermKeys();
 
-        termCommands(referenceDate).stream()
+        termCommands().stream()
                 .filter(command -> !termExists(command, existingTermKeys))
                 .forEach(command -> {
                     createTermUseCase.handle(command);
@@ -86,25 +80,20 @@ public class TermSeeder extends BaseSeeder implements CommandLineRunner {
         return exists;
     }
 
-    private String toTermKey(@NonNull Term term) {
+    private @NonNull String toTermKey(@NonNull Term term) {
         return term.getYear() + "-" + term.getStartDate() + "-" + term.getEndDate();
     }
 
-    private String toCommandKey(@NonNull CreateTermCommand command) {
+    private @NonNull String toCommandKey(@NonNull CreateTermCommand command) {
         return command.year() + "-" + command.startDate() + "-" + command.endDate();
     }
 
-    @Contract("_ -> new")
-    private @NonNull List<CreateTermCommand> termCommands(LocalDate referenceDate) {
-        return List.of(
-                TermSeedFactory.past(referenceDate),
-                TermSeedFactory.current(referenceDate),
-                TermSeedFactory.future(referenceDate)
-        );
-    }
-
     @Contract(" -> new")
-    private @NonNull LocalDate today() {
-        return LocalDate.now();
+    private @NonNull List<CreateTermCommand> termCommands() {
+        return List.of(
+                TermSeedFactory.past(),
+                TermSeedFactory.current(),
+                TermSeedFactory.future()
+        );
     }
 }

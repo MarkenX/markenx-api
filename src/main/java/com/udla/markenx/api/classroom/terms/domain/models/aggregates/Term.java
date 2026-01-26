@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 
@@ -25,7 +26,7 @@ public class Term extends Entity {
 
     private final TermId id;
     private int year;
-    private final int sequence;
+    private final int code;
 
     @Getter(AccessLevel.NONE)
     private DateInterval dateInterval;
@@ -40,19 +41,19 @@ public class Term extends Entity {
      * @param id the unique identifier for the academic term
      * @param dateInterval the date interval representing the start and end dates of the term
      * @param year the year associated with the academic term
-     * @param sequence the sequence number of the term within the academic year
+     * @param code the sequence number of the term within the academic year
      * @param status the current status of the academic term
      */
     private Term(
             TermId id,
             DateInterval dateInterval,
             int year,
-            int sequence,
+            int code,
             TermStatus status) {
         super();
         this.id = id;
         this.year = validateYear(year);
-        this.sequence = validateSequence(sequence);
+        this.code = validateSequence(code);
         this.dateInterval = dateInterval;
         this.status = status;
     }
@@ -66,7 +67,7 @@ public class Term extends Entity {
      * @param startDate The starting date of the academic term.
      * @param endDate The ending date of the academic term.
      * @param year The academic year the term belongs to.
-     * @param sequence The sequence number indicating the term's order within the year.
+     * @param code The sequence number indicating the term's order within the year.
      * @param status The status of the academic term (e.g., active, inactive).
      */
     public Term(
@@ -75,12 +76,12 @@ public class Term extends Entity {
             LocalDate startDate,
             LocalDate endDate,
             int year,
-            int sequence,
+            int code,
             TermStatus status) {
         super(lifecycleStatus);
         this.id = new TermId(id);
         this.year = validateYear(year);
-        this.sequence = validateSequence(sequence);
+        this.code = validateSequence(code);
         this.dateInterval = new DateInterval(startDate, endDate);
         this.status = status;
     }
@@ -240,18 +241,8 @@ public class Term extends Entity {
         return year;
     }
 
-    /**
-     * Validates the given sequence number to ensure it is within the acceptable range.
-     * If the sequence is outside the valid range, an exception is thrown.
-     *
-     * @param sequence the sequence number to validate
-     * @return the validated sequence number if it is within the valid range
-     * @throws InvalidTermSequenceException if the sequence is less than or equal to 0
-     *                                      or greater than the maximum allowed sequence
-     */
     private int validateSequence(int sequence) {
-        int maxSequence = Math.ceilDiv(12, MAX_MONTHS_LENGTH);
-        if (sequence <= 0 || sequence > maxSequence) {
+        if (sequence <= 0) {
             throw new InvalidTermSequenceException(sequence);
         }
         return sequence;
@@ -338,7 +329,7 @@ public class Term extends Entity {
     //endregion
 
     public boolean overlapsWith(Term other) {
-        if (other == null) {
+        if (other == null || this.equals(other)) {
             return false;
         }
         return this.dateInterval.overlapsWith(other.dateInterval);
@@ -392,7 +383,7 @@ public class Term extends Entity {
      * @param endDate the end date of the interval
      * @param year the year to associate with the date interval
      */
-    public void update(LocalDate startDate, LocalDate endDate, int year) {
+    public Term update(LocalDate startDate, LocalDate endDate, int year) {
         validateYear(year);
 
         var interval = new DateInterval(startDate, endDate);
@@ -409,6 +400,7 @@ public class Term extends Entity {
 
         this.dateInterval = interval;
         this.year = year;
+        return this;
     }
 
     @Override
@@ -423,8 +415,13 @@ public class Term extends Entity {
         return id.hashCode();
     }
 
+    @Contract(pure = true)
+    protected @NonNull String formatCode() {
+        return String.format("%02d", code);
+    }
+
     @Override
     public String toString() {
-        return String.format("%d-%d", year, sequence);
+        return String.format("%d-%s", year, formatCode());
     }
 }

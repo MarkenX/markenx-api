@@ -12,32 +12,47 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor(access = PRIVATE)
 public final class TermSeedFactory {
 
-    @Contract("_ -> new")
-    public static @NonNull CreateTermCommand past(@NonNull LocalDate today) {
+    // =====================
+    // Definición de periodos
+    // =====================
+    private static final LocalDate PAST_START    = LocalDate.of(2024, 12, 1);
+    private static final LocalDate PAST_END      = LocalDate.of(2025, 4, 1);  // 4 meses
+
+    private static final LocalDate CURRENT_START = LocalDate.of(2025, 9, 1);
+    private static final LocalDate CURRENT_END   = LocalDate.of(2026, 2, 1);  // 5 meses
+
+    private static final LocalDate FUTURE_START  = LocalDate.of(2026, 3, 1);
+    private static final LocalDate FUTURE_END    = LocalDate.of(2026, 7, 1);  // 4 meses
+
+    // =====================
+    // Métodos públicos
+    // =====================
+    @Contract("-> new")
+    public static @NonNull CreateTermCommand past() {
         return new CreateTermCommand(
-                today.minusMonths(10),
-                today.minusMonths(6),
-                today.minusYears(1).getYear(),
+                PAST_START,
+                PAST_END,
+                2024,
                 true
         );
     }
 
-    @Contract("_ -> new")
-    public static @NonNull CreateTermCommand current(@NonNull LocalDate today) {
+    @Contract("-> new")
+    public static @NonNull CreateTermCommand current() {
         return new CreateTermCommand(
-                today.minusMonths(1),
-                today.plusMonths(4),
-                today.getYear(),
+                CURRENT_START,
+                CURRENT_END,
+                2025,
                 true
         );
     }
 
-    @Contract("_ -> new")
-    public static @NonNull CreateTermCommand future(@NonNull LocalDate today) {
+    @Contract("-> new")
+    public static @NonNull CreateTermCommand future() {
         return new CreateTermCommand(
-                today.plusMonths(5),
-                today.plusMonths(9),
-                today.getYear(),
+                FUTURE_START,
+                FUTURE_END,
+                2025,
                 false
         );
     }

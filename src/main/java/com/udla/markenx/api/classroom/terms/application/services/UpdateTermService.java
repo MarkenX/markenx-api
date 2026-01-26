@@ -9,11 +9,14 @@ import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQ
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
+import com.udla.markenx.api.classroom.terms.domain.services.TermDomainService;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +29,9 @@ public class UpdateTermService implements UpdateTermUseCase {
     @Override
     public TermPortDTO update(@NonNull UpdateTermCommand command) {
         Term term = queryRepository.findByIdOrThrow(command.id());
-        term.update(command.startDate(), command.endDate(), command.year());
+        List<Term> terms = queryRepository.findAll();
+        Term updated = term.update(command.startDate(), command.endDate(), command.year());
+        TermDomainService.validateNoOverlaps(terms, updated);
         return mapper.toDTO(commandRepository.save(term));
     }
 

@@ -6,6 +6,7 @@ import com.udla.markenx.api.classroom.terms.domain.exceptions.StartDateCannotBeN
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -67,19 +68,32 @@ public class DateInterval {
         return !spansOneYear();
     }
 
+    /**
+     * Retorna la duración exacta en meses, redondeando hacia arriba si hay días parciales.
+     */
     public long getMonthLength() {
-        return ChronoUnit.MONTHS.between(startDate, endDate);
+        long months = ChronoUnit.MONTHS.between(startDate.withDayOfMonth(1), endDate.withDayOfMonth(1));
+        // Si hay días adicionales, contamos como un mes más
+        if (endDate.getDayOfMonth() > startDate.getDayOfMonth()) {
+            months++;
+        }
+        return months;
     }
 
-    public boolean overlapsWith(DateInterval other) {
-        return this.equals(other)
-                || contains(other.startDate)
-                || contains(other.endDate);
+    /**
+     * Verifica si dos intervalos se superponen.
+     * Interpreta intervalos como [startDate, endDate] cerrados.
+     */
+    public boolean overlapsWith(@NonNull DateInterval other) {
+        // Dos intervalos se superponen si hay al menos un día común
+        return !this.endDate.isBefore(other.startDate) && !this.startDate.isAfter(other.endDate);
     }
 
+    /**
+     * Verifica si la fecha está dentro del intervalo [startDate, endDate].
+     */
     public boolean contains(@NotNull LocalDate date) {
-        return (date.isEqual(startDate) || date.isAfter(startDate))
-                && (date.isEqual(endDate) || date.isBefore(endDate));
+        return !(date.isBefore(startDate) || date.isAfter(endDate));
     }
 
     @Override

@@ -32,7 +32,7 @@ public class JdbcTermRepository implements TermCommandRepository {
                 term.getStartDate(),
                 term.getEndDate(),
                 term.getYear(),
-                term.getSequence(),
+                term.getCode(),
                 term.getStatus().name()
         );
 

@@ -35,7 +35,7 @@ class TermTest {
             // Then
             assertThat(term.getId()).isNotNull();
             assertThat(term.getYear()).isEqualTo(year);
-            assertThat(term.getSequence()).isEqualTo(sequence);
+            assertThat(term.getCode()).isEqualTo(sequence);
             assertThat(term.getStartDate()).isEqualTo(startDate);
             assertThat(term.getEndDate()).isEqualTo(endDate);
             // Future terms start with UPCOMING status, not ACTIVE

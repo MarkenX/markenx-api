@@ -8,7 +8,7 @@ import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.DateInterval;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
-import com.udla.markenx.api.classroom.terms.domain.services.AcademicTermDomainService;
+import com.udla.markenx.api.classroom.terms.domain.services.TermDomainService;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -25,8 +25,8 @@ public class CreateTermHandler implements CreateTermUseCase {
 
     @Override
     public TermPortDTO handle(@NotNull CreateTermCommand command) {
-        List<Term> terms = queryRepository.findAllByYear(command.year());
-        int sequence = AcademicTermDomainService.calculateSequence(terms, null);
+        List<Term> terms = queryRepository.findAll();
+        int sequence = TermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
 
         Term newTerm;
@@ -36,7 +36,7 @@ public class CreateTermHandler implements CreateTermUseCase {
             newTerm = Term.createTerm(command.year(), sequence, dateInterval);
         }
 
-        AcademicTermDomainService.validateNoOverlaps(terms, newTerm);
+        TermDomainService.validateNoOverlaps(terms, newTerm);
         return mapper.toDTO(commandRepository.save(newTerm));
     }
 }
