@@ -10,7 +10,7 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.CreateStudentRequestDTO;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.StudentAttemptResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentAttemptResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentStatusRequestDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentProfileResponseDTO;
