@@ -47,26 +47,29 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
                 command.courseId()
         );
 
-        repository.save(newStudent);
+        Student savedStudent = repository.save(newStudent);
 
         // Domain event for internal CQRS projections
         events.publishEvent(
                 new StudentRegisteredEvent(
-                        newStudent.getId(),
+                        savedStudent.getId(),
                         command.email(),
-                        newStudent.getFullName()
+                        savedStudent.getFullName(),
+                        (int) savedStudent.getCode(),
+                        savedStudent.getCourseId(),
+                        savedStudent.getLifecycleStatus().name()
                 )
         );
 
         // Integration event for cross-module communication (identity provisioning)
         events.publishEvent(
                 new IdentityProvisioningRequestedEvent(
-                        newStudent.getId(),
+                        savedStudent.getId(),
                         command.email(),
-                        newStudent.getFullName()
+                        savedStudent.getFullName()
                 )
         );
 
-        return newStudent;
+        return savedStudent;
     }
 }

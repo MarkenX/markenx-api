@@ -11,6 +11,8 @@ import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequ
 import com.udla.markenx.api.shared.domain.events.integration.IdentityEnableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentUpdatedEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentStatusChangedEvent;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyDisabledException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyEnabledException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiveException;
@@ -95,6 +97,15 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         student.changeCourse(command.courseId());
 
         commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentUpdatedEvent(
+                        student.getId(),
+                        student.getFullName(),
+                        student.getCourseId()
+                )
+        );
+
         return student;
     }
 
@@ -103,6 +114,13 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = queryRepository.findByIdOrThrow(studentId);
         student.disable();
         commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentStatusChangedEvent(
+                        student.getId(),
+                        student.getLifecycleStatus().name()
+                )
+        );
     }
 
     @Override
@@ -110,6 +128,13 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = queryRepository.findByIdOrThrow(studentId);
         student.enable();
         commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentStatusChangedEvent(
+                        student.getId(),
+                        student.getLifecycleStatus().name()
+                )
+        );
     }
 
     @Override

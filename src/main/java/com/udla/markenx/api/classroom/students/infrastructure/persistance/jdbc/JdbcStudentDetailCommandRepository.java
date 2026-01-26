@@ -35,4 +35,22 @@ public class JdbcStudentDetailCommandRepository implements StudentDetailCommandR
                 model.courseId(),
                 model.lifecycleStatus());
     }
+
+    @Override
+    public void updateDetails(@NonNull String studentId, @NonNull String fullName, @NonNull String courseId) {
+        jdbc.update("""
+            UPDATE student_summary_read_model
+            SET full_name = ?, course_id = ?
+            WHERE student_id = ?
+        """, fullName, courseId, studentId);
+    }
+
+    @Override
+    public void updateStatus(@NonNull String studentId, @NonNull String lifecycleStatus) {
+        jdbc.update("""
+            UPDATE student_summary_read_model
+            SET lifecycle_status = ?
+            WHERE student_id = ?
+        """, lifecycleStatus, studentId);
+    }
 }
