@@ -30,7 +30,7 @@ public class UpdateTermService implements UpdateTermUseCase {
     @Override
     public TermPortDTO update(@NonNull UpdateTermCommand command) {
         Term term = queryRepository.findByIdOrThrow(command.id());
-        List<Term> terms = queryRepository.findAll();
+        List<Term> terms = queryRepository.findAllByLifecycleStatus(LifecycleStatus.ACTIVE.name());
         Term updated = term.update(command.startDate(), command.endDate(), command.year());
         TermDomainService.validateNoOverlaps(terms, updated);
         return mapper.toDTO(commandRepository.save(term));

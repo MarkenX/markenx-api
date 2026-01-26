@@ -9,6 +9,7 @@ import com.udla.markenx.api.classroom.terms.domain.models.aggregates.DateInterva
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermCommandRepository;
 import com.udla.markenx.api.classroom.terms.application.ports.out.TermQueryRepository;
 import com.udla.markenx.api.classroom.terms.domain.services.TermDomainService;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
@@ -25,7 +26,7 @@ public class CreateTermHandler implements CreateTermUseCase {
 
     @Override
     public TermPortDTO handle(@NotNull CreateTermCommand command) {
-        List<Term> terms = queryRepository.findAll();
+        List<Term> terms = queryRepository.findAllByLifecycleStatus(LifecycleStatus.ACTIVE.name());
         int sequence = TermDomainService.calculateSequence(terms, null);
         var dateInterval = new DateInterval(command.startDate(), command.endDate());
 

@@ -7,15 +7,16 @@ import org.springframework.data.domain.Page;
 
 public record CourseResponseDTO(
         String id,
+        String code,
         String label,
         String termId,
         String lifecycleStatus
 ) {
-
     @Contract("_ -> new")
     public static @NonNull CourseResponseDTO from(@NonNull CoursePortDTO course) {
         return new CourseResponseDTO(
                 course.id(),
+                course.code(),
                 course.label(),
                 course.termId(),
                 course.lifecycleStatus()

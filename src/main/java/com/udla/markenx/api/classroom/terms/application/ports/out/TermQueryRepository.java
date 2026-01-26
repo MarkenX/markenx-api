@@ -14,7 +14,7 @@ public interface TermQueryRepository {
     Term findActiveTerm();
     Term findByIdOrThrow(@NonNull String id);
     List<Term> findAll();
-    List<Term> findAllByYear(int year);
+    List<Term> findAllByLifecycleStatus(@NonNull String lifecycleStatus);
     List<Term> findAllByStatuses(@NonNull Set<String> statuses, boolean exclude);
     Page<Term> findAllPaginated(Pageable pageable);
 }

@@ -5,6 +5,7 @@ import com.udla.markenx.api.classroom.terms.domain.exceptions.TermActiveNotFound
 import com.udla.markenx.api.classroom.terms.domain.exceptions.TermException;
 import com.udla.markenx.api.classroom.terms.domain.models.aggregates.Term;
 import com.udla.markenx.api.classroom.terms.domain.models.valueobjects.TermStatus;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Field;
@@ -29,6 +30,7 @@ public class JooqTermRepository implements TermQueryRepository {
     private static final Field<String> TERM_STATUS_FIELD = field("status", String.class);
     private static final Field<Integer> TERM_SEQUENCE_FIELD = field("sequence", Integer.class);
     private static final Field<Integer> TERM_YEAR_FIELD = field("academic_year", Integer.class);
+    private static final Field<String> TERM_LIFECYCLE_STATUS_FIELD = field("lifecycle_status", String.class);
 
     private final DSLContext dsl;
     private final AcademicTermRecordMapper mapper = new AcademicTermRecordMapper();
@@ -63,6 +65,15 @@ public class JooqTermRepository implements TermQueryRepository {
     }
 
     @Override
+    public List<Term> findAllByLifecycleStatus(@NonNull String status) {
+        return Optional.of(dsl.select()
+                        .from(TERM_TABLE)
+                        .where(TERM_LIFECYCLE_STATUS_FIELD.eq(status))
+                        .fetch(mapper::toDomain))
+                .orElseThrow(() -> TermException.noneFoundByLifecycleStatus(status));
+    }
+
+    @Override
     public List<Term> findAllByStatuses(@NonNull Set<String> statuses, boolean exclude) {
         if (statuses.isEmpty())
             return exclude ? findAll() : List.of();
@@ -77,16 +88,6 @@ public class JooqTermRepository implements TermQueryRepository {
                         .where(condition)
                         .fetch(mapper::toDomain))
                 .orElseThrow(() -> TermException.noneFoundByStatuses(statuses));
-    }
-
-    @Override
-    public List<Term> findAllByYear(int year) {
-        return Optional.of(
-                dsl.select()
-                        .from(TERM_TABLE)
-                        .where(TERM_YEAR_FIELD.eq(year))
-                        .fetch(mapper::toDomain)
-        ).orElseThrow(() -> TermException.noneFoundByYear(year));
     }
 
     @Override

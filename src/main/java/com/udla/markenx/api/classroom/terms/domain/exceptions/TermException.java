@@ -12,8 +12,8 @@ public abstract class TermException extends EntityException {
 
     private static final String CODE = "TERM_EXCEPTION";
     private static final String ENTITY_NAME = "Periodo académico";
-    private static final String YEAR_CRITERIA = "año";
     private static final String STATUS_CRITERIA = "estatus";
+    private static final String LIFECYCLE_STATUS_CRITERIA = "estado de vida";
 
     protected TermException(String message) {
         super(CODE, message);
@@ -29,9 +29,8 @@ public abstract class TermException extends EntityException {
         return EntitiesNotFoundException.none(CODE, ENTITY_NAME);
     }
 
-    @Contract("_ -> new")
-    public static @NonNull EntitiesNotFoundException noneFoundByYear(int year) {
-        return EntitiesNotFoundException.byCriteria(CODE, ENTITY_NAME, YEAR_CRITERIA, year);
+    public static @NonNull EntitiesNotFoundException noneFoundByLifecycleStatus(String status) {
+        return EntitiesNotFoundException.byCriteria(CODE, ENTITY_NAME, LIFECYCLE_STATUS_CRITERIA, status);
     }
 
     @Contract("_ -> new")
