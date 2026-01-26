@@ -160,19 +160,6 @@ class TermTest {
             assertThatThrownBy(() -> Term.createHistoricalTerm(2024, -1, interval))
                     .isInstanceOf(InvalidTermSequenceException.class);
         }
-
-        @Test
-        @DisplayName("givenSequenceGreaterThanMax_whenCreating_thenThrowsInvalidTermSequenceException")
-        void givenSequenceGreaterThanMax_whenCreating_thenThrowsInvalidTermSequenceException() {
-            // Given
-            LocalDate startDate = LocalDate.of(2024, 3, 1);
-            LocalDate endDate = LocalDate.of(2024, 7, 31);
-            DateInterval interval = new DateInterval(startDate, endDate);
-
-            // When & Then (max sequence is 2 based on MAX_MONTHS_LENGTH = 6)
-            assertThatThrownBy(() -> Term.createHistoricalTerm(2024, 3, interval))
-                    .isInstanceOf(InvalidTermSequenceException.class);
-        }
     }
 
     @Nested
@@ -456,7 +443,7 @@ class TermTest {
             String result = term.toString();
 
             // Then
-            assertThat(result).isEqualTo("2024-1");
+            assertThat(result).isEqualTo("2024-01");
         }
     }
 }

@@ -11,7 +11,6 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class JdbcCourseRepository implements CourseCommandRepository {
 
-    private final CourseRowMapper rowMapper = new CourseRowMapper();
     private final JdbcTemplate jdbcTemplate;
 
     @Override
@@ -20,20 +19,17 @@ public class JdbcCourseRepository implements CourseCommandRepository {
         INSERT INTO courses
         (id, lifecycle_status, name, academic_term_id)
         VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            lifecycle_status  = VALUES(lifecycle_status),
+            name              = VALUES(name),
+            academic_term_id  = VALUES(academic_term_id)
         """,
-            course.getId().value(),
-            course.getLifecycleStatus().name(),
-            course.getName(),
-            course.getTermId()
+                course.getId().value(),
+                course.getLifecycleStatus().name(),
+                course.getName(),
+                course.getTermId()
         );
 
-        return jdbcTemplate.queryForObject("""
-            SELECT *
-            FROM courses
-            WHERE id = ?
-            """,
-                rowMapper,
-                course.getId().value()
-        );
+        return course;
     }
 }

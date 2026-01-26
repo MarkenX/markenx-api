@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 public record CourseResponseDTO(
         String id,
         String code,
-        String label,
+        String name,
         String termId,
         String lifecycleStatus
 ) {

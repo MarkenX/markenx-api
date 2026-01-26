@@ -5,6 +5,7 @@ import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseCod
 import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseNameException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
 import lombok.Getter;
+import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
 @Getter
@@ -150,8 +151,13 @@ public class Course extends Entity {
         return id.hashCode();
     }
 
+    @Contract(pure = true)
+    protected @NonNull String formatCode() {
+        return String.format("%04d", code);
+    }
+
     @Override
     public String toString() {
-        return name;
+        return String.format("CRS-%s", formatCode());
     }
 }
