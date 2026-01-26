@@ -1,21 +1,25 @@
 package com.udla.markenx.api.classroom.assignments.domain.models.aggregates;
 
-import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidCurrentAttemptException;
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentDeadlineAlreadyExpiredException;
 import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidMaxAttemptsException;
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.InvalidScenarioIdException;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentDeadline;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentInfo;
 import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentScore;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jspecify.annotations.NonNull;
 
 import java.time.LocalDateTime;
 
+/**
+ * Task aggregate representing an assignment that students can attempt.
+ * Note: status and currentAttempt are tracked per student in StudentTaskProgress.
+ */
 @SuppressWarnings("LombokGetterMayBeUsed")
 public class Task extends Assignment {
 
     private int maxAttempts;
-    private int currentAttempt;
+    private final String scenarioId;
 
     // region Constructors
 
@@ -24,14 +28,13 @@ public class Task extends Assignment {
             AssignmentInfo info,
             AssignmentDeadline deadline,
             AssignmentScore minScoreToPass,
-            AssignmentStatus status,
-            String academicTermId,
+            String courseId,
             int maxAttempts,
-            int currentAttempt
+            String scenarioId
     ) {
-        super(id, info, deadline, minScoreToPass, status, academicTermId);
+        super(id, info, deadline, minScoreToPass, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
-        this.currentAttempt = validateCurrentAttempt(currentAttempt);
+        this.scenarioId = validateScenarioId(scenarioId);
     }
 
     public Task(
@@ -42,14 +45,13 @@ public class Task extends Assignment {
             String summary,
             LocalDateTime deadline,
             double minScoreToPass,
-            AssignmentStatus status,
             String courseId,
             int maxAttempts,
-            int currentAttempt
+            String scenarioId
     ) {
-        super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, status, courseId);
+        super(id, lifecycleStatus, code, title, summary, deadline, minScoreToPass, courseId);
         this.maxAttempts = validateMaxAttempts(maxAttempts);
-        this.currentAttempt = validateCurrentAttempt(currentAttempt);
+        this.scenarioId = validateScenarioId(scenarioId);
     }
 
     // endregion
@@ -61,7 +63,8 @@ public class Task extends Assignment {
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
             String courseId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -69,10 +72,9 @@ public class Task extends Assignment {
                 info,
                 AssignmentDeadline.future(deadline),
                 minScoreToPass,
-                AssignmentStatus.NOT_STARTED,
                 courseId,
                 maxAttempts,
-                0
+                scenarioId
         );
     }
 
@@ -81,7 +83,8 @@ public class Task extends Assignment {
             LocalDateTime deadline,
             AssignmentScore minScoreToPass,
             String courseId,
-            int maxAttempts
+            int maxAttempts,
+            String scenarioId
     ) {
         var id = AssignmentId.generate();
         return new Task(
@@ -89,10 +92,9 @@ public class Task extends Assignment {
                 info,
                 AssignmentDeadline.historical(deadline),
                 minScoreToPass,
-                AssignmentStatus.OUTDATED,
                 courseId,
                 maxAttempts,
-                0
+                scenarioId
         );
     }
 
@@ -104,8 +106,8 @@ public class Task extends Assignment {
         return this.maxAttempts;
     }
 
-    public int getCurrentAttempt() {
-        return this.currentAttempt;
+    public String getScenarioId() {
+        return this.scenarioId;
     }
 
     // endregion
@@ -118,7 +120,6 @@ public class Task extends Assignment {
 
     // endregion
 
-
     // region Validations
 
     public int validateMaxAttempts(int maxAttempts) {
@@ -128,43 +129,31 @@ public class Task extends Assignment {
         return maxAttempts;
     }
 
-    public int validateCurrentAttempt(int currentAttempt) {
-        if (currentAttempt < 0 || currentAttempt > this.maxAttempts) {
-            throw new InvalidCurrentAttemptException();
+    public String validateScenarioId(String scenarioId) {
+        if (scenarioId == null || scenarioId.isBlank()) {
+            throw new InvalidScenarioIdException();
         }
-        return currentAttempt;
+        return scenarioId;
     }
 
     // endregion
 
-    public void registerAttemptResult(@NonNull AssignmentScore score) {
-
-        this.currentAttempt++;
-
-        if (score.isGreaterOrEqualThan(this.minScoreToPass)) {
-            transitionTo(AssignmentStatus.COMPLETED);
-            return;
+    public void update(
+            String title,
+            String summary,
+            LocalDateTime newDeadline,
+            int maxAttempts
+    ) {
+        if (this.deadline.isOverdue()) {
+            throw new AssignmentDeadlineAlreadyExpiredException();
         }
-
-        if (deadline.isOverdue()) {
-            transitionTo(AssignmentStatus.FAILED);
-            return;
-        }
-
-        transitionTo(AssignmentStatus.IN_PROGRESS);
-    }
-
-    public void markAsFailedIfNotCompleted() {
-        if (this.status == AssignmentStatus.COMPLETED) return;
-
-        if (deadline.isOverdue()) {
-            transitionTo(AssignmentStatus.FAILED);
-        }
+        this.reschedule(AssignmentDeadline.future(newDeadline));
+        this.updateInfo(new AssignmentInfo(title, summary));
+        this.setMaxAttempts(maxAttempts);
     }
 
     @Override
     public String toString() {
         return String.format("TSK-%s", formatCode());
-
     }
 }

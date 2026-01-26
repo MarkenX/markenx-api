@@ -1,0 +1,19 @@
+---
+- name: Get admin access token (master realm)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/realms/{{ keycloak_admin_realm }}/protocol/openid-connect/token"
+    method: POST
+    headers:
+      Content-Type: application/x-www-form-urlencoded
+    body_format: form-urlencoded
+    body:
+      grant_type: password
+      client_id: admin-cli
+      username: "{{ keycloak_admin_user }}"
+      password: "{{ keycloak_admin_password }}"
+    return_content: true
+  register: kc_token
+
+- name: Set token fact
+  ansible.builtin.set_fact:
+    kc_access_token: "{{ kc_token.json.access_token }}"

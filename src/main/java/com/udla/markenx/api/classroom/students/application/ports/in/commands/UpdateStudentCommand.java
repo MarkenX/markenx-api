@@ -1,0 +1,8 @@
+package com.udla.markenx.api.classroom.students.application.ports.in.commands;
+
+public record UpdateStudentCommand(
+        String id,
+        String firstName,
+        String lastName
+) {
+}

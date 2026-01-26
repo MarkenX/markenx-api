@@ -10,7 +10,9 @@ import com.udla.markenx.api.game.scenarios.application.commands.CreateScenarioCo
 import com.udla.markenx.api.game.scenarios.application.commands.CreateScenarioCommand.EventEffectDTO;
 import com.udla.markenx.api.game.scenarios.application.dtos.ScenarioResponse;
 import com.udla.markenx.api.game.scenarios.application.ports.incoming.CreateScenarioUseCase;
-import com.udla.markenx.api.game.scenarios.domain.exceptions.ScenarioException;
+import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
+import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioQueryRepository;
+import com.udla.markenx.api.shared.infrastructure.seeders.BaseSeeder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.Contract;
@@ -22,30 +24,57 @@ import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
+/**
+ * Seeder idempotente para escenarios de juego.
+ * Solo inserta escenarios que no existen (verificados por título como clave natural).
+ * Es seguro ejecutar múltiples veces sin duplicar datos.
+ */
 @Slf4j
 @Component
 @Profile("dev")
-@Order(5)
+@Order(4)
 @RequiredArgsConstructor
-public class ScenarioSeeder implements CommandLineRunner {
+public class ScenarioSeeder extends BaseSeeder implements CommandLineRunner {
+
+    private static final String SAMPLE_SCENARIO_TITLE = "Escenario de Lanzamiento de Producto";
 
     private final CreateScenarioUseCase createScenarioUseCase;
+    private final ScenarioQueryRepository scenarioQueryRepository;
+
+    @Override
+    public String name() {
+        return "Scenarios";
+    }
+
+    @Override
+    protected void doSeed() {
+        if (scenarioExists(SAMPLE_SCENARIO_TITLE)) {
+            log.debug("Scenario already exists, skipping: title={}", SAMPLE_SCENARIO_TITLE);
+            return;
+        }
+
+        CreateScenarioCommand command = buildSampleScenarioCommand();
+        ScenarioResponse saved = createScenarioUseCase.handle(command);
+        log.info("Scenario created: title={}, attemptId={}", saved.title(), saved.id());
+    }
 
     @Override
     public void run(String @NonNull ... args) {
-        log.info("Seeding scenarios...");
+        seed();
+    }
 
-        try {
-            CreateScenarioCommand command = buildSampleScenarioCommand();
-            ScenarioResponse saved = createScenarioUseCase.handle(command);
-            log.info("The scenario '{}' was created with id: {}", saved.title(), saved.id());
-            log.info("Scenarios seeded successfully.");
-        } catch (ScenarioException e) {
-            log.error(e.getMessage(), e);
-            log.info("Scenarios seeding failed.");
-        }
+    /**
+     * Verifica si un escenario ya existe usando el título como clave natural.
+     */
+    private boolean scenarioExists(String title) {
+        Set<String> existingTitles = scenarioQueryRepository.findAll().stream()
+                .map(Scenario::getTitle)
+                .collect(Collectors.toSet());
+        return existingTitles.contains(title);
     }
 
     private @NonNull CreateScenarioCommand buildSampleScenarioCommand() {
@@ -59,7 +88,7 @@ public class ScenarioSeeder implements CommandLineRunner {
         List<EventDTO> events = buildEvents(priceId, qualityId);
 
         return new CreateScenarioCommand(
-                "Escenario de Lanzamiento de Producto",
+                SAMPLE_SCENARIO_TITLE,
                 "Simulación de estrategia de marketing para el lanzamiento de un nuevo producto tecnológico",
                 consumer,
                 dimensions,

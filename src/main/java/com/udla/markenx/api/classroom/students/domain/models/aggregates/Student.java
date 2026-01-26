@@ -139,6 +139,10 @@ public class Student extends Entity {
         return this.status.name();
     }
 
+    public long getCode() {
+        return this.code;
+    }
+
     // endregion
 
     // region Validations

@@ -1,0 +1,96 @@
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:mysql}:${DB_PORT:3306}/${DB_NAME:markenx}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    clean-disabled: false
+    clean-on-validation-error: true
+
+  jooq:
+    sql-dialect: MYSQL
+
+  # ============================
+  # Docker Compose (DEV)
+  # ============================
+  docker:
+    compose:
+      enabled: true
+      lifecycle-management: start_only
+      skip:
+        in-tests: false
+      readiness:
+        wait: only_if_started
+
+  # ============================
+  # OAuth2 Client (BFF) - DEV
+  # ============================
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: ${KEYCLOAK_CLIENT:bff}
+            client-secret: ${KEYCLOAK_CLIENT_SECRET:dev-secret}
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+              - profile
+              - email
+        provider:
+          keycloak:
+            issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8083/realms/MarkenX}
+
+  # Sesi�n del BFF (DEV)
+  session:
+    timeout: 10m
+
+server:
+  servlet:
+    session:
+      cookie:
+        http-only: true
+        same-site: lax
+        path: /
+
+logging:
+  level:
+    org.jooq: WARN
+    org.springframework.security: DEBUG
+    org.springframework.security.oauth2: DEBUG
+    com.udla.markenx.api.security.infrastructure.web: DEBUG
+    com.udla.markenx.api.classroom.academicterms.infrastructure.seeders: DEBUG
+
+keycloak:
+  admin:
+    base-url: ${KEYCLOAK_ADMIN_BASE_URL:http://localhost:8083}
+    realm: ${KEYCLOAK_ADMIN_REALM:MarkenX}
+    client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:markenx-admin}
+    client-secret: ${KEYCLOAK_ADMIN_CLIENT_SECRET:dev-admin-secret}
+
+identity:
+  default-temporary-password: ${IDENTITY_DEFAULT_TEMP_PASSWORD:password}
+
+# ============================
+# Game Token (Unity WebGL)
+# ============================
+app:
+  game-token:
+    # Secret for signing JWT tokens (min 32 chars)
+    # IMPORTANT: Change this in production!
+    secret: ${GAME_TOKEN_SECRET:markenx-game-token-secret-key-dev-only-32chars}
+    # Token duration in seconds (default: 10 minutes)
+    duration-seconds: ${GAME_TOKEN_DURATION:600}
+    # Grace period for token refresh in seconds (default: 5 minutes)
+    refresh-grace-period-seconds: ${GAME_TOKEN_REFRESH_GRACE:300}

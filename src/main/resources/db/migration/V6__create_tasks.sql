@@ -1,3 +1,5 @@
+-- tasks: stores assignment tasks for courses
+-- current_attempt has been moved to student_task_progress table (per student-task basis)
 CREATE TABLE tasks (
    id CHAR(36) NOT NULL,
    lifecycle_status VARCHAR(20) NOT NULL,
@@ -12,8 +14,6 @@ CREATE TABLE tasks (
        CHECK (min_score_to_pass >= 0 AND min_score_to_pass <= 1),
    max_attempts INT NOT NULL
        CHECK (max_attempts > 0),
-   current_attempt INT NOT NULL
-       CHECK (current_attempt >= 0),
 
    CONSTRAINT pk_tasks
        PRIMARY KEY (id),

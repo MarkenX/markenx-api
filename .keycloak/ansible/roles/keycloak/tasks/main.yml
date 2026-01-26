@@ -1,0 +1,8 @@
+---
+- import_tasks: auth_token.yml
+- import_tasks: realm_roles.yml
+- import_tasks: client_bff.yml
+- import_tasks: admin_client.yml
+- import_tasks: admin_user.yml
+- import_tasks: roles_scopes.yml
+

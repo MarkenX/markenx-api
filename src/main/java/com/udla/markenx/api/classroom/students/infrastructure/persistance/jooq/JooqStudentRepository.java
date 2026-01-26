@@ -1,15 +1,19 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentQueryRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
 
@@ -17,21 +21,40 @@ import static org.jooq.impl.DSL.field;
 @RequiredArgsConstructor
 public class JooqStudentRepository implements StudentQueryRepository {
 
-    private final DSLContext dsl;
-    private final StudentUserRecordMapper mapper = new StudentUserRecordMapper();
+    private static final String STUDENT_TABLE = "students";
+    private static final Field<String> STUDENT_ID_FIELD = field("id", String.class);
+    private static final Field<String> COURSE_ID_FIELD = field("course_id", String.class);
 
-    private static final String TABLE = "students";
+    private final DSLContext dsl;
+    private final StudentRecordMapper mapper = new StudentRecordMapper();
 
     @Override
-    public Student findById(String id) {
-        return null;
+    public Optional<Student> findById(String id) {
+        return Optional.ofNullable(
+                dsl.select()
+                        .from(STUDENT_TABLE)
+                        .where(STUDENT_ID_FIELD.eq(id))
+                        .fetchOne(mapper::toDomain));
     }
 
     @Override
-    public Page<StudentUserReadDTO> findAllPaginated(@NonNull Pageable pageable) {
+    public Student findByIdOrThrow(String id) {
+        return findById(id).orElseThrow(() -> StudentException.notFoundById(id));
+    }
+
+    @Override
+    public List<Student> findAll() {
+        return Optional.of(dsl.select()
+                        .from(STUDENT_TABLE)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(StudentException::noneFound);
+    }
+
+    @Override
+    public Page<Student> findAllPaginated(@NonNull Pageable pageable) {
         var records = dsl
                 .select()
-                .from(TABLE)
+                .from(STUDENT_TABLE)
                 .orderBy(field("last_name").desc())
                 .limit(pageable.getPageSize())
                 .offset((int) pageable.getOffset())
@@ -39,7 +62,7 @@ public class JooqStudentRepository implements StudentQueryRepository {
 
         Long total = dsl
                 .selectCount()
-                .from(TABLE)
+                .from(STUDENT_TABLE)
                 .fetchOneInto(Long.class);
 
         long safeTotal = total != null ? total : 0L;
@@ -47,7 +70,14 @@ public class JooqStudentRepository implements StudentQueryRepository {
         return new PageImpl<>(
                 records.map(mapper::toDomain),
                 pageable,
-                safeTotal
-        );
+                safeTotal);
+    }
+
+    @Override
+    public List<Student> findByCourseId(String courseId) {
+        return dsl.select()
+                .from(STUDENT_TABLE)
+                .where(COURSE_ID_FIELD.eq(courseId))
+                .fetch(mapper::toDomain);
     }
 }

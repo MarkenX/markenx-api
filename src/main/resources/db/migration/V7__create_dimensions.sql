@@ -9,10 +9,7 @@ CREATE TABLE dimensions (
         CHECK (product_initial_offer >= 0 AND product_initial_offer <= 1),
 
     CONSTRAINT pk_dimensions
-        PRIMARY KEY (id),
-
-    CONSTRAINT uk_dimensions_name
-        UNIQUE (name)
+        PRIMARY KEY (id)
 );
 
 CREATE INDEX idx_dimensions_consumer_expectation

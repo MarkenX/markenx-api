@@ -1,12 +1,14 @@
 package com.udla.markenx.api.game.attempts.application.services;
 
-import com.udla.markenx.api.game.attempts.application.commands.GetAttemptByIdQuery;
-import com.udla.markenx.api.game.attempts.application.dtos.GameSessionResponse;
-import com.udla.markenx.api.game.attempts.application.ports.incoming.AttemptQueryUseCase;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.AttemptPortDTO;
+import com.udla.markenx.api.game.attempts.application.ports.in.queries.GetAttemptByIdQuery;
+import com.udla.markenx.api.game.attempts.application.ports.in.mappers.AttemptPortMapper;
+import com.udla.markenx.api.game.attempts.application.ports.in.dtos.GameSessionResponse;
+import com.udla.markenx.api.game.attempts.application.ports.in.usecases.AttemptQueryUseCase;
 import com.udla.markenx.api.game.attempts.domain.exceptions.AttemptNotFoundException;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptQueryRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class AttemptQueryService implements AttemptQueryUseCase {
 
     private final AttemptQueryRepository repository;
+    private final AttemptPortMapper mapper = new AttemptPortMapper();
 
     @Override
     public GameSessionResponse getById(@NonNull GetAttemptByIdQuery query) {
@@ -56,5 +59,20 @@ public class AttemptQueryService implements AttemptQueryUseCase {
                 attempt.getStatus().name(),
                 historyResponses
         );
+    }
+
+    @Override
+    public List<AttemptPortDTO> listAttemptsByTaskId(String taskId) {
+        return repository.findByTaskId(taskId).stream().map(mapper::toDTO).toList();
+    }
+
+    @Override
+    public List<AttemptPortDTO> listAttemptsByStudentId(String studentId) {
+        return repository.findByStudentId(studentId).stream().map(mapper::toDTO).toList();
+    }
+
+    @Override
+    public List<AttemptPortDTO> listAttemptsByTaskIdAndStudentId(String taskId, String studentId) {
+        return repository.findByTaskIdAndStudentId(taskId, studentId).stream().map(mapper::toDTO).toList();
     }
 }

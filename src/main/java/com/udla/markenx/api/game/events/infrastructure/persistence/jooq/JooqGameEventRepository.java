@@ -55,6 +55,7 @@ public class JooqGameEventRepository implements GameEventQueryRepository {
                 .map(mapper::toDomain);
     }
 
+
     @Override
     public List<EventEffect> findEffectsByEventId(String eventId) {
         return dsl

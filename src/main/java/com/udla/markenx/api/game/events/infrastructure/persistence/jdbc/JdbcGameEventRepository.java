@@ -1,9 +1,9 @@
 package com.udla.markenx.api.game.events.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.events.domain.exceptions.GameEventException;
 import com.udla.markenx.api.game.events.domain.models.aggregates.GameEvent;
 import com.udla.markenx.api.game.events.domain.models.valueobjects.EventEffect;
 import com.udla.markenx.api.game.events.domain.ports.outgoing.GameEventCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -52,14 +52,12 @@ public class JdbcGameEventRepository implements GameEventCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró el evento con el identificador: " + id
-            );
+            throw GameEventException.notFoundById(id);
         }
     }
 
     @Override
-    public void saveEffects(String eventId, List<EventEffect> effects) {
+    public void saveEffects(String eventId, @NonNull List<EventEffect> effects) {
         for (EventEffect effect : effects) {
             jdbcTemplate.update("""
                 INSERT INTO event_effects

@@ -1,10 +1,11 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jooq;
 
+import com.udla.markenx.api.classroom.assignments.domain.exceptions.AssignmentException;
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
-import com.udla.markenx.api.classroom.assignments.domain.ports.outgoing.TaskQueryRepository;
+import com.udla.markenx.api.classroom.assignments.application.ports.out.TaskQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
+import org.jooq.Field;
 import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.jooq.impl.DSL.field;
 
@@ -19,17 +21,34 @@ import static org.jooq.impl.DSL.field;
 @RequiredArgsConstructor
 public class JooqTaskRepository implements TaskQueryRepository {
 
+    private static final String TABLE = "tasks";
+    private static final Field<String> TERM_ID_FIELD = field("id", String.class);
+
     private final DSLContext dsl;
     private final TaskRecordMapper mapper = new TaskRecordMapper();
 
-    private static final String TABLE = "tasks";
+    @Override
+    public Optional<Task> findById(String id) {
+        return Optional.ofNullable(
+                dsl.select()
+                        .from(TABLE)
+                        .where(TERM_ID_FIELD.eq(id))
+                        .fetchOne(mapper::toDomain)
+        );
+    }
+
+    @Override
+    public Task findByIdOrThrow(String id) {
+        return findById(id).orElseThrow(() -> AssignmentException.notFoundById(id));
+    }
 
     @Override
     public List<Task> findAll() {
-        return dsl
-                .select()
-                .from(TABLE)
-                .fetch(mapper::toDomain);
+        return Optional.of(dsl
+                        .select()
+                        .from(TABLE)
+                        .fetch(mapper::toDomain))
+                .orElseThrow(AssignmentException::noneFound);
     }
 
     @Override
@@ -57,15 +76,12 @@ public class JooqTaskRepository implements TaskQueryRepository {
     }
 
     @Override
-    public List<Task> findByStatuses(@NonNull List<AssignmentStatus> statuses) {
-        var statusNames = statuses.stream()
-                .map(AssignmentStatus::name)
-                .toList();
-
+    public List<Task> findByCourseId(String courseId) {
         return dsl
                 .select()
                 .from(TABLE)
-                .where(field("status").in(statusNames))
+                .where(field("course_id").eq(courseId))
+                .orderBy(field("deadline").asc())
                 .fetch(mapper::toDomain);
     }
 }

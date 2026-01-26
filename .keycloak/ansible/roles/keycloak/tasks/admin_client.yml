@@ -1,0 +1,128 @@
+---
+# 1) Buscar si el client ya existe (por clientId)
+- name: Lookup admin client by clientId
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients?clientId={{ admin_client_id | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_admin_clients
+
+- name: Set admin client exists flag
+  ansible.builtin.set_fact:
+    kc_admin_client_exists: "{{ (kc_admin_clients.json | length) > 0 }}"
+    kc_admin_client_uuid: "{{ (kc_admin_clients.json[0].id) if (kc_admin_clients.json | length) > 0 else '' }}"
+
+# 2) Crear el client si no existe
+- name: Create admin client (markenx-admin) if missing
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      clientId: "{{ admin_client_id }}"
+      enabled: true
+      protocol: "openid-connect"
+
+      # Confidential client
+      publicClient: false
+      clientAuthenticatorType: "client-secret"
+      secret: "{{ admin_client_secret }}"
+
+      # Service account enabled (clave)
+      serviceAccountsEnabled: true
+
+      # No necesitamos browser flows
+      standardFlowEnabled: false
+      implicitFlowEnabled: false
+
+      # No queremos password grant
+      directAccessGrantsEnabled: false
+
+    status_code: [ 201, 409 ]
+  when: not kc_admin_client_exists
+
+# 3) Reconsultar UUID del client (si fue creado ahora)
+- name: Re-lookup admin client UUID after create
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients?clientId={{ admin_client_id | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_admin_clients_after
+  when: not kc_admin_client_exists
+
+- name: Set admin client UUID fact (final)
+  ansible.builtin.set_fact:
+    kc_admin_client_uuid: >-
+      {{
+        (kc_admin_clients_after.json[0].id)
+        if (not kc_admin_client_exists)
+        else (kc_admin_clients.json[0].id)
+      }}
+
+# 4) Obtener el service-account-user del client
+- name: Get service account user for admin client
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients/{{ kc_admin_client_uuid }}/service-account-user"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_sa_user
+
+- name: Set service account user id fact
+  ansible.builtin.set_fact:
+    kc_sa_user_id: "{{ kc_sa_user.json.id }}"
+
+# 5) Obtener el UUID del client interno "realm-management"
+- name: Lookup realm-management client UUID
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients?clientId=realm-management"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_realm_mgmt_clients
+
+- name: Fail if realm-management client not found
+  ansible.builtin.fail:
+    msg: "realm-management client was not found in realm {{ realm_name }} (unexpected)."
+  when: kc_realm_mgmt_clients.json | length == 0
+
+- name: Set realm-management UUID fact
+  ansible.builtin.set_fact:
+    kc_realm_mgmt_uuid: "{{ kc_realm_mgmt_clients.json[0].id }}"
+
+# 6) Obtener representaciones de roles (manage-users, view-users) desde realm-management
+- name: Get realm-management role representations
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients/{{ kc_realm_mgmt_uuid }}/roles/{{ item | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  loop: "{{ admin_client_realm_mgmt_roles }}"
+  register: kc_rm_roles
+
+# 7) Asignar roles al service account user
+- name: Assign realm-management roles to admin client service account
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/users/{{ kc_sa_user_id }}/role-mappings/clients/{{ kc_realm_mgmt_uuid }}"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Content-Type: application/json
+    body_format: json
+    body: "{{ kc_rm_roles.results | map(attribute='json') | list }}"
+    status_code: [ 204, 409 ]
