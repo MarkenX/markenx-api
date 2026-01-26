@@ -12,6 +12,10 @@ Esta documentación describe todos los endpoints expuestos por la API de MarkenX
 4. [Módulo Assignments (Tasks)](#módulo-assignments-tasks)
 5. [Módulo Scenarios](#módulo-scenarios)
 6. [Módulo Attempts](#módulo-attempts)
+7. [Códigos de Estado HTTP](#códigos-de-estado-http)
+8. [Formato de Respuesta de Error](#formato-de-respuesta-de-error)
+9. [Excepciones de Dominio](#excepciones-de-dominio)
+10. [Patrones de Integración](#patrones-de-integración)
 
 ---
 
@@ -407,6 +411,39 @@ GET /api/courses
 
 ---
 
+### Obtener Tareas de un Curso
+
+```
+GET /api/courses/{courseId}/tasks
+```
+
+**Descripción:** Obtiene todas las tareas (assignments) asociadas a un curso específico.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|--------------------|
+| courseId | string | UUID del curso |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "taskId": "string (UUID)",
+    "title": "string",
+    "summary": "string",
+    "deadline": "YYYY-MM-DDTHH:mm:ss",
+    "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+  }
+]
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `COURSE_NOT_FOUND`: El curso no existe
+
+---
+
 ## Módulo Students
 
 Base path: `/api/students`
@@ -458,6 +495,197 @@ proceso asíncrono via Saga).
 - `404 Not Found` - `CourseNotFoundException`: El curso no existe
 - `400 Bad Request` - `CourseNotInUpcomingTermException`: El curso no pertenece a un periodo académico con estado
   UPCOMING
+
+---
+
+### Obtener Estudiante Actual (Sesión OIDC)
+
+```
+GET /api/students/me
+```
+
+**Descripción:** Obtiene los datos del estudiante autenticado basándose en el email de la sesión OIDC. Este endpoint es
+utilizado por el BFF para identificar al estudiante actual.
+
+**Autenticación:** Requiere sesión OIDC válida (JSESSIONID)
+
+**Response:** `200 OK`
+
+```json
+{
+  "studentId": "string (UUID)",
+  "firstName": "string",
+  "lastName": "string",
+  "email": "string",
+  "courseId": "string (UUID)",
+  "status": "PENDING_IDENTITY | ACTIVE | DISABLED"
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `STUDENT_NOT_FOUND`: No existe un estudiante registrado con el email de la sesión OIDC
+
+---
+
+### Obtener Curso del Estudiante
+
+```
+GET /api/students/{studentId}/course
+```
+
+**Descripción:** Obtiene la información del curso al que está inscrito un estudiante específico.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+{
+  "courseId": "string (UUID)",
+  "courseName": "string",
+  "term": "string",
+  "teacherName": "string"
+}
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - `STUDENT_NOT_FOUND`: El estudiante no existe
+- `404 Not Found` - `COURSE_NOT_FOUND`: El curso asociado al estudiante no existe
+
+---
+
+### Obtener Intentos de un Estudiante
+
+```
+GET /api/students/{studentId}/attempts
+```
+
+**Descripcion:** Obtiene todos los intentos (attempts) registrados para un estudiante especifico.
+
+**Parametros de ruta:**
+| Parametro | Tipo | Descripcion |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "attemptId": "string (UUID)",
+    "taskId": "string (UUID)",
+    "startedAt": "YYYY-MM-DDTHH:mm:ss",
+    "finishedAt": "YYYY-MM-DDTHH:mm:ss",
+    "status": "UNKNOWN | APPROVED | DISAPPROVED",
+    "outcome": "WIN | LOSE | IN_PROGRESS",
+    "score": "number (0.0-1.0)"
+  }
+]
+```
+
+**Errores posibles:**
+
+- `404 Not Found` - No se encontraron intentos para el estudiante (respuesta vacia)
+
+---
+
+### Obtener Progreso de un Estudiante en una Tarea
+
+```
+GET /api/students/{studentId}/tasks/{taskId}/progress
+```
+
+**Descripción:** Obtiene el progreso de un estudiante en una tarea específica. Retorna la misma estructura que la lista de tareas con progreso, pero para una sola tarea.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+| taskId | string | UUID de la tarea |
+
+**Response:** `200 OK`
+
+```json
+{
+  "id": "string (UUID)",
+  "label": "string (e.g., TSK-0001)",
+  "title": "string",
+  "summary": "string",
+  "deadline": "YYYY-MM-DDTHH:mm:ss",
+  "minScoreToPass": "number (0.0-1.0)",
+  "status": "NOT_STARTED | IN_PROGRESS | COMPLETED | FAILED | OUTDATED",
+  "currentAttempt": "number (integer)",
+  "maxAttempts": "number (integer)",
+  "remainingAttempts": "number (integer)",
+  "scenarioId": "string (UUID)"
+}
+```
+
+**Estados del progreso (status):**
+
+| Estado | Descripción |
+|--------|-------------|
+| `NOT_STARTED` | No se han realizado intentos |
+| `IN_PROGRESS` | Al menos un intento realizado, sin completar ni agotar intentos |
+| `COMPLETED` | Al menos un intento con outcome WIN |
+| `FAILED` | Todos los intentos agotados con outcome LOSE |
+| `OUTDATED` | La tarea expiró sin ningún intento realizado |
+
+**Errores posibles:**
+
+- `401 Unauthorized` - No autenticado
+- `403 Forbidden` - No autorizado
+- `404 Not Found` - El estudiante o la tarea no existe
+- `500 Internal Server Error` - Error interno del servidor
+
+---
+
+### Obtener Todas las Tareas con Progreso de un Estudiante
+
+```
+GET /api/students/{studentId}/tasks
+```
+
+**Descripción:** Obtiene todas las tareas del curso del estudiante con su progreso específico en cada una.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|-----------------------|
+| studentId | string | UUID del estudiante |
+
+**Response:** `200 OK`
+
+```json
+[
+  {
+    "id": "string (UUID)",
+    "label": "string (e.g., TSK-0001)",
+    "title": "string",
+    "summary": "string",
+    "deadline": "YYYY-MM-DDTHH:mm:ss",
+    "minScoreToPass": "number (0.0-1.0)",
+    "status": "NOT_STARTED | IN_PROGRESS | COMPLETED | FAILED | OUTDATED",
+    "currentAttempt": "number (integer)",
+    "maxAttempts": "number (integer)",
+    "remainingAttempts": "number (integer)",
+    "scenarioId": "string (UUID)"
+  }
+]
+```
+
+**Estados del progreso (status):** Ver descripción en endpoint anterior.
+
+**Errores posibles:**
+
+- `401 Unauthorized` - No autenticado
+- `403 Forbidden` - No autorizado
+- `404 Not Found` - El estudiante no existe
+- `500 Internal Server Error` - Error interno del servidor
 
 ---
 
@@ -620,24 +848,71 @@ periodo académico con estado UPCOMING.
 GET /api/tasks
 ```
 
-**Descripción:** Obtiene la lista de todas las tareas registradas.
+**Descripción:** Obtiene la lista de todas las tareas registradas con paginación.
+
+**Parámetros de query:**
+| Parámetro | Tipo | Default | Descripción |
+|-----------|--------|---------|---------------------------|
+| page | number | 0 | Número de página (0-indexed) |
+| size | number | 10 | Cantidad de elementos por página |
+
+**Response:** `200 OK`
+
+```json
+{
+  "content": [
+    {
+      "id": "string (UUID)",
+      "title": "string",
+      "summary": "string",
+      "deadline": "YYYY-MM-DDTHH:mm:ss",
+      "minScoreToPass": "number",
+      "maxAttempts": "number",
+      "courseId": "string (UUID)",
+      "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+    }
+  ],
+  "totalElements": "number",
+  "totalPages": "number",
+  "size": "number",
+  "number": "number"
+}
+```
+
+---
+
+### Obtener Intentos de una Tarea
+
+```
+GET /api/tasks/{taskId}/attempts
+```
+
+**Descripción:** Obtiene todos los intentos (attempts) registrados para una tarea específica.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|--------------------|
+| taskId | string | UUID de la tarea |
 
 **Response:** `200 OK`
 
 ```json
 [
   {
-    "id": "string (UUID)",
-    "title": "string",
-    "summary": "string",
-    "deadline": "YYYY-MM-DDTHH:mm:ss",
-    "minScoreToPass": "number",
-    "maxAttempts": "number",
-    "courseId": "string (UUID)",
-    "status": "NOT_STARTED | IN_PROGRESS | FINISHED"
+    "attemptId": "string (UUID)",
+    "taskId": "string (UUID)",
+    "startedAt": "YYYY-MM-DDTHH:mm:ss",
+    "finishedAt": "YYYY-MM-DDTHH:mm:ss",
+    "status": "IN_PROGRESS | FINISHED",
+    "outcome": "WIN | IN_PROGRESS",
+    "score": "number (0.0-1.0)"
   }
 ]
 ```
+
+**Errores posibles:**
+
+- `404 Not Found` - No se encontraron intentos para la tarea (respuesta vacía)
 
 ---
 
@@ -845,15 +1120,16 @@ GET /api/scenarios
 
 ## Módulo Attempts
 
-Base path: `/api/v1/attempts`
+Base path: `/api/attempts`
 
 ### Registrar Resultado de Partida
 
 ```
-POST /api/v1/attempts
+POST /api/attempts
 ```
 
-**Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El campo `finalOutcome` se calcula automáticamente comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea.
+**Descripción:** Registra los resultados de una sesión de juego (partida) para un estudiante en una tarea específica. El
+campo `outcome` se calcula automáticamente comparando `finalAcceptance` con el `minScoreToPass` de la tarea.
 
 **Request Body:**
 
@@ -892,26 +1168,26 @@ POST /api/v1/attempts
 
 **Campos del Request:**
 
-| Campo | Tipo | Requerido | Descripción |
-|-------|------|-----------|-------------|
-| taskId | string (UUID) | Sí | ID de la tarea asociada |
-| studentId | string (UUID) | Sí | ID del estudiante |
-| sessionDate | datetime | Sí | Fecha y hora de la sesión de juego |
-| finalAcceptance | number (0.0-1.0) | Sí | Tasa de aceptación final del consumidor |
-| remainingBudget | number | Sí | Presupuesto restante al final de la partida |
-| totalTurnsUsed | integer | Sí | Número total de turnos utilizados |
-| profileDiscoveryPercentage | number (0.0-1.0) | Sí | Porcentaje de descubrimiento del perfil del consumidor |
-| history | array | No | Lista de registros por turno |
+| Campo                      | Tipo             | Requerido | Descripción                                            |
+|----------------------------|------------------|-----------|--------------------------------------------------------|
+| taskId                     | string (UUID)    | Sí        | ID de la tarea asociada                                |
+| studentId                  | string (UUID)    | Sí        | ID del estudiante                                      |
+| sessionDate                | datetime         | Sí        | Fecha y hora de la sesión de juego                     |
+| finalAcceptance            | number (0.0-1.0) | Sí        | Tasa de aceptación final del consumidor                |
+| remainingBudget            | number           | Sí        | Presupuesto restante al final de la partida            |
+| totalTurnsUsed             | integer          | Sí        | Número total de turnos utilizados                      |
+| profileDiscoveryPercentage | number (0.0-1.0) | Sí        | Porcentaje de descubrimiento del perfil del consumidor |
+| history                    | array            | No        | Lista de registros por turno                           |
 
 **Campos de TurnHistory:**
 
-| Campo | Tipo | Requerido | Descripción |
-|-------|------|-----------|-------------|
-| turnNumber | integer | Sí | Número del turno (1, 2, 3...) |
-| acceptanceAtEnd | number (0.0-1.0) | Sí | Tasa de aceptación al final del turno |
-| budgetAtEnd | number | Sí | Presupuesto restante al final del turno |
-| eventOccurredTitle | string | No | Título del evento ocurrido en el turno (vacío si no hubo) |
-| actionsTakenIds | array[string] | No | IDs de las acciones ejecutadas en el turno |
+| Campo              | Tipo             | Requerido | Descripción                                               |
+|--------------------|------------------|-----------|-----------------------------------------------------------|
+| turnNumber         | integer          | Sí        | Número del turno (1, 2, 3...)                             |
+| acceptanceAtEnd    | number (0.0-1.0) | Sí        | Tasa de aceptación al final del turno                     |
+| budgetAtEnd        | number           | Sí        | Presupuesto restante al final del turno                   |
+| eventOccurredTitle | string           | No        | Título del evento ocurrido en el turno (vacío si no hubo) |
+| actionsTakenIds    | array[string]    | No        | IDs de las acciones ejecutadas en el turno                |
 
 **Response:** `201 Created`
 
@@ -925,22 +1201,30 @@ POST /api/v1/attempts
   "remainingBudget": 120.00,
   "totalTurnsUsed": 5,
   "profileDiscoveryPercentage": 0.75,
-  "finalOutcome": "APPROVED",
+  "outcome": "WIN",
   "history": [
     {
       "turnNumber": 1,
       "acceptanceAtEnd": 0.60,
       "budgetAtEnd": 180.00,
       "eventOccurredTitle": "",
-      "actionsTakenIds": ["..."]
+      "actionsTakenIds": [
+        "..."
+      ]
     }
   ]
 }
 ```
 
-**Nota sobre `finalOutcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request. Se determina comparando `profileDiscoveryPercentage` con el `minScoreToPass` de la tarea:
-- Si `profileDiscoveryPercentage >= minScoreToPass` → `APPROVED`
-- Si `profileDiscoveryPercentage < minScoreToPass` → `DISAPPROVED`
+**Nota sobre `outcome`:** Este campo es calculado automáticamente por el sistema y no debe enviarse en el request.
+
+**Valores del outcome:**
+
+| Valor | Descripción |
+|-------|-------------|
+| `WIN` | El intento fue exitoso (`finalAcceptance >= minScoreToPass`) |
+| `LOSE` | El intento no fue exitoso (`finalAcceptance < minScoreToPass`) |
+| `IN_PROGRESS` | El intento aún no tiene resultado (solo para sesiones en curso) |
 
 **Errores posibles:**
 
@@ -952,16 +1236,16 @@ POST /api/v1/attempts
 ### Obtener Resultado de Partida por ID
 
 ```
-GET /api/v1/attempts/{id}
+GET /api/attempts/{id}
 ```
 
 **Descripción:** Obtiene los detalles completos de una sesión de juego registrada, incluyendo el historial de turnos.
 
 **Parámetros de ruta:**
 
-| Parámetro | Tipo | Descripción |
-|-----------|------|-------------|
-| id | string | UUID del attempt (resultado de partida) |
+| Parámetro | Tipo   | Descripción                             |
+|-----------|--------|-----------------------------------------|
+| id        | string | UUID del attempt (resultado de partida) |
 
 **Response:** `200 OK`
 
@@ -975,7 +1259,7 @@ GET /api/v1/attempts/{id}
   "remainingBudget": 120.00,
   "totalTurnsUsed": 5,
   "profileDiscoveryPercentage": 0.75,
-  "finalOutcome": "APPROVED",
+  "outcome": "WIN",
   "history": [
     {
       "turnNumber": 1,
@@ -1001,7 +1285,44 @@ GET /api/v1/attempts/{id}
 
 **Errores posibles:**
 
-- `404 Not Found` - `AttemptNotFoundException`: El resultado de partida con ID especificado no existe
+- `404 Not Found` - `ATTEMPT_NOT_FOUND`: El resultado de partida con ID especificado no existe
+
+---
+
+### Obtener Métricas de un Intento
+
+```
+GET /api/attempts/{attemptId}/metrics
+```
+
+**Descripción:** Obtiene las métricas de rendimiento de un intento específico. Este endpoint proporciona un resumen
+consolidado del desempeño del estudiante en la sesión de juego.
+
+**Parámetros de ruta:**
+| Parámetro | Tipo | Descripción |
+|-----------|--------|------------------------|
+| attemptId | string | UUID del intento |
+
+**Response:** `200 OK`
+
+```json
+{
+  "attemptId": "string (UUID)",
+  "taskId": "string (UUID)",
+  "profileDiscoveryPercentage": "number (0.0-1.0)",
+  "finalAcceptance": "number (0.0-1.0)",
+  "remainingBudget": "number (BigDecimal)",
+  "totalTurnsUsed": "number (integer)",
+  "outcome": "WIN | LOSE",
+  "evaluatedAt": "YYYY-MM-DDTHH:mm:ss"
+}
+```
+
+**Nota:** El campo `outcome` solo puede ser `WIN` o `LOSE` para métricas, ya que solo se calculan para intentos completados.
+
+**Errores posibles:**
+
+- `404 Not Found` - `ATTEMPT_NOT_FOUND`: El intento con ID especificado no existe
 
 ---
 
@@ -1012,9 +1333,69 @@ GET /api/v1/attempts/{id}
 | 200    | OK - Solicitud exitosa                                     |
 | 201    | Created - Recurso creado exitosamente                      |
 | 202    | Accepted - Solicitud aceptada para procesamiento asíncrono |
-| 400    | Bad Request - Error de validación o regla de negocio       |
+| 400    | Bad Request - Request inválido o malformado                |
+| 401    | Unauthorized - No autenticado                              |
+| 403    | Forbidden - No autorizado                                  |
 | 404    | Not Found - Recurso no encontrado                          |
+| 409    | Conflict - Conflicto de estado o recurso duplicado         |
+| 422    | Unprocessable Entity - Validación de dominio fallida       |
 | 500    | Internal Server Error - Error interno del servidor         |
+
+---
+
+## Formato de Respuesta de Error
+
+Todos los errores de la API siguen un formato estandarizado con códigos de error por módulo.
+
+### Estructura
+
+```json
+{
+  "code": "string",
+  "message": "string",
+  "details": "object | null"
+}
+```
+
+| Campo   | Tipo           | Descripción                                                     |
+|---------|----------------|-----------------------------------------------------------------|
+| code    | string         | Código de error específico del módulo (ej: `STUDENT_NOT_FOUND`) |
+| message | string         | Mensaje descriptivo del error                                   |
+| details | object \| null | Información adicional sobre el error (opcional)                 |
+
+### Códigos de Error por Módulo
+
+| Módulo          | Código de Error       | Código Not Found     | HTTP Status |
+|-----------------|-----------------------|----------------------|-------------|
+| Entity (shared) | -                     | `ENTITY_NOT_FOUND`   | 404         |
+| Student         | `STUDENT_ERROR`       | `STUDENT_NOT_FOUND`  | 400 / 404   |
+| Course          | `COURSE_ERROR`        | `COURSE_NOT_FOUND`   | 400 / 404   |
+| Task            | `TASK_ERROR`          | -                    | 400         |
+| Academic Term   | `ACADEMIC_TERM_ERROR` | -                    | 400         |
+| Scenario        | `SCENARIO_ERROR`      | `SCENARIO_NOT_FOUND` | 400 / 404   |
+| Attempt         | `ATTEMPT_ERROR`       | `ATTEMPT_NOT_FOUND`  | 400 / 404   |
+
+### Ejemplos de Respuestas de Error
+
+**Error 404 - Recurso no encontrado:**
+
+```json
+{
+  "code": "STUDENT_NOT_FOUND",
+  "message": "Student not found with email: student@example.com",
+  "details": null
+}
+```
+
+**Error 400 - Validación de negocio:**
+
+```json
+{
+  "code": "COURSE_ERROR",
+  "message": "Course must belong to an UPCOMING academic term",
+  "details": null
+}
+```
 
 ---
 
@@ -1059,19 +1440,19 @@ GET /api/v1/attempts/{id}
 
 ### Módulo Attempts
 
-| Excepción                              | Descripción                                              |
-|----------------------------------------|----------------------------------------------------------|
-| `AttemptNotFoundException`             | El resultado de partida solicitado no existe             |
-| `InvalidTaskIdException`               | El ID de tarea es inválido (nulo o vacío)                |
-| `InvalidStudentIdException`            | El ID de estudiante es inválido (nulo o vacío)           |
-| `InvalidSessionDateException`          | La fecha de sesión es inválida (nula)                    |
-| `ApprovalRateOutOfRangeException`      | La tasa de aceptación está fuera del rango [0.0, 1.0]    |
-| `ProfileScoreOutOfRangeException`      | El puntaje de perfil está fuera del rango [0.0, 1.0]     |
-| `BudgetCannotBeNegativeException`      | El presupuesto no puede ser negativo                     |
-| `CurrentTurnMustBePositiveException`   | El número de turnos debe ser positivo                    |
-| `InvalidTurnNumberException`           | El número de turno debe ser positivo                     |
-| `ResultsAlreadyRegisteredException`    | Los resultados ya fueron registrados para este intento   |
-| `InvalidAttemptStatusTransitionException` | Transición de estado no permitida                     |
+| Excepción                                 | Descripción                                            |
+|-------------------------------------------|--------------------------------------------------------|
+| `AttemptNotFoundException`                | El resultado de partida solicitado no existe           |
+| `InvalidTaskIdException`                  | El ID de tarea es inválido (nulo o vacío)              |
+| `InvalidStudentIdException`               | El ID de estudiante es inválido (nulo o vacío)         |
+| `InvalidSessionDateException`             | La fecha de sesión es inválida (nula)                  |
+| `ApprovalRateOutOfRangeException`         | La tasa de aceptación está fuera del rango [0.0, 1.0]  |
+| `ProfileScoreOutOfRangeException`         | El puntaje de perfil está fuera del rango [0.0, 1.0]   |
+| `BudgetCannotBeNegativeException`         | El presupuesto no puede ser negativo                   |
+| `CurrentTurnMustBePositiveException`      | El número de turnos debe ser positivo                  |
+| `InvalidTurnNumberException`              | El número de turno debe ser positivo                   |
+| `ResultsAlreadyRegisteredException`       | Los resultados ya fueron registrados para este intento |
+| `InvalidAttemptStatusTransitionException` | Transición de estado no permitida                      |
 
 ---
 

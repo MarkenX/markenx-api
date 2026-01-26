@@ -1,0 +1,32 @@
+---
+- name: Ensure BFF client exists and is configured
+  community.general.keycloak_client:
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_realm: "{{ keycloak_admin_realm }}"
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ realm_name }}"
+    client_id: "{{ bff_client_id }}"
+    enabled: true
+    protocol: "openid-connect"
+
+    # BFF: confidential client (no es public)
+    public_client: false
+    client_authenticator_type: "client-secret"
+    secret: "{{ bff_client_secret }}"
+
+    # Authorization Code Flow
+    standard_flow_enabled: true
+    implicit_flow_enabled: false
+    direct_access_grants_enabled: false
+
+    # BFF callback
+    redirect_uris: "{{ bff_redirect_uris }}"
+
+    # CORS para frontends
+    web_origins: "{{ bff_web_origins }}"
+
+    # Recomendado: deshabilitar service accounts a menos que lo necesites
+    service_accounts_enabled: false
+
+    state: present

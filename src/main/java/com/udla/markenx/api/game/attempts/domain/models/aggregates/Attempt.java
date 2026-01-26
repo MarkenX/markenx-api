@@ -196,10 +196,10 @@ public class Attempt {
     }
 
     public AttemptResult validateResult(AttemptResult result) {
-        if (this.result == null) {
+        if (result == null) {
             throw new NullAttemptResultException();
         }
-        return this.result;
+        return result;
     }
 
     private LocalDateTime validateSessionDate(LocalDateTime sessionDate) {

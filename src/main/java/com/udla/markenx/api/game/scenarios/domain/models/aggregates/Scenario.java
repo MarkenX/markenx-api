@@ -40,10 +40,12 @@ public class Scenario {
 
     public Scenario(
             String id,
+            long code,
             String title,
             String description
     ) {
         this.id = new ScenarioId(id);
+        this.code = code;
         this.title = validateTitle(title);
         this.description = validateDescription(description);
         this.consumerId = null;

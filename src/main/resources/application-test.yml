@@ -1,0 +1,48 @@
+# =========================
+# Datasource (H2)
+# =========================
+spring:
+  datasource:
+    url: jdbc:h2:mem:markenx;DB_CLOSE_DELAY=-1;MODE=MySQL
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+
+  # =========================
+  # Flyway (DESACTIVADO en tests)
+  # =========================
+  flyway:
+    enabled: false
+
+  # =========================
+  # JOOQ
+  # =========================
+  jooq:
+    sql-dialect: H2
+
+# =========================
+# Logging
+# =========================
+logging:
+  level:
+    root: WARN
+    org.jooq: ERROR
+
+# =========================
+# Keycloak (TEST)
+# =========================
+keycloak:
+  client-secret: dummy-test-secret
+
+# =========================
+# Game Token (TEST)
+# =========================
+app:
+  game-token:
+    # Secret para firmar JWT (>= 32 chars)
+    # Valor de test alineado con DEV, pero expl�cito
+    secret: markenx-game-token-secret-key-test-only-32chars
+    # Duraci�n del token (10 minutos)
+    duration-seconds: 600
+    # Ventana de refresh (5 minutos)
+    refresh-grace-period-seconds: 300

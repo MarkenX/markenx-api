@@ -3,7 +3,7 @@ package com.udla.markenx.api.game.attempts.infrastructure.persistence.jooq;
 import com.udla.markenx.api.game.attempts.domain.models.aggregates.Attempt;
 import com.udla.markenx.api.game.attempts.domain.models.entities.TurnHistory;
 import com.udla.markenx.api.game.attempts.domain.models.valueobjects.AttemptStatus;
-import com.udla.markenx.api.game.attempts.domain.ports.outgoing.AttemptQueryRepository;
+import com.udla.markenx.api.game.attempts.application.ports.out.AttemptQueryRepository;
 import lombok.RequiredArgsConstructor;
 import org.jooq.DSLContext;
 import org.jooq.Record;
@@ -54,6 +54,40 @@ public class JooqAttemptRepository implements AttemptQueryRepository {
                 .from(table(TURN_ACTIONS_TABLE))
                 .where(field("turn_history_id").eq(turnHistoryId))
                 .fetch(field("action_id"), String.class);
+    }
+
+    @Override
+    public List<Attempt> findByTaskId(String taskId) {
+        return dsl
+                .select()
+                .from(table(ATTEMPTS_TABLE))
+                .where(field("task_id").eq(taskId))
+                .orderBy(field("session_date").desc())
+                .fetch()
+                .map(this::mapToAttempt);
+    }
+
+    @Override
+    public List<Attempt> findByStudentId(String studentId) {
+        return dsl
+                .select()
+                .from(table(ATTEMPTS_TABLE))
+                .where(field("student_id").eq(studentId))
+                .orderBy(field("session_date").desc())
+                .fetch()
+                .map(this::mapToAttempt);
+    }
+
+    @Override
+    public List<Attempt> findByTaskIdAndStudentId(String taskId, String studentId) {
+        return dsl
+                .select()
+                .from(table(ATTEMPTS_TABLE))
+                .where(field("task_id").eq(taskId))
+                .and(field("student_id").eq(studentId))
+                .orderBy(field("session_date").desc())
+                .fetch()
+                .map(this::mapToAttempt);
     }
 
     private Attempt mapToAttempt(Record record) {

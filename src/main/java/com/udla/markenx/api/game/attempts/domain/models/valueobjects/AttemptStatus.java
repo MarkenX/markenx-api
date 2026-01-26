@@ -1,5 +1,6 @@
 package com.udla.markenx.api.game.attempts.domain.models.valueobjects;
 
+@SuppressWarnings("LombokGetterMayBeUsed")
 public enum AttemptStatus {
     APPROVED("Aprobado") {
         @Override

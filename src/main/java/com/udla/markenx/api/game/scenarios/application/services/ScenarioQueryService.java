@@ -17,8 +17,8 @@ import com.udla.markenx.api.game.scenarios.application.queries.GetAllScenariosPa
 import com.udla.markenx.api.game.scenarios.application.queries.GetScenarioByIdQuery;
 import com.udla.markenx.api.game.scenarios.domain.models.aggregates.Scenario;
 import com.udla.markenx.api.game.scenarios.domain.ports.outgoing.ScenarioQueryRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.NonNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -37,11 +37,8 @@ public class ScenarioQueryService implements ScenarioQueryUseCase {
     private final GameEventQueryUseCase eventQuery;
 
     @Override
-    public ScenarioDetailResponse getById(GetScenarioByIdQuery query) {
-        Scenario scenario = scenarioRepo.findById(query.id())
-                .orElseThrow(() -> new EntityNotFoundException(
-                        "No se encontró el escenario con el identificador: " + query.id()
-                ));
+    public ScenarioDetailResponse getById(@NonNull GetScenarioByIdQuery query) {
+        Scenario scenario = scenarioRepo.findByIdOrThrow(query.id());
 
         // Get Consumer
         ScenarioDetailResponse.ConsumerResponse consumerResponse = null;
@@ -119,7 +116,7 @@ public class ScenarioQueryService implements ScenarioQueryUseCase {
     }
 
     @Override
-    public Page<ScenarioSummaryResponse> getAllPaginated(GetAllScenariosPaginatedQuery query) {
+    public Page<ScenarioSummaryResponse> getAllPaginated(@NonNull GetAllScenariosPaginatedQuery query) {
         var pageable = PageRequest.of(query.page(), query.size());
         return scenarioRepo.findAllPaginated(pageable)
                 .map(s -> new ScenarioSummaryResponse(s.getId(), s.getTitle(), s.getDescription()));

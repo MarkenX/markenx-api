@@ -4,6 +4,7 @@ import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidAcademicT
 import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseCodeException;
 import com.udla.markenx.api.classroom.courses.domain.exceptions.InvalidCourseNameException;
 import com.udla.markenx.api.shared.domain.models.aggregates.Entity;
+import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.Getter;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
@@ -15,7 +16,7 @@ public class Course extends Entity {
     private String name;
     private long code;
 
-    private String academicTermId;
+    private String termId;
 
     /**
      * Constructs a new {@code Course} instance with the specified identifier, name,
@@ -24,13 +25,13 @@ public class Course extends Entity {
      *
      * @param id the unique identifier for the course
      * @param name the name of the course
-     * @param academicTermId the identifier of the academic term associated with the course
+     * @param termId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
-    private Course(CourseId id, String name, String academicTermId) {
+    private Course(CourseId id, String name, String termId) {
         this.id = id;
-        initializeCourse(name, academicTermId);
+        initializeCourse(name, termId);
     }
 
     /**
@@ -41,16 +42,22 @@ public class Course extends Entity {
      * @param id the unique identifier for the course
      * @param name the name of the course
      * @param code the numeric code of the course
-     * @param academicTermId the identifier of the academic term associated with the course
+     * @param termId the identifier of the academic term associated with the course
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
      * @throws InvalidCourseCodeException if the provided {@code code} is zero or negative
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
-    public Course(String id, String name, long code, String academicTermId) {
+    public Course(
+            String id,
+            LifecycleStatus lifecycleStatus,
+            String name,
+            long code,
+            String termId) {
+        super(lifecycleStatus);
         this.id = new CourseId(id);
         this.name = validateName(name);
         this.code = validateCode(code);
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.termId = validateAcademicTermId(termId);
     }
 
     public void update(String name) {
@@ -58,7 +65,7 @@ public class Course extends Entity {
     }
 
     public void changeAcademicTerm(String academicTermId) {
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.termId = validateAcademicTermId(academicTermId);
     }
 
     /**
@@ -72,7 +79,7 @@ public class Course extends Entity {
      */
     private void initializeCourse(String name, String academicTermId) {
         this.name = validateName(name);
-        this.academicTermId = validateAcademicTermId(academicTermId);
+        this.termId = validateAcademicTermId(academicTermId);
     }
 
     // region Factories
@@ -84,7 +91,7 @@ public class Course extends Entity {
      * @param academicTermId the identifier of the associated academic term
      * @return a new {@code Course} instance
      * @throws InvalidCourseNameException if the provided {@code name} is null or contains only whitespace
-     * @throws InvalidAcademicTermIdException if the provided {@code academicTermId} is null or contains only whitespace
+     * @throws InvalidAcademicTermIdException if the provided {@code termId} is null or contains only whitespace
      */
     public static @NonNull Course create(String name, String academicTermId) {
         var id = CourseId.generate();
@@ -151,18 +158,13 @@ public class Course extends Entity {
         return id.hashCode();
     }
 
-    /**
-     * Formats the course code as a zero-padded four-digit string.
-     *
-     * @return the formatted course code as a string
-     */
     @Contract(pure = true)
-    private @NonNull String formatCode() {
+    protected @NonNull String formatCode() {
         return String.format("%04d", code);
     }
 
     @Override
     public String toString() {
-        return String.format("%s-%s", name, formatCode());
+        return String.format("CRS-%s", formatCode());
     }
 }

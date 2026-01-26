@@ -10,6 +10,7 @@ import java.util.Optional;
 public interface ScenarioQueryRepository {
     List<Scenario> findAll();
     Optional<Scenario> findById(String id);
+    Scenario findByIdOrThrow(String id);
     Page<Scenario> findAllPaginated(Pageable pageable);
     List<String> findDimensionIdsByScenarioId(String scenarioId);
     List<String> findActionIdsByScenarioId(String scenarioId);

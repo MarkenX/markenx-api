@@ -1,9 +1,9 @@
 package com.udla.markenx.api.game.actions.infrastructure.persistence.jdbc;
 
+import com.udla.markenx.api.game.actions.domain.exceptions.ActionException;
 import com.udla.markenx.api.game.actions.domain.models.aggregates.Action;
 import com.udla.markenx.api.game.actions.domain.models.valueobjects.ActionEffect;
 import com.udla.markenx.api.game.actions.domain.ports.outgoing.ActionCommandRepository;
-import com.udla.markenx.api.shared.application.exceptions.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -56,14 +56,12 @@ public class JdbcActionRepository implements ActionCommandRepository {
                     id
             );
         } catch (EmptyResultDataAccessException ex) {
-            throw new EntityNotFoundException(
-                    "No se encontró la acción con el identificador: " + id
-            );
+            throw ActionException.notFoundById(id);
         }
     }
 
     @Override
-    public void saveEffects(String actionId, List<ActionEffect> effects) {
+    public void saveEffects(String actionId, @NonNull List<ActionEffect> effects) {
         for (ActionEffect effect : effects) {
             jdbcTemplate.update("""
                 INSERT INTO action_effects

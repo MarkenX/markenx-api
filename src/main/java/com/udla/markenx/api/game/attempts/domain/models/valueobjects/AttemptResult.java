@@ -1,6 +1,5 @@
 package com.udla.markenx.api.game.attempts.domain.models.valueobjects;
 
-import com.udla.markenx.api.game.attempts.domain.exceptions.*;
 import com.udla.markenx.api.game.attempts.domain.exceptions.ApprovalRateOutOfRangeException;
 import com.udla.markenx.api.game.attempts.domain.exceptions.BudgetCannotBeNegativeException;
 import com.udla.markenx.api.game.attempts.domain.exceptions.CurrentTurnMustBePositiveException;

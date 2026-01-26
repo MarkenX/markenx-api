@@ -1,10 +1,8 @@
 @ApplicationModule(
         displayName = "Attempt Management",
         allowedDependencies = {
-                "shared::aggregates",
-                "shared::valueobjects",
-                "shared::exceptions",
-                "shared::dtos",
+                "shared::public",
+                "classroom.assignments::public"
         }
 )
 package com.udla.markenx.api.game.attempts;

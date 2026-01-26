@@ -1,19 +1,24 @@
 package com.udla.markenx.api.classroom.students.application.services;
 
-import com.udla.markenx.api.classroom.students.application.commands.DisableStudentCommand;
-import com.udla.markenx.api.classroom.students.application.commands.UpdateStudentCommand;
-import com.udla.markenx.api.classroom.students.application.ports.incoming.UpdateStudentUseCase;
-import com.udla.markenx.api.classroom.students.application.queries.GetStudentByIdQuery;
-import com.udla.markenx.api.classroom.students.domain.events.StudentDisableRequestedEvent;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.ChangeStudentStatusCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.DisableStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.commands.UpdateStudentCommand;
+import com.udla.markenx.api.classroom.students.application.ports.in.usecases.UpdateStudentUseCase;
+import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentIdQuery;
+import com.udla.markenx.api.classroom.students.application.ports.out.UserDataPort;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentQueryRepository;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityDisableRequestedEvent;
+import com.udla.markenx.api.shared.domain.events.integration.IdentityEnableRequestedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityActivatedEvent;
 import com.udla.markenx.api.classroom.students.domain.events.StudentIdentityFailedEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentUpdatedEvent;
+import com.udla.markenx.api.classroom.students.domain.events.StudentStatusChangedEvent;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyDisabledException;
+import com.udla.markenx.api.classroom.students.domain.exceptions.StudentAlreadyEnabledException;
 import com.udla.markenx.api.classroom.students.domain.exceptions.StudentNotActiveException;
 import com.udla.markenx.api.classroom.students.domain.models.aggregates.Student;
 import com.udla.markenx.api.classroom.students.domain.models.valueobjects.StudentStatus;
-import com.udla.markenx.api.classroom.students.domain.ports.outgoing.StudentCommandRepository;
-import com.udla.markenx.api.classroom.users.domain.models.aggregates.User;
-import com.udla.markenx.api.classroom.users.domain.ports.outgoing.UserQueryRepository;
+import com.udla.markenx.api.classroom.students.application.ports.out.StudentCommandRepository;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -24,20 +29,21 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UpdateStudentService implements UpdateStudentUseCase {
 
-    private final StudentCommandRepository repository;
-    private final UserQueryRepository userQueryRepository;
+    private final StudentCommandRepository commandRepository;
+    private final StudentQueryRepository queryRepository;
+    private final UserDataPort userDataPort;
     private final ApplicationEventPublisher events;
 
     @Override
-    public Student getById(GetStudentByIdQuery query) {
-        return repository.findById(query.id());
+    public Student getById(@NonNull StudentIdQuery query) {
+        return queryRepository.findByIdOrThrow(query.id());
     }
 
     @Override
     public void markIdentityCreated(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.markIdentityCreated();
-        repository.save(student);
+        commandRepository.save(student);
 
         events.publishEvent(
                 new StudentIdentityActivatedEvent(studentId)
@@ -46,10 +52,10 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public void markIdentityCreationFailed(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.markIdentityCreationFailed();
         student.disable();
-        repository.save(student);
+        commandRepository.save(student);
 
         events.publishEvent(
                 new StudentIdentityFailedEvent(studentId)
@@ -58,24 +64,24 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public void onUserIdentityCreated(String studentId, String userId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
 
         student.assignUser(userId);
         student.markIdentityCreated();
 
-        repository.update(student);
+        commandRepository.save(student);
     }
 
     @Override
     public void disable(@NonNull DisableStudentCommand command) {
-        Student student = repository.findById(command.studentId());
+        Student student = queryRepository.findByIdOrThrow(command.id());
 
         validateCanDisable(student);
 
         String email = getUserEmail(student.getUserId());
 
         events.publishEvent(
-                new StudentDisableRequestedEvent(
+                new IdentityDisableRequestedEvent(
                         student.getId(),
                         student.getUserId(),
                         email
@@ -85,26 +91,95 @@ public class UpdateStudentService implements UpdateStudentUseCase {
 
     @Override
     public Student update(@NonNull UpdateStudentCommand command) {
-        Student student = repository.findById(command.studentId());
+        Student student = queryRepository.findByIdOrThrow(command.id());
 
         student.update(command.firstName(), command.lastName());
-        student.changeCourse(command.courseId());
 
-        repository.update(student);
+        commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentUpdatedEvent(
+                        student.getId(),
+                        student.getFullName(),
+                        student.getCourseId()
+                )
+        );
+
         return student;
     }
 
     @Override
     public void onUserDisabled(String studentId) {
-        Student student = repository.findById(studentId);
+        Student student = queryRepository.findByIdOrThrow(studentId);
         student.disable();
-        repository.update(student);
+        commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentStatusChangedEvent(
+                        student.getId(),
+                        student.getLifecycleStatus().name()
+                )
+        );
     }
 
     @Override
-    public void onUserDisableFailed(String studentId) {
-        // El rollback ya se realizó en el servicio de users
-        // Aquí solo podríamos registrar el fallo o notificar
+    public void onUserEnabled(String studentId) {
+        Student student = queryRepository.findByIdOrThrow(studentId);
+        student.enable();
+        commandRepository.save(student);
+
+        events.publishEvent(
+                new StudentStatusChangedEvent(
+                        student.getId(),
+                        student.getLifecycleStatus().name()
+                )
+        );
+    }
+
+    @Override
+    public Student changeStatus(@NonNull ChangeStudentStatusCommand command) {
+        Student student = queryRepository.findByIdOrThrow(command.id());
+
+        switch (command.targetStatus()) {
+            case LifecycleStatus.ACTIVE -> enable(student);
+            case LifecycleStatus.DISABLED -> disableInternal(student);
+        }
+
+        return student;
+    }
+
+    private void enable(@NonNull Student student) {
+        validateCanEnable(student);
+
+        String email = getUserEmail(student.getUserId());
+
+        events.publishEvent(
+                new IdentityEnableRequestedEvent(
+                        student.getId(),
+                        student.getUserId(),
+                        email
+                )
+        );
+    }
+
+    private void disableInternal(@NonNull Student student) {
+        validateCanDisable(student);
+
+        String email = getUserEmail(student.getUserId());
+
+        events.publishEvent(
+                new IdentityDisableRequestedEvent(
+                        student.getId(),
+                        student.getUserId(),
+                        email
+                )
+        );
+    }
+
+    private void validateCanEnable(@NonNull Student student) {
+        if (student.getLifecycleStatus() == LifecycleStatus.ACTIVE) {
+            throw new StudentAlreadyEnabledException(student.getId());
+        }
     }
 
     private void validateCanDisable(@NonNull Student student) {
@@ -117,8 +192,7 @@ public class UpdateStudentService implements UpdateStudentUseCase {
     }
 
     private String getUserEmail(String userId) {
-        return userQueryRepository.findById(userId)
-                .map(User::getEmail)
+        return userDataPort.findEmailByUserId(userId)
                 .orElseThrow(() -> new IllegalStateException(
                         "User not found for userId: " + userId));
     }

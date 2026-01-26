@@ -1,7 +1,6 @@
 package com.udla.markenx.api.classroom.assignments.infrastructure.persistence.jdbc;
 
 import com.udla.markenx.api.classroom.assignments.domain.models.aggregates.Task;
-import com.udla.markenx.api.classroom.assignments.domain.models.valueobjects.AssignmentStatus;
 import com.udla.markenx.api.shared.domain.models.valueobjects.LifecycleStatus;
 import org.jspecify.annotations.NonNull;
 import org.springframework.jdbc.core.RowMapper;
@@ -13,6 +12,7 @@ public class TaskRowMapper implements RowMapper<Task> {
 
     /**
      * Maps a row from the {@link ResultSet} to a {@link Task} object.
+     * Note: status and currentAttempt are now tracked in student_task_progress table.
      *
      * @param rs the {@link ResultSet} containing the current row of data
      * @param rowNum the number of the current row
@@ -29,10 +29,9 @@ public class TaskRowMapper implements RowMapper<Task> {
                 rs.getString("summary"),
                 rs.getTimestamp("deadline").toLocalDateTime(),
                 rs.getDouble("min_score_to_pass"),
-                AssignmentStatus.valueOf(rs.getString("status")),
                 rs.getString("course_id"),
                 rs.getInt("max_attempts"),
-                rs.getInt("current_attempt")
+                rs.getString("scenario_id")
         );
     }
 }

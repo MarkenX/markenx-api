@@ -1,0 +1,11 @@
+---
+- name: Ensure realm roles exist (MarkenX)
+  community.general.keycloak_role:
+    auth_keycloak_url: "{{ keycloak_url }}"
+    auth_realm: "{{ keycloak_admin_realm }}"
+    auth_username: "{{ keycloak_admin_user }}"
+    auth_password: "{{ keycloak_admin_password }}"
+    realm: "{{ realm_name }}"
+    name: "{{ item }}"
+    state: present
+  loop: "{{ realm_roles }}"

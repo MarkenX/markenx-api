@@ -1,0 +1,7 @@
+---
+- name: Configure Keycloak DEV (realm roles, BFF client, admin user)
+  hosts: keycloak
+  gather_facts: false
+
+  roles:
+    - role: keycloak

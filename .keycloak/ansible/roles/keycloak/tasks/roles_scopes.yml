@@ -1,0 +1,150 @@
+---
+# Ensures realm roles appear in ID Token / UserInfo for the BFF client.
+# Keycloak: create client scope + mapper + attach to client as default.
+
+- name: Lookup client scope 'roles'
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/client-scopes?search=roles"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_scopes
+
+- name: Set roles scope facts
+  ansible.builtin.set_fact:
+    roles_scope_exists: "{{ (kc_scopes.json | selectattr('name','equalto','roles') | list | length) > 0 }}"
+    roles_scope_id: >-
+      {{
+        (kc_scopes.json | selectattr('name','equalto','roles') | list | first).id
+        if ((kc_scopes.json | selectattr('name','equalto','roles') | list | length) > 0)
+        else ''
+      }}
+
+- name: Create client scope 'roles' if missing
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/client-scopes"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      name: "roles"
+      protocol: "openid-connect"
+      attributes:
+        include.in.token.scope: "true"
+        display.on.consent.screen: "false"
+    status_code: [201, 409]
+  when: not roles_scope_exists
+
+- name: Re-lookup roles scope id after create (if created now)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/client-scopes?search=roles"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_scopes_after
+  when: not roles_scope_exists
+
+- name: Set final roles scope id
+  ansible.builtin.set_fact:
+    roles_scope_id: >-
+      {{
+        roles_scope_id
+        if roles_scope_exists
+        else (kc_scopes_after.json | selectattr('name','equalto','roles') | list | first).id
+      }}
+
+# -----------------------------
+# Ensure protocol mapper exists
+# -----------------------------
+
+- name: Lookup protocol mappers for roles scope
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/client-scopes/{{ roles_scope_id }}/protocol-mappers/models"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_scope_mappers
+
+- name: Set mapper exists fact (realm-roles)
+  ansible.builtin.set_fact:
+    realm_roles_mapper_exists: "{{ (kc_scope_mappers.json | selectattr('name','equalto','realm-roles') | list | length) > 0 }}"
+
+- name: Create 'realm-roles' mapper in roles scope (adds roles to ID token + userinfo + access token)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/client-scopes/{{ roles_scope_id }}/protocol-mappers/models"
+    method: POST
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Content-Type: application/json
+    body_format: json
+    body:
+      name: "realm-roles"
+      protocol: "openid-connect"
+      protocolMapper: "oidc-usermodel-realm-role-mapper"
+      consentRequired: false
+      config:
+        multivalued: "true"
+        user.attribute: ""
+        claim.name: "realm_access.roles"
+        jsonType.label: "String"
+        access.token.claim: "true"
+        id.token.claim: "true"
+        userinfo.token.claim: "true"
+        # Prefix empty -> since your roles already are ROLE_*
+        role.prefix: ""
+    status_code: [201, 409]
+  when: not realm_roles_mapper_exists
+
+# --------------------------------------
+# Attach client scope to client as default
+# --------------------------------------
+
+- name: Lookup BFF client UUID
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients?clientId={{ bff_client_id | urlencode }}"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_bff_clients
+
+- name: Fail if BFF client not found
+  ansible.builtin.fail:
+    msg: "Client {{ bff_client_id }} not found in realm {{ realm_name }}"
+  when: kc_bff_clients.json | length == 0
+
+- name: Set BFF client uuid
+  ansible.builtin.set_fact:
+    bff_client_uuid: "{{ kc_bff_clients.json[0].id }}"
+
+- name: Get default client scopes currently assigned to BFF
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients/{{ bff_client_uuid }}/default-client-scopes"
+    method: GET
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+      Accept: application/json
+    return_content: true
+  register: kc_bff_default_scopes
+
+- name: Set already assigned fact
+  ansible.builtin.set_fact:
+    roles_scope_already_default: "{{ (kc_bff_default_scopes.json | selectattr('id','equalto',roles_scope_id) | list | length) > 0 }}"
+
+- name: Attach roles scope as default to BFF client (if missing)
+  ansible.builtin.uri:
+    url: "{{ keycloak_url }}/admin/realms/{{ realm_name }}/clients/{{ bff_client_uuid }}/default-client-scopes/{{ roles_scope_id }}"
+    method: PUT
+    headers:
+      Authorization: "Bearer {{ kc_access_token }}"
+    status_code: [204, 409]
+  when: not roles_scope_already_default

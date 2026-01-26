@@ -52,5 +52,4 @@ public class JooqConsumerRepository implements ConsumerQueryRepository {
                 .fetchOptional()
                 .map(mapper::toDomain);
     }
-
 }

@@ -1,16 +1,19 @@
 package com.udla.markenx.api.classroom.students.infrastructure.persistance.jooq;
 
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.StudentUserReadDTO;
+import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentDetailPortDTO;
 import org.jooq.Record;
 import org.jspecify.annotations.NonNull;
 
 public class StudentUserRecordMapper {
 
-    public StudentUserReadDTO toDomain(@NonNull Record r) {
-        return new StudentUserReadDTO(
-                r.get("id", String.class),
-                r.get("user_id", String.class),
-                r.get("email", String.class)
+    public StudentDetailPortDTO toDomain(@NonNull Record r) {
+        return new StudentDetailPortDTO(
+                r.get("student_id", String.class),
+                r.get("email", String.class),
+                r.get("full_name", String.class),
+                r.get("code", Integer.class),
+                r.get("course_id", String.class),
+                r.get("lifecycle_status", String.class)
         );
     }
 }
