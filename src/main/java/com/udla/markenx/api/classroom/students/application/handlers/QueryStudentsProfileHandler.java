@@ -31,7 +31,7 @@ public class QueryStudentsProfileHandler implements QueryStudentsProfileUseCase 
         StudentDetailPortDTO studentSummary = summaryReadQueryRepository.findByEmail(query.email());
         Student student = queryRepository.findByIdOrThrow(studentSummary.studentId());
         CoursePortDTO course = queryCourseUseCase.getCourseById(new CourseIdQuery(student.getCourseId()));
-        TermPortDTO term = queryTermsUseCase.getTermById(new TermIdQuery(course.term().id()));
+        TermPortDTO term = queryTermsUseCase.getTermById(new TermIdQuery(course.termId()));
 
         return new StudentProfilePortDTO(
                 student.getId(),

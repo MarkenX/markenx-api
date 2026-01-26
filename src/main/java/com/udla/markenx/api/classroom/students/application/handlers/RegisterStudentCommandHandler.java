@@ -29,7 +29,7 @@ public class RegisterStudentCommandHandler implements RegisterStudentUseCase {
     private void ensureCourseTermIsUpcoming(@NonNull RegisterStudentCommand command) {
         var query = new CourseIdQuery(command.courseId());
         CoursePortDTO course = queryCourseUseCase.getCourseById(query);
-        var validationQuery = new IsUpcomingTermQuery(course.term().id());
+        var validationQuery = new IsUpcomingTermQuery(course.termId());
         if (!validateTermUseCase.isUpcoming(validationQuery)) {
             throw new CourseNotInUpcomingTermException(command.courseId());
         }
