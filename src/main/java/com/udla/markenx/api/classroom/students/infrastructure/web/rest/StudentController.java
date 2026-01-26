@@ -16,6 +16,8 @@ import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requ
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentProfileResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentResponseDTO;
 import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentTaskResponseDTO;
+import com.udla.markenx.api.classroom.terms.application.ports.in.queries.TermIdQuery;
+import com.udla.markenx.api.classroom.terms.infrastructure.web.dtos.responses.TermResponseDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -163,6 +165,22 @@ public class StudentController {
         return StudentResponseDTO.from(queryStudentsDetailUseCase.listStudentsPage(query));
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Get an student")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Student retrieved successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized"),
+            @ApiResponse(responseCode = "403", description = "Forbidden"),
+            @ApiResponse(responseCode = "404", description = "Student not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error")
+    })
+    public StudentResponseDTO getById(@PathVariable String id) {
+        var student = queryStudentsDetailUseCase.getStudentById(id);
+        return StudentResponseDTO.from(student);
+    }
+
     @PutMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "Update a student")
@@ -182,8 +200,8 @@ public class StudentController {
         var command = new UpdateStudentCommand(
                 id,
                 dto.firstName(),
-                dto.lastName(),
-                dto.courseId());
+                dto.lastName()
+        );
         updateStudentUseCase.update(command);
         var studentDetail = queryStudentsDetailUseCase.getStudentById(id);
         return StudentResponseDTO.from(studentDetail);

@@ -50,7 +50,7 @@ public class TermController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    @Operation(summary = "Get an academic term by attemptId")
+    @Operation(summary = "Get an academic")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Academic term retrieved successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid attemptId format"),

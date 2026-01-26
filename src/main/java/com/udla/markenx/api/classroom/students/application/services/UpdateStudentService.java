@@ -94,7 +94,6 @@ public class UpdateStudentService implements UpdateStudentUseCase {
         Student student = queryRepository.findByIdOrThrow(command.id());
 
         student.update(command.firstName(), command.lastName());
-        student.changeCourse(command.courseId());
 
         commandRepository.save(student);
 
