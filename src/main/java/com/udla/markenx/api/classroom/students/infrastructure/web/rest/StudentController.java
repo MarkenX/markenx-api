@@ -9,7 +9,14 @@ import com.udla.markenx.api.classroom.students.application.ports.in.queries.Stud
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentTaskProgressQuery;
 import com.udla.markenx.api.classroom.students.application.ports.in.usecases.*;
 import com.udla.markenx.api.classroom.students.application.ports.in.queries.StudentPageQueryCriteria;
-import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.*;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.CreateStudentRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.StudentAttemptResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.requests.UpdateStudentStatusRequestDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentProfileResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentTaskResponseDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses.StudentUserReadDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -113,13 +120,13 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student or task not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public StudentTaskWithProgressResponseDTO getTaskProgress(
+    public StudentTaskResponseDTO getTaskProgress(
             @PathVariable String studentId,
             @PathVariable String taskId
     ) {
         var query = new StudentTaskProgressQuery(studentId, taskId);
         var taskWithProgress = queryStudentTasksProgressDetailUseCase.getTaskWithProgress(query);
-        return StudentTaskWithProgressResponseDTO.from(taskWithProgress);
+        return StudentTaskResponseDTO.from(taskWithProgress);
     }
 
     @GetMapping("/{studentId}/tasks")
@@ -132,12 +139,12 @@ public class StudentController {
             @ApiResponse(responseCode = "404", description = "Student not found"),
             @ApiResponse(responseCode = "500", description = "Internal server error")
     })
-    public List<StudentTaskWithProgressResponseDTO> getAllTasksWithProgress(
+    public List<StudentTaskResponseDTO> getAllTasksWithProgress(
             @PathVariable String studentId
     ) {
         var query = new StudentAllTasksProgressQuery(studentId);
         var tasksWithProgress = queryStudentTasksProgressDetailUseCase.getAllTasksWithProgress(query);
-        return StudentTaskWithProgressResponseDTO.from(tasksWithProgress);
+        return StudentTaskResponseDTO.from(tasksWithProgress);
     }
 
     @GetMapping

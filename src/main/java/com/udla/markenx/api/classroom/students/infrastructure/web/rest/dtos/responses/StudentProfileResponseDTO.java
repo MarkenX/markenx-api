@@ -1,4 +1,4 @@
-package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
+package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentProfilePortDTO;
 import org.jetbrains.annotations.Contract;

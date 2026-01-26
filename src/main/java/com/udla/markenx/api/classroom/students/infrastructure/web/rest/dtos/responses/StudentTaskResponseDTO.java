@@ -1,6 +1,7 @@
-package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos;
+package com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.responses;
 
 import com.udla.markenx.api.classroom.students.application.ports.in.dtos.StudentTaskProgressDetailPortDTO;
+import com.udla.markenx.api.classroom.students.infrastructure.web.rest.dtos.TaskProgressStatus;
 import org.jetbrains.annotations.Contract;
 import org.jspecify.annotations.NonNull;
 
@@ -22,7 +23,7 @@ import java.util.List;
  * @param remainingAttempts The number of remaining attempts for the student
  * @param scenarioId The ID of the scenario associated with the task
  */
-public record StudentTaskWithProgressResponseDTO(
+public record StudentTaskResponseDTO(
         String id,
         String label,
         String title,
@@ -37,8 +38,8 @@ public record StudentTaskWithProgressResponseDTO(
 ) {
 
     @Contract("_ -> new")
-    public static @NonNull StudentTaskWithProgressResponseDTO from(@NonNull StudentTaskProgressDetailPortDTO dto) {
-        return new StudentTaskWithProgressResponseDTO(
+    public static @NonNull StudentTaskResponseDTO from(@NonNull StudentTaskProgressDetailPortDTO dto) {
+        return new StudentTaskResponseDTO(
                 dto.taskId(),
                 dto.taskLabel(),
                 dto.title(),
@@ -53,7 +54,7 @@ public record StudentTaskWithProgressResponseDTO(
         );
     }
 
-    public static @NonNull List<StudentTaskWithProgressResponseDTO> from(@NonNull List<StudentTaskProgressDetailPortDTO> list) {
-        return list.stream().map(StudentTaskWithProgressResponseDTO::from).toList();
+    public static @NonNull List<StudentTaskResponseDTO> from(@NonNull List<StudentTaskProgressDetailPortDTO> list) {
+        return list.stream().map(StudentTaskResponseDTO::from).toList();
     }
 }
